@@ -1,0 +1,225 @@
+<!-- boat-detail.component.html -->
+<div class="boat-rental-container">
+    <!-- Hero Section -->
+    <section class="hero">
+      <div class="hero-content">
+        <h1>Azimut 45</h1>
+        <p class="tagline">Experience luxury and performance on the water</p>
+        <button class="cta-button">Book Now</button>
+      </div>
+      <div class="hero-overlay"></div>
+    </section>
+  
+    <!-- Boat Details Section -->
+    <section class="boat-details">
+      <div class="container">
+        <div class="detail-grid">
+          <div class="boat-image-gallery">
+            <div class="main-image">
+              <img src="assets/images/azimut-45-main.jpg" alt="Azimut 45 Yacht">
+            </div>
+            <div class="thumbnail-row">
+              <div class="thumbnail" *ngFor="let img of thumbnailImages; let i = index" (click)="setMainImage(i)">
+                <img [src]="img.src" [alt]="img.alt">
+              </div>
+            </div>
+          </div>
+          
+          <div class="boat-specs">
+            <h2>Specifications</h2>
+            <div class="specs-grid">
+              <div class="spec-item">
+                <div class="spec-icon"><i class="material-icons">straighten</i></div>
+                <div class="spec-details">
+                  <h3>Length</h3>
+                  <p>45 feet (13.86m)</p>
+                </div>
+              </div>
+              <div class="spec-item">
+                <div class="spec-icon"><i class="material-icons">group</i></div>
+                <div class="spec-details">
+                  <h3>Capacity</h3>
+                  <p>12 guests</p>
+                </div>
+              </div>
+              <div class="spec-item">
+                <div class="spec-icon"><i class="material-icons">hotel</i></div>
+                <div class="spec-details">
+                  <h3>Cabins</h3>
+                  <p>3 cabins</p>
+                </div>
+              </div>
+              <div class="spec-item">
+                <div class="spec-icon"><i class="material-icons">waves</i></div>
+                <div class="spec-details">
+                  <h3>Cruising Speed</h3>
+                  <p>25 knots</p>
+                </div>
+              </div>
+              <div class="spec-item">
+                <div class="spec-icon"><i class="material-icons">local_gas_station</i></div>
+                <div class="spec-details">
+                  <h3>Fuel Capacity</h3>
+                  <p>1,500L</p>
+                </div>
+              </div>
+              <div class="spec-item">
+                <div class="spec-icon"><i class="material-icons">build</i></div>
+                <div class="spec-details">
+                  <h3>Year</h3>
+                  <p>2022</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  
+    <!-- Description Section -->
+    <section class="boat-description">
+      <div class="container">
+        <h2>About Azimut 45</h2>
+        <div class="description-content">
+          <p>The Azimut 45 is a masterpiece of Italian design and engineering excellence, offering an unmatched experience on the water. This luxurious yacht combines elegant styling, exceptional comfort, and outstanding performance.</p>
+          
+          <p>With its sleek profile and spacious interiors, the Azimut 45 provides the perfect setting for day trips, weekend getaways, or extended cruising adventures. The yacht features three beautifully appointed cabins, including a full-beam master suite, a VIP cabin forward, and a twin cabin, comfortably accommodating up to 6 guests overnight.</p>
+          
+          <p>The main deck offers a generous salon with panoramic windows, flooding the space with natural light and providing breathtaking views. The exterior spaces include a large cockpit perfect for al fresco dining and a spacious flybridge equipped with sunpads, seating areas, and a wet bar.</p>
+          
+          <p>Powered by twin Volvo Penta IPS 600 engines, the Azimut 45 delivers impressive performance with a top speed of 31 knots and a cruising speed of 25 knots, ensuring an exhilarating yet comfortable ride.</p>
+        </div>
+      </div>
+    </section>
+  
+    <!-- Features Section -->
+    <section class="boat-features">
+      <div class="container">
+        <h2>Features & Amenities</h2>
+        <div class="features-grid">
+          <div class="feature-column">
+            <h3>Exterior</h3>
+            <ul>
+              <li>Spacious flybridge with sunpads</li>
+              <li>Cockpit dining area</li>
+              <li>Swimming platform</li>
+              <li>Bow sunpad</li>
+              <li>Exterior shower</li>
+            </ul>
+          </div>
+          <div class="feature-column">
+            <h3>Interior</h3>
+            <ul>
+              <li>Air conditioning throughout</li>
+              <li>Fully equipped galley</li>
+              <li>LED lighting</li>
+              <li>Salon with dining area</li>
+              <li>Entertainment system</li>
+            </ul>
+          </div>
+          <div class="feature-column">
+            <h3>Water Toys</h3>
+            <ul>
+              <li>Tender</li>
+              <li>Snorkeling equipment</li>
+              <li>Sea Bob</li>
+              <li>Paddleboards</li>
+              <li>Inflatable water toys</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+  
+    <!-- Pricing Section -->
+    <section class="pricing">
+      <div class="container">
+        <h2>Rental Options</h2>
+        <div class="pricing-cards">
+          <div class="pricing-card">
+            <h3>Half Day</h3>
+            <p class="price">$2,500</p>
+            <p class="duration">4 hours</p>
+            <ul>
+              <li>Up to 12 guests</li>
+              <li>Professional captain</li>
+              <li>Fuel included</li>
+              <li>Water and soft drinks</li>
+            </ul>
+            <button class="booking-btn">Book Now</button>
+          </div>
+          <div class="pricing-card featured">
+            <div class="featured-badge">Most Popular</div>
+            <h3>Full Day</h3>
+            <p class="price">$4,500</p>
+            <p class="duration">8 hours</p>
+            <ul>
+              <li>Up to 12 guests</li>
+              <li>Professional captain</li>
+              <li>Fuel included</li>
+              <li>Water, soft drinks, and light snacks</li>
+              <li>Water toys included</li>
+            </ul>
+            <button class="booking-btn">Book Now</button>
+          </div>
+          <div class="pricing-card">
+            <h3>Weekly</h3>
+            <p class="price">$28,000</p>
+            <p class="duration">7 days</p>
+            <ul>
+              <li>Up to 6 overnight guests</li>
+              <li>Professional captain and crew</li>
+              <li>Fuel for 4 hours cruising per day</li>
+              <li>Welcome package</li>
+              <li>All water toys included</li>
+            </ul>
+            <button class="booking-btn">Book Now</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  
+    <!-- Booking Calendar Section -->
+    <section class="booking-calendar">
+      <div class="container">
+        <h2>Check Availability</h2>
+        <p>Select your preferred dates to check availability and make a reservation.</p>
+        <div class="calendar-container">
+          <!-- Angular Material Calendar would go here -->
+          <p class="placeholder-text">Calendar component will be integrated here</p>
+        </div>
+      </div>
+    </section>
+  
+    <!-- Reviews Section -->
+    <section class="reviews">
+      <div class="container">
+        <h2>Customer Reviews</h2>
+        <div class="reviews-slider">
+          <div class="review-card" *ngFor="let review of customerReviews">
+            <div class="review-rating">
+              <i class="material-icons" *ngFor="let star of [1,2,3,4,5]">
+                {{ star <= review.rating ? 'star' : 'star_border' }}
+              </i>
+            </div>
+            <p class="review-text">{{ review.text }}</p>
+            <p class="review-author">{{ review.author }}</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  
+    <!-- CTA Section -->
+    <section class="cta-section">
+      <div class="container">
+        <div class="cta-content">
+          <h2>Ready to Experience the Azimut 45?</h2>
+          <p>Contact our team to book your unforgettable journey on this exceptional yacht.</p>
+          <div class="cta-buttons">
+            <button class="cta-button">Book Now</button>
+            <button class="cta-button secondary">Contact Us</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>

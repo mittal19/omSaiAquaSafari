@@ -1,0 +1,80 @@
+<section id="home" class="home-hero">
+ <div class="hero-bg" [style.background-image]="heroBg">
+
+    <div class="hero-overlay"></div>
+
+    <div class="hero-shell">
+      <div class="hero-grid">
+        <!-- Left content -->
+        <div class="hero-copy">
+          <p class="hero-kicker">Yacht & Cruise Rentals • Goa</p>
+
+          <h1 class="hero-title">
+            Set Sail in Style <span class="accent">with<br> Om Sai Aqua Safari</span>
+          </h1>
+
+          <p class="hero-subtitle">
+            Premium yachts, sunset cruises, and curated experiences with transparent pricing and easy booking.
+          </p>
+
+          <div class="hero-ctas">
+            <a class="btn primary" routerLink="/book-yacht">Book a Yacht</a>
+            <a class="btn secondary" routerLink="/book-cruise">Book a Cruise</a>
+            <a class="btn ghost" href="#explore">Explore options</a>
+          </div>
+
+          <div class="hero-badges" aria-label="Highlights">
+            <div class="badge">⛵ Private & Shared</div>
+            <div class="badge">⭐ Top-rated experiences</div>
+            <div class="badge">📍 Goa pickup points</div>
+          </div>
+        </div>
+
+        <!-- Right quick card -->
+        <aside class="hero-card" aria-label="Quick booking">
+          <h2 class="card-title">Quick booking</h2>
+
+          <div class="card-row">
+            <span class="dot"></span>
+            <div>
+              <div class="card-label">Call/WhatsApp</div>
+              <div class="card-value">Fast confirmation</div>
+            </div>
+          </div>
+
+          <div class="card-row">
+            <span class="dot"></span>
+            <div>
+              <div class="card-label">Flexible timings</div>
+              <div class="card-value">Sunrise • Sunset • Party</div>
+            </div>
+          </div>
+
+          <div class="card-actions">
+            <a class="btn primary full" routerLink="/book-yacht">Book Now</a>
+            <a class="btn secondary full" href="#contactus">Get a quote</a>
+          </div>
+
+          <p class="card-note">No hidden charges • Instant support</p>
+        </aside>
+      </div>
+
+      <!-- simple indicators (optional) -->
+      <div class="hero-dots" aria-label="Hero image selectors">
+        <button
+          *ngFor="let s of slides; let i = index"
+          class="dot-btn"
+          [class.active]="i === currentIndex"
+          (click)="goToSlide(i)"
+          type="button"
+          [attr.aria-label]="'Show image ' + (i + 1)"
+        ></button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Your existing sections (keep IDs inside those components) -->
+<app-explore></app-explore>
+<app-gallery></app-gallery>
+<app-testimonials></app-testimonials>

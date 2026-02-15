@@ -1,0 +1,83 @@
+<section id="contactus" class="contact" aria-labelledby="contactTitle">
+  <div class="contact__wrap">
+    <header class="contact__header">
+      <p class="contact__eyebrow">Contact</p>
+      <h2 id="contactTitle" class="contact__title">Let’s plan your perfect ride</h2>
+      <p class="contact__subtitle">
+        Reach out for bookings, pricing, timings, or custom plans. We usually respond quickly.
+      </p>
+    </header>
+
+    <div class="contact__grid">
+      <!-- Card 1: Quick contact -->
+      <article class="card" aria-label="Quick contact">
+        <h3 class="card__title">Quick contact</h3>
+
+        <a class="row" [attr.href]="'tel:' + phoneTel" aria-label="Call us">
+          <span class="icon" aria-hidden="true">📞</span>
+          <span class="row__text">
+            <span class="row__label">Phone</span>
+            <span class="row__value">{{ phoneDisplay }}</span>
+          </span>
+        </a>
+
+        <a class="row" [attr.href]="'mailto:' + email" aria-label="Email us">
+          <span class="icon" aria-hidden="true">✉️</span>
+          <span class="row__text">
+            <span class="row__label">Email</span>
+            <span class="row__value">{{ email }}</span>
+          </span>
+        </a>
+
+        <div class="row" aria-label="Address">
+          <span class="icon" aria-hidden="true">📍</span>
+          <span class="row__text">
+            <span class="row__label">Address</span>
+            <span class="row__value">
+              <span *ngFor="let line of addressLines; let last = last">
+                {{ line }}<span *ngIf="!last"><br /></span>
+              </span>
+            </span>
+          </span>
+        </div>
+
+        <div class="card__actions">
+          <a class="btn btn--primary" href="#enquire">Get Quick Quote</a>
+          <a
+  class="btn btn--ghost"
+  [attr.href]="mapUrl"
+  target="_blank"
+  rel="noopener"
+>
+  Get Directions
+</a>
+        </div>
+      </article>
+
+      <!-- Card 2: Social / business -->
+      <article class="card" aria-label="Keep connected">
+        <h3 class="card__title">Keep connected</h3>
+
+        <div class="pillGrid" role="list">
+          <a class="pill" role="listitem" href="#" target="_blank" rel="noopener">
+            <span aria-hidden="true">📸</span> Instagram
+          </a>
+          <a class="pill" role="listitem" href="#" target="_blank" rel="noopener">
+            <span aria-hidden="true">📘</span> Facebook
+          </a>
+          <a class="pill" role="listitem" href="#" target="_blank" rel="noopener">
+            <span aria-hidden="true">🧭</span> Google
+          </a>
+          <a class="pill" role="listitem" href="#" target="_blank" rel="noopener">
+            <span aria-hidden="true">💬</span> WhatsApp
+          </a>
+        </div>
+
+        <div class="note" role="note">
+          <strong>Best time to contact:</strong> 9 AM – 8 PM (IST).  
+          For faster quotes, share date, time, and number of people.
+        </div>
+      </article>
+    </div>
+  </div>
+</section>

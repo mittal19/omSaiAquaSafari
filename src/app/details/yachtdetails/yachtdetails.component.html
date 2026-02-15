@@ -1,0 +1,48 @@
+<section class="page" aria-labelledby="pageTitle">
+  <div class="wrap">
+    <header class="header">
+      <p class="eyebrow">Book Yacht</p>
+      <h1 id="pageTitle" class="title">Choose your yacht</h1>
+      <p class="subtitle">
+        Tap any yacht to view full gallery, availability, and submit your booking query.
+      </p>
+    </header>
+
+    <div class="grid" role="list">
+      <article *ngFor="let y of yachts; trackBy: trackById" class="card" role="listitem">
+        <a class="cardLink" [routerLink]="['/book-yacht', y.id]" [attr.aria-label]="'View details for ' + y.name">
+          <div class="media">
+            <img class="img" [src]="y.heroImage" [alt]="y.name + ' yacht'" loading="lazy" decoding="async" />
+            <span class="badge">{{ formatINR(y.dayRateInr) }}/day</span>
+          </div>
+
+          <div class="content">
+            <div class="top">
+              <h2 class="name">{{ y.name }}</h2>
+              <span class="chip">{{ y.capacity }} pax</span>
+            </div>
+
+            <p class="desc">{{ y.description }}</p>
+
+            <div class="specs" aria-label="Key specs">
+              <div class="spec"><span class="k">Length</span><span class="v">{{ y.lengthFt }} ft</span></div>
+              <div class="spec"><span class="k">Speed</span><span class="v">{{ y.speedKnots }} kn</span></div>
+              <div class="spec"><span class="k">Cabins</span><span class="v">{{ y.cabins }}</span></div>
+              <div class="spec"><span class="k">Crew</span><span class="v">{{ y.crew }}</span></div>
+            </div>
+
+            <div class="includes" aria-label="Inclusions">
+              <span class="pill" [class.ok]="y.includes.water">Water</span>
+              <span class="pill" [class.ok]="y.includes.food">Food</span>
+            </div>
+
+            <div class="ctaRow">
+              <span class="ctaText">View details & availability</span>
+              <span class="ctaIcon" aria-hidden="true">›</span>
+            </div>
+          </div>
+        </a>
+      </article>
+    </div>
+  </div>
+</section>

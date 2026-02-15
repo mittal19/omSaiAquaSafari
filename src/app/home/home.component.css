@@ -1,0 +1,245 @@
+:host {
+  display: block;
+}
+
+.home-hero {
+  padding-top: 72px;
+  scroll-margin-top: 72px; /* works with your fixed header */
+}
+
+/* Background */
+.hero-bg {
+  min-height: calc(100dvh - 72px);
+  background-size: cover;
+  background-position: center;
+  position: relative;
+}
+
+/* Dark overlay for readability */
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(80% 70% at 50% 30%, rgba(2, 132, 199, 0.25), rgba(0, 0, 0, 0.6));
+}
+
+.hero-shell {
+  position: relative;
+  z-index: 2;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 88px 16px 40px;
+}
+
+/* Layout */
+.hero-grid {
+  display: grid;
+  grid-template-columns: 1.3fr 0.7fr;
+  gap: 22px;
+  align-items: start;
+}
+
+.hero-copy {
+  color: #fff;
+}
+
+.hero-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  margin: 0 0 14px;
+}
+
+.hero-title {
+  font-size: clamp(34px, 4.6vw, 56px);
+  line-height: 1.05;
+  margin: 0 0 14px;
+  font-weight: 900;
+  text-shadow: 0 14px 38px rgba(0, 0, 0, 0.35);
+}
+
+.accent {
+  color: #bfeaff;
+}
+
+.hero-subtitle {
+  max-width: 62ch;
+  font-size: clamp(14px, 1.6vw, 18px);
+  line-height: 1.6;
+  margin: 0 0 18px;
+  opacity: 0.95;
+}
+
+.hero-ctas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 14px 0 18px;
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 44px;
+  padding: 0 16px;
+  border-radius: 14px;
+  text-decoration: none;
+  font-weight: 800;
+  letter-spacing: 0.2px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+.btn.primary {
+  color: #fff;
+  background: linear-gradient(135deg, #0284c7, #0ea5e9);
+  box-shadow: 0 12px 26px rgba(2, 132, 199, 0.25);
+}
+
+.btn.secondary {
+  color: #0f172a;
+  background: rgba(255, 255, 255, 0.86);
+  border-color: rgba(255, 255, 255, 0.6);
+}
+
+.btn.ghost {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.14);
+  border-color: rgba(255, 255, 255, 0.22);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.btn.full {
+  width: 100%;
+}
+
+.hero-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.badge {
+  color: #fff;
+  font-weight: 800;
+  font-size: 13px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+/* Right card */
+.hero-card {
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(15, 23, 42, 0.12);
+  border-radius: 20px;
+  padding: 16px;
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.18);
+}
+
+.card-title {
+  margin: 0 0 10px;
+  font-size: 16px;
+  font-weight: 900;
+  color: #0f172a;
+}
+
+.card-row {
+  display: flex;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(15, 23, 42, 0.08);
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  margin-top: 6px;
+  background: #0284c7;
+}
+
+.card-label {
+  font-weight: 900;
+  color: #0f172a;
+  font-size: 13px;
+}
+
+.card-value {
+  color: rgba(15, 23, 42, 0.75);
+  font-weight: 700;
+  font-size: 13px;
+  margin-top: 2px;
+}
+
+.card-actions {
+  display: grid;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.card-note {
+  margin: 12px 0 0;
+  font-size: 12px;
+  color: rgba(15, 23, 42, 0.7);
+  font-weight: 700;
+  text-align: center;
+}
+
+/* Dots */
+.hero-dots {
+  display: flex;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.dot-btn {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  border: 0;
+  background: rgba(255, 255, 255, 0.4);
+  cursor: pointer;
+}
+
+.dot-btn.active {
+  background: rgba(255, 255, 255, 0.95);
+  transform: scale(1.1);
+}
+
+/* Responsive */
+@media (max-width: 960px) {
+  .hero-shell {
+    padding-top: 76px;
+  }
+  .hero-grid {
+    grid-template-columns: 1fr;
+  }
+  .hero-card {
+    max-width: 520px;
+  }
+}
+
+@media (max-width: 520px) {
+  .hero-shell {
+    padding-top: 66px;
+  }
+  .hero-ctas .btn {
+    width: 100%;
+  }
+}

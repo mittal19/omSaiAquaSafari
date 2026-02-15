@@ -1,0 +1,143 @@
+<section id="enquire" class="enquire" aria-labelledby="enquireTitle">
+  <div class="enquire__wrap">
+    <header class="enquire__header">
+      <p class="enquire__eyebrow">Request a quick quote</p>
+      <h2 id="enquireTitle" class="enquire__title">Tell us what you want to book</h2>
+      <p class="enquire__subtitle">
+        Fill out this form and we’ll get back with the best options for your
+        dream yacht / cruise experience in Goa.
+      </p>
+    </header>
+
+    <div class="enquire__grid">
+      <!-- Left: trust + highlights -->
+      <aside class="enquire__card enquire__card--info" aria-label="Contact info">
+        <h3 class="enquire__cardTitle">What happens next?</h3>
+        <ul class="enquire__list">
+          <li>We review your request and reply with available options.</li>
+          <li>We share pricing, inclusions and the best time slots.</li>
+          <li>You confirm — we handle the booking smoothly.</li>
+        </ul>
+
+        <div class="enquire__note" role="note">
+          <strong>Tip:</strong> Mention dates, number of people and preferred
+          timing for faster suggestions.
+        </div>
+      </aside>
+
+      <!-- Right: form -->
+      <div class="enquire__card enquire__card--form">
+        <form
+          #nativeForm
+          class="form"
+          [formGroup]="contactForm"
+          [attr.action]="formSubmitAction"
+          method="POST"
+          (ngSubmit)="onSubmit()"
+          novalidate
+          aria-describedby="enquireHelp"
+        >
+          <!-- FormSubmit helpers -->
+          <input type="hidden" name="_subject" value="New Quick Quote Request" />
+          <input type="hidden" name="_captcha" value="false" />
+          <input type="text" name="_honey" class="sr-only" tabindex="-1" autocomplete="off" />
+
+          <p id="enquireHelp" class="form__help">
+            Fields marked <span aria-hidden="true">*</span> are required.
+          </p>
+
+          <div class="form__row">
+            <div class="field">
+              <label class="field__label" for="fullName">
+                Full name <span aria-hidden="true">*</span>
+              </label>
+              <input
+                id="fullName"
+                class="field__control"
+                type="text"
+                formControlName="fullName"
+                name="name"
+                autocomplete="name"
+                placeholder="Your full name"
+                [attr.aria-invalid]="submitted && f['fullName'].invalid"
+              />
+              <p class="field__error" *ngIf="submitted && f['fullName'].invalid">
+                Please enter your name (min 2 characters).
+              </p>
+            </div>
+
+            <div class="field">
+              <label class="field__label" for="email">
+                Email <span aria-hidden="true">*</span>
+              </label>
+              <input
+                id="email"
+                class="field__control"
+                type="email"
+                formControlName="email"
+                name="email"
+                autocomplete="email"
+                inputmode="email"
+                placeholder="you@example.com"
+                [attr.aria-invalid]="submitted && f['email'].invalid"
+              />
+              <p class="field__error" *ngIf="submitted && f['email'].invalid">
+                Please enter a valid email.
+              </p>
+            </div>
+          </div>
+
+          <div class="form__row">
+            <div class="field">
+              <label class="field__label" for="phone">Phone (optional)</label>
+              <input
+                id="phone"
+                class="field__control"
+                type="tel"
+                formControlName="phone"
+                name="phone"
+                autocomplete="tel"
+                inputmode="numeric"
+                placeholder="10-digit number"
+                [attr.aria-invalid]="submitted && f['phone'].invalid"
+              />
+              <p class="field__hint">We’ll only use this for your quote.</p>
+              <p class="field__error" *ngIf="submitted && f['phone'].invalid">
+                Please enter a 10-digit phone number.
+              </p>
+            </div>
+          </div>
+
+          <div class="field">
+            <label class="field__label" for="message">
+              Message <span aria-hidden="true">*</span>
+            </label>
+            <textarea
+              id="message"
+              class="field__control field__control--textarea"
+              formControlName="message"
+              name="message"
+              rows="6"
+              placeholder="Example: Date, number of people, yacht/cruise preference, pickup location…"
+              [attr.aria-invalid]="submitted && f['message'].invalid"
+            ></textarea>
+            <p class="field__error" *ngIf="submitted && f['message'].invalid">
+              Please add a short message (min 10 characters).
+            </p>
+          </div>
+
+          <div class="form__actions">
+            <button class="btn" type="submit" [disabled]="isSubmitting">
+              <span *ngIf="!isSubmitting">Get Quick Quote</span>
+              <span *ngIf="isSubmitting" aria-live="polite">Submitting…</span>
+            </button>
+
+            <p class="form__fineprint">
+              By submitting, you agree to be contacted about your request.
+            </p>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>

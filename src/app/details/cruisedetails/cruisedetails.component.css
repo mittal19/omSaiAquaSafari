@@ -1,0 +1,491 @@
+/* boat-detail.component.scss */
+
+// Variables
+$primary-color: #0D2D53;
+$secondary-color: #1A73E8;
+$accent-color: #FFCA28;
+$light-bg: #f8f9fa;
+$dark-bg: #14253D;
+$text-color: #333;
+$light-text: #fff;
+
+// Global Styles
+.boat-rental-container {
+  font-family: 'Montserrat', Arial, sans-serif;
+  color: $text-color;
+  overflow-x: hidden;
+}
+
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+section {
+  padding: 60px 0;
+  
+  @media (max-width: 768px) {
+    padding: 40px 0;
+  }
+}
+
+h1, h2, h3 {
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+h1 {
+  font-size: 3rem;
+  
+  @media (max-width: 768px) {
+    font-size: 2rem;
+  }
+}
+
+h2 {
+  font-size: 2.2rem;
+  text-align: center;
+  margin-bottom: 40px;
+  
+  @media (max-width: 768px) {
+    font-size: 1.8rem;
+    margin-bottom: 30px;
+  }
+}
+
+h3 {
+  font-size: 1.5rem;
+  
+  @media (max-width: 768px) {
+    font-size: 1.3rem;
+  }
+}
+
+p {
+  line-height: 1.6;
+  margin-bottom: 15px;
+}
+
+button {
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 500;
+}
+
+// Hero Section
+.hero {
+  height: 80vh;
+  min-height: 500px;
+  background-image: url('/assets/images/azimut-45-hero.jpg');
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: $light-text;
+  text-align: center;
+  
+  .hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 1;
+  }
+  
+  .hero-content {
+    max-width: 800px;
+    padding: 0 20px;
+    position: relative;
+    z-index: 2;
+    
+    .tagline {
+      font-size: 1.5rem;
+      margin-bottom: 30px;
+      
+      @media (max-width: 768px) {
+        font-size: 1.2rem;
+      }
+    }
+  }
+}
+
+.cta-button {
+  background-color: $secondary-color;
+  color: $light-text;
+  border: none;
+  padding: 15px 40px;
+  font-size: 1.1rem;
+  border-radius: 5px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  
+  &:hover {
+    background-color: darken($secondary-color, 10%);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  }
+  
+  &.secondary {
+    background-color: transparent;
+    border: 2px solid $light-text;
+    margin-left: 15px;
+    
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+  }
+}
+
+// Boat Details Section
+.boat-details {
+  background-color: $light-bg;
+  
+  .detail-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    align-items: start;
+    
+    @media (max-width: 992px) {
+      grid-template-columns: 1fr;
+    }
+  }
+}
+
+.boat-image-gallery {
+  .main-image {
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 15px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    
+    img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+  }
+  
+  .thumbnail-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    
+    .thumbnail {
+      border-radius: 5px;
+      overflow: hidden;
+      cursor: pointer;
+      opacity: 0.7;
+      transition: opacity 0.3s ease;
+      
+      &:hover {
+        opacity: 1;
+      }
+      
+      img {
+        width: 100%;
+        height: auto;
+        display: block;
+      }
+    }
+  }
+}
+
+.boat-specs {
+  .specs-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    
+    @media (max-width: 576px) {
+      grid-template-columns: 1fr;
+    }
+  }
+  
+  .spec-item {
+    display: flex;
+    align-items: center;
+    background-color: #fff;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+    
+    .spec-icon {
+      margin-right: 15px;
+      color: $secondary-color;
+      
+      i {
+        font-size: 2rem;
+      }
+    }
+    
+    .spec-details {
+      h3 {
+        font-size: 1rem;
+        margin-bottom: 5px;
+        color: $primary-color;
+      }
+      
+      p {
+        margin-bottom: 0;
+        font-weight: 500;
+      }
+    }
+  }
+}
+
+// Description Section
+.boat-description {
+  .description-content {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+}
+
+// Features Section
+.boat-features {
+  background-color: $light-bg;
+  
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+    
+    @media (max-width: 768px) {
+      grid-template-columns: 1fr;
+    }
+  }
+  
+  .feature-column {
+    background-color: #fff;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    
+    h3 {
+      color: $primary-color;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid $accent-color;
+    }
+    
+    ul {
+      padding-left: 20px;
+      
+      li {
+        margin-bottom: 10px;
+        position: relative;
+        
+        &:before {
+          content: '✓';
+          color: $secondary-color;
+          position: absolute;
+          left: -20px;
+        }
+      }
+    }
+  }
+}
+
+// Pricing Section
+.pricing {
+  .pricing-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+    
+    @media (max-width: 992px) {
+      grid-template-columns: 1fr;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+  }
+  
+  .pricing-card {
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 30px;
+    text-align: center;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+    position: relative;
+    transition: transform 0.3s ease;
+    
+    &:hover {
+      transform: translateY(-10px);
+    }
+    
+    &.featured {
+      border: 2px solid $accent-color;
+      transform: scale(1.05);
+      z-index: 1;
+      
+      @media (max-width: 992px) {
+        transform: scale(1);
+      }
+      
+      &:hover {
+        transform: scale(1.05) translateY(-10px);
+        
+        @media (max-width: 992px) {
+          transform: translateY(-10px);
+        }
+      }
+      
+      .featured-badge {
+        background-color: $accent-color;
+        color: $dark-bg;
+        font-weight: 600;
+        padding: 8px 20px;
+        position: absolute;
+        top: -15px;
+        left: 50%;
+        transform: translateX(-50%);
+        border-radius: 20px;
+        font-size: 0.9rem;
+      }
+    }
+    
+    h3 {
+      color: $primary-color;
+    }
+    
+    .price {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: $secondary-color;
+      margin: 15px 0 5px;
+    }
+    
+    .duration {
+      color: #777;
+      font-style: italic;
+      margin-bottom: 20px;
+    }
+    
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 0 0 25px;
+      text-align: left;
+      
+      li {
+        padding: 8px 0 8px 25px;
+        position: relative;
+        
+        &:before {
+          content: '✓';
+          color: $secondary-color;
+          position: absolute;
+          left: 0;
+          font-weight: bold;
+        }
+      }
+    }
+    
+    .booking-btn {
+      background-color: $primary-color;
+      color: #fff;
+      border: none;
+      padding: 12px 30px;
+      border-radius: 5px;
+      font-weight: 600;
+      width: 100%;
+      
+      &:hover {
+        background-color: darken($primary-color, 10%);
+      }
+    }
+  }
+}
+
+// Booking Calendar Section
+.booking-calendar {
+  background-color: $light-bg;
+  
+  .calendar-container {
+    max-width: 800px;
+    margin: 0 auto;
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+
+    .placeholder-text {
+      text-align: center;
+      padding: 50px 0;
+      color: #777;
+    }
+  }
+}
+
+// Reviews Section
+.reviews {
+  .reviews-slider {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+    
+    @media (max-width: 992px) {
+      grid-template-columns: 1fr;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+  }
+  
+  .review-card {
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 25px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    
+    .review-rating {
+      color: $accent-color;
+      margin-bottom: 15px;
+    }
+    
+    .review-text {
+      font-style: italic;
+      margin-bottom: 15px;
+    }
+    
+    .review-author {
+      font-weight: 600;
+      color: $primary-color;
+      margin-bottom: 0;
+    }
+  }
+}
+
+// CTA Section
+.cta-section {
+  background-color: $dark-bg;
+  color: $light-text;
+  text-align: center;
+  
+  .cta-content {
+    max-width: 700px;
+    margin: 0 auto;
+    
+    h2 {
+      color: $light-text;
+    }
+    
+    p {
+      margin-bottom: 30px;
+      font-size: 1.1rem;
+    }
+    
+    .cta-buttons {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+  }
+}

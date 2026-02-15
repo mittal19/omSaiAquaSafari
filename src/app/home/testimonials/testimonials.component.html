@@ -1,0 +1,61 @@
+<section id="reviews-testimonials" class="reviews">
+  <div class="container">
+    <header class="head">
+      <p class="eyebrow">Reviews</p>
+      <h2 class="title">Loved by guests in Goa</h2>
+      <p class="subtitle">
+        Real experiences from yacht rentals and cruise trips—comfort, safety and unforgettable views.
+      </p>
+
+      <div class="summary" aria-label="Review summary">
+        <div class="pill">
+          <span class="stars" aria-hidden="true">★★★★★</span>
+          <span class="sr-only">Average rating</span>
+          <strong>{{ averageRating() }}</strong>
+          <span class="muted">/ 5</span>
+        </div>
+        <div class="pill">
+          <strong>{{ testimonials().length }}</strong>
+          <span class="muted">reviews</span>
+        </div>
+
+        <a class="cta" href="#contactus">Get a quote</a>
+      </div>
+    </header>
+
+    <!-- Multi-review grid -->
+    <div class="grid" role="list">
+      <article class="card" role="listitem" *ngFor="let t of visibleTestimonials()">
+        <div class="top">
+          <div class="stars" aria-label="Rating">
+            <span *ngFor="let s of starsFor(t.rating)" class="star">★</span>
+            <span *ngFor="let s of starsFor(5 - t.rating)" class="star off">★</span>
+          </div>
+          <time class="date">{{ t.date }}</time>
+        </div>
+
+        <p class="text">“{{ t.text }}”</p>
+
+        <div class="author">
+          <div class="avatar" aria-hidden="true">
+            {{ initials(t.author) }}
+          </div>
+          <div class="meta">
+            <div class="name">{{ t.author }}</div>
+            <div class="role">{{ t.position }}</div>
+          </div>
+        </div>
+      </article>
+    </div>
+
+    <!-- Show more -->
+    <div class="footer">
+      <button class="btn" type="button" (click)="toggleShowAll()">
+        {{ showAll() ? 'Show less' : 'See more reviews' }}
+      </button>
+    </div>
+
+    <!-- SEO Structured Data -->
+    <script type="application/ld+json" [textContent]="jsonLd()"></script>
+  </div>
+</section>

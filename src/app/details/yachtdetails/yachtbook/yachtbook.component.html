@@ -1,0 +1,229 @@
+<section class="page" *ngIf="yacht() as y; else notFound" aria-labelledby="yachtTitle">
+  <div class="wrap">
+    <nav class="crumbs" aria-label="Breadcrumb">
+      <a routerLink="/book-yacht">← Back to yachts</a>
+    </nav>
+
+    <header class="header">
+      <p class="eyebrow">Yacht Details</p>
+      <h1 id="yachtTitle" class="title">{{ y.name }}</h1>
+      <p class="subtitle">
+        {{ y.description }}
+      </p>
+    </header>
+
+    <div class="layout">
+      <!-- Left: Gallery + specs -->
+      <div class="left">
+        <div class="galleryCard">
+          <div class="mainImg">
+            <img
+              class="imgMain"
+              [src]="selectedImage() ?? y.heroImage"
+              [alt]="y.name + ' image'"
+              loading="lazy"
+              decoding="async"
+            />
+            <div class="priceTag">{{ formatINR(y.dayRateInr) }}/day</div>
+          </div>
+
+          <!-- thumbnails: load limited, then load more -->
+          <div class="thumbs" aria-label="Gallery thumbnails">
+            <button
+              *ngFor="let img of y.images.slice(0, visibleThumbCount()); trackBy: trackByIndex"
+              type="button"
+              class="thumbBtn"
+              (click)="pickImage(img)"
+              [class.active]="selectedImage() === img"
+              [attr.aria-label]="'View image for ' + y.name"
+            >
+              <img class="thumbImg" [src]="img" [alt]="y.name + ' thumbnail'" loading="lazy" decoding="async" />
+            </button>
+          </div>
+
+          <button
+            *ngIf="visibleThumbCount() < y.images.length"
+            type="button"
+            class="loadMore"
+            (click)="loadMoreThumbs()"
+          >
+            Load more photos
+          </button>
+        </div>
+
+        <div class="specCard" aria-label="Yacht specifications">
+          <h2 class="cardTitle">Specifications</h2>
+
+          <div class="specGrid">
+            <div class="spec"><span class="k">Length</span><span class="v">{{ y.lengthFt }} ft</span></div>
+            <div class="spec"><span class="k">Speed</span><span class="v">{{ y.speedKnots }} kn</span></div>
+            <div class="spec"><span class="k">Capacity</span><span class="v">{{ y.capacity }} pax</span></div>
+            <div class="spec"><span class="k">Sleeping</span><span class="v">{{ y.sleepingCapacity }}</span></div>
+            <div class="spec"><span class="k">Cabins</span><span class="v">{{ y.cabins }}</span></div>
+            <div class="spec"><span class="k">Crew</span><span class="v">{{ y.crew }}</span></div>
+          </div>
+
+          <div class="includes" aria-label="Inclusions">
+            <span class="pill" [class.ok]="y.includes.water">Water included</span>
+            <span class="pill" [class.ok]="y.includes.food">Food included</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Availability + form -->
+      <aside class="right">
+        <div class="formCard">
+          <h2 class="cardTitle">Check availability & raise query</h2>
+
+          <!-- Date picker: only allow available dates -->
+          <div class="field">
+            <label class="label" for="date">Date *</label>
+            <input
+             #dateInput
+              id="date"
+              class="control"
+              type="date"
+              formControlName="date"
+              [formGroup]="form"
+             (change)="onDateInputChange(dateInput.value)"
+              [attr.aria-invalid]="submitted && form.controls.date.invalid"
+            />
+            <p class="hint">
+              Available: {{ availableDates().length }} dates in next 3 weeks.
+            </p>
+            <p class="error" *ngIf="submitted && form.controls.date.invalid">
+              Select an available date.
+            </p>
+
+            <!-- Show available date chips to guide user -->
+            <div class="chips" aria-label="Available dates">
+              <button
+                *ngFor="let d of availableDates(); trackBy: trackByIndex"
+                type="button"
+                class="chipBtn"
+                (click)="pickDate(d)"
+                [class.selected]="selectedDate() === d"
+              >
+                {{ d | date:'EEE, d MMM' }}
+              </button>
+            </div>
+          </div>
+
+          <!-- Time picker -->
+          <div class="field">
+            <label class="label" for="time">Time *</label>
+            <select
+              id="time"
+              class="control control--select"
+              formControlName="time"
+              [formGroup]="form"
+              [disabled]="!selectedDate()"
+              [attr.aria-invalid]="submitted && form.controls.time.invalid"
+            >
+              <option value="" disabled>Select time</option>
+              <option *ngFor="let t of availableTimesForSelectedDate(); trackBy: trackByIndex" [value]="t">
+                {{ t }}
+              </option>
+            </select>
+
+            <p class="hint" *ngIf="!selectedDate()">Select a date to see time slots.</p>
+            <p class="error" *ngIf="submitted && form.controls.time.invalid">
+              Select a time slot.
+            </p>
+          </div>
+
+          <form class="form" [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+            <div class="row">
+              <div class="field">
+                <label class="label" for="fullName">Full name *</label>
+                <input
+                  id="fullName"
+                  class="control"
+                  type="text"
+                  formControlName="fullName"
+                  autocomplete="name"
+                  placeholder="Your full name"
+                  [attr.aria-invalid]="submitted && form.controls.fullName.invalid"
+                />
+                <p class="error" *ngIf="submitted && form.controls.fullName.invalid">
+                  Enter your name (min 2 chars).
+                </p>
+              </div>
+
+              <div class="field">
+                <label class="label" for="phone">Phone *</label>
+                <input
+                  id="phone"
+                  class="control"
+                  type="tel"
+                  formControlName="phone"
+                  inputmode="numeric"
+                  autocomplete="tel"
+                  placeholder="10-digit number"
+                  [attr.aria-invalid]="submitted && form.controls.phone.invalid"
+                />
+                <p class="error" *ngIf="submitted && form.controls.phone.invalid">
+                  Enter a valid 10-digit number.
+                </p>
+              </div>
+            </div>
+
+            <div class="field">
+              <label class="label" for="email">Email (optional)</label>
+              <input
+                id="email"
+                class="control"
+                type="email"
+                formControlName="email"
+                autocomplete="email"
+                inputmode="email"
+                placeholder="you@example.com"
+                [attr.aria-invalid]="submitted && form.controls.email.invalid"
+              />
+              <p class="error" *ngIf="submitted && form.controls.email.invalid">
+                Enter a valid email.
+              </p>
+            </div>
+
+            <div class="field">
+              <label class="label" for="message">Message (optional)</label>
+              <textarea
+                id="message"
+                class="control control--textarea"
+                rows="4"
+                formControlName="message"
+                placeholder="Pickup point, occasion, special request…"
+                [attr.aria-invalid]="submitted && form.controls.message.invalid"
+              ></textarea>
+              <p class="error" *ngIf="submitted && form.controls.message.invalid">
+                Message should be at least 10 characters (or keep it empty).
+              </p>
+            </div>
+
+            <div class="actions">
+              <button class="btn" type="submit" [disabled]="isSubmitting">
+                <span *ngIf="!isSubmitting">Raise Query</span>
+                <span *ngIf="isSubmitting" aria-live="polite">Submitting…</span>
+              </button>
+
+              <p class="fineprint">
+                Selected: <strong>{{ form.controls.date.value || '—' }}</strong> at
+                <strong>{{ form.controls.time.value || '—' }}</strong>
+              </p>
+            </div>
+          </form>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<ng-template #notFound>
+  <section class="page">
+    <div class="wrap">
+      <h1 class="title">Yacht not found</h1>
+      <p class="subtitle">Please go back and select a yacht again.</p>
+      <a routerLink="/book-yacht" class="backBtn">← Back to yachts</a>
+    </div>
+  </section>
+</ng-template>

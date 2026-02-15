@@ -1,0 +1,218 @@
+:host {
+  --brand-blue: #0080c8;
+  --brand-gold: #c8a000;
+
+  --text: #0f172a;
+  --muted: #475569;
+  --bg: #ffffff;
+  --surface: #f8fafc;
+  --border: rgba(2, 6, 23, 0.12);
+
+  --radius-lg: 18px;
+  --radius-md: 14px;
+}
+
+.contact {
+  padding-top: 72px;
+  scroll-margin-top: 72px;
+  /* background:
+    radial-gradient(900px 320px at 10% 0%, rgba(0, 128, 200, 0.09), transparent 60%),
+    radial-gradient(900px 320px at 90% 0%, rgba(200, 160, 0, 0.10), transparent 60%),
+    var(--surface); */
+}
+
+.contact__wrap {
+  width: min(1120px, calc(100% - 2rem));
+  margin: 0 auto;
+}
+
+.contact__header {
+  text-align: center;
+  margin-bottom: clamp(14px, 2vw, 24px);
+}
+
+.contact__eyebrow {
+  margin: 0 0 6px;
+  color: var(--brand-blue);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+}
+
+.contact__title {
+  margin: 0;
+  color: var(--text);
+  font-size: clamp(1.5rem, 3.2vw, 2.25rem);
+  line-height: 1.15;
+}
+
+.contact__subtitle {
+  margin: 10px auto 0;
+  color: var(--muted);
+  max-width: 62ch;
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+.contact__grid {
+  display: grid;
+  gap: clamp(14px, 2vw, 22px);
+  grid-template-columns: 1.1fr 0.9fr;
+  align-items: start;
+}
+
+.card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: clamp(16px, 2vw, 22px);
+  box-shadow: 0 10px 26px rgba(2, 6, 23, 0.06);
+}
+
+.card__title {
+  margin: 0 0 12px;
+  color: var(--text);
+  font-size: 1.1rem;
+}
+
+.row {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  padding: 12px 12px;
+  border-radius: var(--radius-md);
+  text-decoration: none;
+  color: inherit;
+  border: 1px solid transparent;
+  transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+}
+
+.row:hover {
+  border-color: rgba(0, 128, 200, 0.25);
+  box-shadow: 0 10px 18px rgba(2, 6, 23, 0.06);
+  transform: translateY(-1px);
+}
+
+.icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  background: rgba(0, 128, 200, 0.08);
+  border: 1px solid rgba(0, 128, 200, 0.15);
+}
+
+.row__text {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.row__label {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.row__value {
+  color: var(--text);
+  font-weight: 600;
+  word-break: break-word;
+}
+
+.card__actions {
+  margin-top: 14px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.btn {
+  appearance: none;
+  border: 0;
+  border-radius: 999px;
+  padding: 12px 16px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn--primary {
+  color: #fff;
+  background: linear-gradient(90deg, var(--brand-blue), #0aa0ff);
+  box-shadow: 0 10px 18px rgba(0, 128, 200, 0.18);
+}
+
+.btn--primary:hover {
+  filter: brightness(1.02);
+}
+
+.btn--ghost {
+  color: var(--text);
+  background: rgba(2, 6, 23, 0.04);
+  border: 1px solid rgba(2, 6, 23, 0.10);
+}
+
+.pillGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.pill {
+  border-radius: 999px;
+  padding: 12px 14px;
+  border: 1px solid rgba(2, 6, 23, 0.12);
+  background: #fff;
+  text-decoration: none;
+  color: var(--text);
+  font-weight: 700;
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease;
+}
+
+.pill:hover {
+  transform: translateY(-1px);
+  border-color: rgba(0, 128, 200, 0.25);
+  box-shadow: 0 10px 18px rgba(2, 6, 23, 0.06);
+}
+
+.note {
+  margin-top: 14px;
+  padding: 12px 14px;
+  border-radius: var(--radius-md);
+  background: rgba(200, 160, 0, 0.08);
+  border: 1px solid rgba(200, 160, 0, 0.16);
+  color: var(--text);
+  line-height: 1.6;
+}
+
+@media (max-width: 960px) {
+  .contact__grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .contact__wrap {
+    width: min(1120px, calc(100% - 1.25rem));
+  }
+  .pillGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .row,
+  .pill {
+    transition: none;
+  }
+}
