@@ -6,11 +6,23 @@ import { ActivatedRoute, RouterModule } from '@angular/router';
 import { Yacht, YACHTS } from '../yacht-data';
 import { buildMockAvailability } from '../availability-util';
 
+// PrimeNG
+import { CalendarModule } from 'primeng/calendar';
+import { DropdownModule } from 'primeng/dropdown';
+import { InputTextModule } from 'primeng/inputtext';
+import { InputTextareaModule } from 'primeng/inputtextarea';
+import { ButtonModule } from 'primeng/button';
 
 @Component({
   selector: 'app-yacht-details',
   standalone: true,
-  imports: [CommonModule, RouterModule, ReactiveFormsModule, DatePipe],
+  imports: [CommonModule, RouterModule, ReactiveFormsModule, DatePipe,
+    ReactiveFormsModule,
+    CalendarModule,
+    DropdownModule,
+    InputTextModule,
+    InputTextareaModule,
+    ButtonModule,],
   templateUrl: './yachtbook.component.html',
   styleUrl: './yachtbook.component.css',
 })
@@ -29,6 +41,31 @@ export class YachtBookComponent implements OnInit {
     const d = this.selectedDate();
     return d ? this.timesByDate()[d] ?? [] : [];
   });
+
+    private readonly disabledDateStrings = new Set<string>([
+    '2026-03-10',
+    '2026-03-20',
+  ]);
+
+   // PrimeNG uses Date[] for disabledDates
+  readonly disabledDates = Array.from(this.disabledDateStrings).map((d) => this.parseYMD(d));
+
+    // Helpers
+  private parseYMD(ymd: string): Date {
+    const [y, m, d] = ymd.split('-').map(Number);
+    return new Date(y, (m ?? 1) - 1, d ?? 1);
+  }
+
+  readonly minDate = new Date();
+    readonly maxDate = this.addMonths(new Date(), 6);
+
+    
+  private addMonths(date: Date, months: number): Date {
+    const d = new Date(date);
+    d.setMonth(d.getMonth() + months);
+    return d;
+  }
+
 
   submitted = false;
   isSubmitting = false;

@@ -78,7 +78,7 @@
           <!-- Date picker: only allow available dates -->
           <div class="field">
             <label class="label" for="date">Date *</label>
-            <input
+            <!-- <input
              #dateInput
               id="date"
               class="control"
@@ -87,26 +87,19 @@
               [formGroup]="form"
              (change)="onDateInputChange(dateInput.value)"
               [attr.aria-invalid]="submitted && form.controls.date.invalid"
-            />
-            <p class="hint">
-              Available: {{ availableDates().length }} dates in next 3 weeks.
-            </p>
-            <p class="error" *ngIf="submitted && form.controls.date.invalid">
-              Select an available date.
-            </p>
+            /> -->
+<p-calendar
+        inputId="date"
+        formControlName="date"
+        [formGroup]="form"
+        [minDate]="minDate"
+        [maxDate]="maxDate"
+        [disabledDates]="disabledDates"
+      
+        placeholder="Select date"
+      ></p-calendar>
+            
 
-            <!-- Show available date chips to guide user -->
-            <div class="chips" aria-label="Available dates">
-              <button
-                *ngFor="let d of availableDates(); trackBy: trackByIndex"
-                type="button"
-                class="chipBtn"
-                (click)="pickDate(d)"
-                [class.selected]="selectedDate() === d"
-              >
-                {{ d | date:'EEE, d MMM' }}
-              </button>
-            </div>
           </div>
 
           <!-- Time picker -->
@@ -206,10 +199,7 @@
                 <span *ngIf="isSubmitting" aria-live="polite">Submitting…</span>
               </button>
 
-              <p class="fineprint">
-                Selected: <strong>{{ form.controls.date.value || '—' }}</strong> at
-                <strong>{{ form.controls.time.value || '—' }}</strong>
-              </p>
+        
             </div>
           </form>
         </div>
