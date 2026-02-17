@@ -28,13 +28,15 @@
 
     <!-- Right side CTA -->
     <div class="actions">
-      <a
+      <a 
+      (click)="openWhatsApp()"
         class="cta"
-        [routerLink]="['/book-yacht']"
-        (click)="onNavClick()"
+      
+
         aria-label="Book a yacht in Goa"
+      
       >
-        Book Now
+       Whatsapp
       </a>
 
       <!-- Mobile hamburger -->
@@ -79,9 +81,9 @@
       {{ item.label }}
     </a>
 
-    <div class="mobile-cta-wrap">
+    <!-- <div class="mobile-cta-wrap">
       <a class="cta full" [routerLink]="['/book-cruise']" (click)="onNavClick()">Book Cruise</a>
       <a class="ghost full" [routerLink]="['/book-yacht']" (click)="onNavClick()">Book Yacht</a>
-    </div>
+    </div> -->
   </nav>
 </header>

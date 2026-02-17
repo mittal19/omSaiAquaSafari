@@ -35,12 +35,19 @@ export class HeaderComponent {
     { label: 'Home', kind: 'fragment', fragment: 'home' },
     { label: 'Explore', kind: 'fragment', fragment: 'explore' },
     { label: 'Book Yacht', kind: 'route', path: '/book-yacht' },
-    { label: 'Book Cruise', kind: 'route', path: '/book-cruise' },
+    { label: 'Book Cruise', kind: 'route', path: '/book-yacht' },
     { label: 'Gallery', kind: 'fragment', fragment: 'gallery' },
     { label: 'Reviews', kind: 'fragment', fragment: 'reviews-testimonials' },
      { label: 'Quick Quote', kind: 'fragment', fragment: 'enquire' },
     { label: 'Contact', kind: 'fragment', fragment: 'contactus' },
   ];
+
+   phoneNumber = '9027504141'; // Replace with your actual WhatsApp number
+  
+  openWhatsApp() {
+    const message = encodeURIComponent('Hello from OmSaiWaveRiders!');
+    window.open(`https://wa.me/${this.phoneNumber}?text=${message}`, '_blank');
+  }
 
   readonly activeFragment = signal<string | null>(null);
 

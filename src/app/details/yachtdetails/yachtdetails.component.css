@@ -12,8 +12,8 @@
   --radius-md: 14px;
 }
 
-.page {
-  padding: clamp(26px, 4vw, 54px) 0;
+.page {  padding-top: 72px;
+  scroll-margin-top: 72px; 
   background:
     radial-gradient(900px 320px at 10% 0%, rgba(2, 132, 199, 0.09), transparent 60%),
     radial-gradient(900px 320px at 90% 0%, rgba(14, 165, 233, 0.10), transparent 60%),
