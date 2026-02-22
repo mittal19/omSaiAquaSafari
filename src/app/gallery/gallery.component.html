@@ -1,11 +1,9 @@
 <section id="gallery" class="gallery">
   <div class="container">
-    <header class="header">
-      <p class="eyebrow">Gallery</p>
-      <h2 class="title">Moments from our Yacht & Cruise Experiences</h2>
-      <p class="subtitle">
-        Tap any photo/video to view in full. Thumbnails are optimized for fast loading.
-      </p>
+    <header class="gallery__header">
+      <h2 class="gallery__title">Gallery</h2>
+      <h3 class="gallery__tagline">Moments from our Yacht &amp; Cruise Experiences</h3>
+      <p class="gallery__description">Tap any photo or video to view in full.</p>
     </header>
 
     <!-- ✅ Modern responsive grid (fast) -->
@@ -32,21 +30,46 @@
     </div>
 
     <div class="gallery-footer">
-  <button class="btn primary large" type="button" (click)="seeMore()">
-    See More Photos & Videos
-  </button>
-</div>
-
+      <button class="btn primary large" type="button" (click)="seeMore()">
+        See More Photos &amp; Videos
+      </button>
+    </div>
 
     <!-- ✅ Lightbox modal -->
-    <div class="modal-backdrop" *ngIf="isOpen()" (click)="close()"></div>
+    <div class="modal-backdrop" *ngIf="isOpen()"></div>
 
-    <div class="modal" *ngIf="isOpen()" role="dialog" aria-modal="true">
-      <div class="modal-shell">
-        <button class="icon-btn" type="button" (click)="close()" aria-label="Close">✕</button>
+    <div
+      class="modal"
+      *ngIf="isOpen()"
+      role="dialog"
+      aria-modal="true"
+      (click)="close()"
+    >
+      <div
+        class="modal-shell"
+        (click)="stopPropagation($event)"
+        (touchstart)="onTouchStart($event)"
+        (touchend)="onTouchEnd($event)"
+      >
+        <div class="modal-topbar">
+          <div class="modal-meta">
+            <!-- <span class="modal-counter">{{ counterText() }}</span>
+            <span class="modal-title" *ngIf="activeItem() as active">
+              {{ active.kind === 'image' ? active.alt : active.title }}
+            </span> -->
+          </div>
 
-        <button class="nav-btn left" type="button" (click)="prev()" aria-label="Previous">‹</button>
-        <button class="nav-btn right" type="button" (click)="next()" aria-label="Next">›</button>
+          <button class="icon-btn close" type="button" (click)="close()" aria-label="Close">
+            <span aria-hidden="true">✕</span>
+          </button>
+        </div>
+
+        <button class="nav-btn left" type="button" (click)="prev()" aria-label="Previous">
+          <span aria-hidden="true">‹</span>
+        </button>
+        <button class="nav-btn right" type="button" (click)="next()" aria-label="Next">
+          <span aria-hidden="true">›</span>
+        </button>
 
         <ng-container *ngIf="activeItem() as active">
           <!-- Image -->
@@ -73,11 +96,10 @@
               </video>
 
               <ng-template #youtubeEmbed>
-                <!-- If you use YouTube: store embed URL and load only here -->
                 <iframe
                   class="full"
-                  [src]="active.videoUrl"
-                  title="Video"
+                  [src]="safeEmbedUrl()!"
+                  [title]="active.title"
                   loading="lazy"
                   referrerpolicy="strict-origin-when-cross-origin"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -91,6 +113,12 @@
             </ng-template>
           </ng-container>
         </ng-container>
+
+        <div class="modal-hint" aria-hidden="true">
+          <span class="hint-pill">Esc to close</span>
+          <span class="hint-pill">← / → to navigate</span>
+          <span class="hint-pill mobile-only">Swipe to navigate</span>
+        </div>
       </div>
     </div>
   </div>
