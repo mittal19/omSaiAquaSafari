@@ -225,6 +225,13 @@
 
 .btn.primary:hover {
   background: linear-gradient(135deg, #0c3f4c, #0d9488);
+  box-shadow: 0 16px 32px rgba(15, 76, 92, 0.45);
+}
+
+.btn.secondary:hover {
+  background: linear-gradient(135deg, #fbbf24, #f59e0b);
+  color: #0b1f2a;
+  border-color: transparent;
 }
 
 .btn.primary::before {
