@@ -1,167 +1,151 @@
+import { CommonModule, DOCUMENT, isPlatformBrowser } from '@angular/common';
 import {
-  ChangeDetectionStrategy,
   Component,
-  DestroyRef,
-  HostListener,
-  computed,
-  effect,
+  PLATFORM_ID,
   inject,
   signal,
+  computed,
 } from '@angular/core';
-import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Meta, Title } from '@angular/platform-browser';
-import { NgOptimizedImage } from '@angular/common';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { DOCUMENT } from '@angular/common';
-import { PLATFORM_ID } from '@angular/core';
-import { fromEvent, merge } from 'rxjs';
-import { debounceTime } from 'rxjs/operators';
+import { Router } from '@angular/router';
 
-import { GALLERY_ITEMS, MediaItem } from './gallery.data';
+type MediaItem =
+  | {
+      id: string;
+      kind: 'image';
+      thumbUrl: string; // small thumbnail (webp/avif preferred)
+      fullUrl: string;  // full image (webp/avif preferred)
+      alt: string;
+      width?: number;
+      height?: number;
+    }
+  | {
+      id: string;
+      kind: 'video';
+      thumbUrl: string; // poster/thumbnail image
+      videoUrl: string; // mp4 (preferred) OR youtube embed url
+      title: string;
+      provider?: 'mp4' | 'youtube';
+    };
 
 @Component({
   selector: 'app-gallery',
   standalone: true,
-  imports: [CommonModule, NgOptimizedImage],
+  imports: [CommonModule],
   templateUrl: './gallery.component.html',
-  styleUrl: './gallery.component.css',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  styleUrls: ['./gallery.component.css'],
 })
 export class GalleryComponent {
-  private meta = inject(Meta);
-  private title = inject(Title);
-  private destroyRef = inject(DestroyRef);
-  private doc = inject(DOCUMENT);
-  private platformId = inject(PLATFORM_ID);
+  private readonly title = inject(Title);
+  private readonly meta = inject(Meta);
+  private readonly platformId = inject(PLATFORM_ID);
+  private readonly doc = inject(DOCUMENT);
 
-  readonly items = signal<MediaItem[]>(GALLERY_ITEMS);
+  // ✅ Put your real media here (use THUMBNAILS, not full-res images)
+  readonly items = signal<MediaItem[]>([
+    {
+      id: 'y1',
+      kind: 'image',
+      thumbUrl: 'assets/gallery/1.jpg',
+      fullUrl: 'assets/gallery/1.jpg',
+      alt: 'Luxury yacht experience in Goa',
+      width: 1600,
+      height: 1067,
+    },
+    {
+      id: 'c1',
+      kind: 'image',
+      thumbUrl: 'assets/gallery/2.jpg',
+      fullUrl: 'assets/gallery/2.jpg',
+      alt: 'Sunset cruise in Goa',
+      width: 1600,
+      height: 1067,
+    },
+    {
+      id: 'v1',
+      kind: 'video',
+      thumbUrl: 'assets/gallery/3.jpg',
+      videoUrl: 'assets/gallery/3.jpg',
+      title: 'Yacht experience video in Goa',
+      provider: 'mp4',
+    }
+    // add more...
+  ]);
 
-  // Modal state
   readonly isOpen = signal(false);
-  readonly activeIndex = signal(0);
-  readonly activeItem = computed(() => this.items()[this.activeIndex()]);
+  readonly activeId = signal<string | null>(null);
 
-  // Slider controls
-  readonly autoPlay = signal(true);
-  readonly intervalMs = 3500;
+  readonly activeItem = computed(() => {
+    const id = this.activeId();
+    if (!id) return null;
+    return this.items().find((x) => x.id === id) ?? null;
+  });
 
-  private timerId: number | null = null;
+  // ✅ Only load video player when user opens the modal
+  readonly shouldLoadVideo = signal(false);
 
-  constructor() {
-    // SEO
-    this.title.setTitle('Gallery | Om Sai Aqua Safari');
+  constructor( private router: Router,) {
+    // SEO (works with SSR too)
+    this.title.setTitle('Gallery | Om Sai Aqua Safari - Yacht & Cruise in Goa');
     this.meta.updateTag({
       name: 'description',
-      content: 'Explore photos and videos of yacht cruises and water activities by Om Sai Aqua Safari in Goa.',
+      content:
+        'Explore photos and videos of our yacht rentals and cruise experiences in Goa. Premium private yachts, sunset cruises, and curated sea experiences.',
     });
+
     this.meta.updateTag({ property: 'og:title', content: 'Gallery | Om Sai Aqua Safari' });
     this.meta.updateTag({
       property: 'og:description',
-      content: 'Photos and videos of our yachts, cruises, and water activities in Goa.',
-    });
-    this.meta.updateTag({ property: 'og:type', content: 'website' });
-
-    // Structured Data (simple)
-    this.setJsonLd();
-
-    // Pause autoplay when user switches tab or resizes / scrolls (avoid waste)
-    if (isPlatformBrowser(this.platformId)) {
-      merge(
-        fromEvent(document, 'visibilitychange'),
-        fromEvent(window, 'resize'),
-        fromEvent(window, 'scroll')
-      )
-        .pipe(debounceTime(150), takeUntilDestroyed(this.destroyRef))
-        .subscribe(() => {
-          if (document.visibilityState !== 'visible') this.stopAuto();
-        });
-    }
-
-    // Start/stop autoplay based on modal open + autoPlay
-    effect(() => {
-      const open = this.isOpen();
-      const play = this.autoPlay();
-
-      if (open && play) this.startAuto();
-      else this.stopAuto();
+      content: 'Photos and videos of yacht rentals & cruises in Goa.',
     });
   }
 
-  openAt(index: number) {
-    this.activeIndex.set(index);
+  open(item: MediaItem) {
+    this.activeId.set(item.id);
     this.isOpen.set(true);
 
-    // Prevent background scroll (small UX improvement)
-    this.doc.documentElement.style.overflow = 'hidden';
+    // lock background scroll (browser-only)
+    if (isPlatformBrowser(this.platformId)) {
+      this.doc.body.style.overflow = 'hidden';
+    }
+
+    // only enable video loading inside modal (for performance)
+    this.shouldLoadVideo.set(item.kind === 'video');
   }
 
   close() {
     this.isOpen.set(false);
-    this.doc.documentElement.style.overflow = '';
+    this.activeId.set(null);
+    this.shouldLoadVideo.set(false);
+
+    if (isPlatformBrowser(this.platformId)) {
+      this.doc.body.style.overflow = '';
+    }
   }
 
   next() {
     const list = this.items();
-    this.activeIndex.update(i => (i + 1) % list.length);
+    const current = this.activeItem();
+    if (!current) return;
+
+    const idx = list.findIndex((x) => x.id === current.id);
+    const next = list[(idx + 1) % list.length];
+    this.open(next);
   }
 
   prev() {
     const list = this.items();
-    this.activeIndex.update(i => (i - 1 + list.length) % list.length);
+    const current = this.activeItem();
+    if (!current) return;
+
+    const idx = list.findIndex((x) => x.id === current.id);
+    const prev = list[(idx - 1 + list.length) % list.length];
+    this.open(prev);
   }
 
-  toggleAutoplay() {
-    this.autoPlay.update(v => !v);
-  }
+  seeMore(): void {
+  this.router.navigateByUrl('/gallery');
+}
 
-  // Keyboard support
-  @HostListener('document:keydown', ['$event'])
-  onKeyDown(e: KeyboardEvent) {
-    if (!this.isOpen()) return;
 
-    if (e.key === 'Escape') this.close();
-    if (e.key === 'ArrowRight') this.next();
-    if (e.key === 'ArrowLeft') this.prev();
-  }
-
-  // Only create <video> element when needed (fast initial load)
-  isVideo(item: MediaItem) {
-    return item.type === 'video';
-  }
-
-  private startAuto() {
-    if (!isPlatformBrowser(this.platformId)) return;
-    if (this.timerId != null) return;
-
-    this.timerId = window.setInterval(() => {
-      // Auto-advance only when modal open + visible tab
-      if (this.isOpen() && document.visibilityState === 'visible') this.next();
-    }, this.intervalMs);
-  }
-
-  private stopAuto() {
-    if (this.timerId == null) return;
-    window.clearInterval(this.timerId);
-    this.timerId = null;
-  }
-
-  private setJsonLd() {
-    // Minimal JSON-LD that won’t bloat. Adjust URLs to your real domain.
-    const json = {
-      '@context': 'https://schema.org',
-      '@type': 'ImageGallery',
-      name: 'Om Sai Aqua Safari Gallery',
-      description: 'Photos and videos of yacht cruises and water activities in Goa.',
-    };
-
-    const scriptId = 'gallery-jsonld';
-    const existing = this.doc.getElementById(scriptId);
-    if (existing) existing.remove();
-
-    const script = this.doc.createElement('script');
-    script.type = 'application/ld+json';
-    script.id = scriptId;
-    script.text = JSON.stringify(json);
-    this.doc.head.appendChild(script);
-  }
 }

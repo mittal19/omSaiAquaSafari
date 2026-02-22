@@ -1,130 +1,97 @@
-<section class="page" aria-labelledby="galleryTitle">
-  <div class="wrap">
+<section id="gallery" class="gallery">
+  <div class="container">
     <header class="header">
       <p class="eyebrow">Gallery</p>
-      <h1 id="galleryTitle" class="title">Photos & Videos</h1>
+      <h2 class="title">Moments from our Yacht & Cruise Experiences</h2>
       <p class="subtitle">
-        Fast-loading thumbnails. Tap to view fullscreen slider. Videos load only when opened.
+        Tap any photo/video to view in full. Thumbnails are optimized for fast loading.
       </p>
     </header>
 
-    <!-- Defer the heavy grid if you want even faster first paint -->
-    @defer (on viewport) {
-      <div class="grid" role="list">
-        @for (item of items(); track item.id; let i = $index) {
-          <button
-            type="button"
-            class="tile"
-            (click)="openAt(i)"
-            [attr.aria-label]="'Open ' + item.title"
-            role="listitem"
-          >
-            <div class="thumbWrap">
-              <!-- Images are optimized + lazy -->
-              <img
-                [ngSrc]="item.thumbUrl"
-                [alt]="item.type === 'image' ? (item.alt ?? item.title) : item.title"
-                width="420"
-                height="300"
-                priority="false"
-                class="thumb"
-              />
-              <span class="badge" [class.video]="item.type === 'video'">
-                {{ item.type === 'video' ? 'Video' : 'Photo' }}
-              </span>
-              @if (item.type === 'video') {
-                <span class="play" aria-hidden="true">▶</span>
-              }
-            </div>
-
-            <div class="caption">
-              <span class="name">{{ item.title }}</span>
-            </div>
-          </button>
-        }
-      </div>
-    } @placeholder {
-      <div class="skeletonGrid" aria-hidden="true">
-        @for (_ of [1,2,3,4,5,6]; track $index) {
-          <div class="skel"></div>
-        }
-      </div>
-    }
-  </div>
-
-  <!-- Modal / Lightbox -->
-  @if (isOpen()) {
-    <div class="backdrop" (click)="close()" aria-hidden="true"></div>
-
-    <div class="modal" role="dialog" aria-modal="true" [attr.aria-label]="activeItem().title">
-      <div class="modalTop">
-        <div class="modalTitle">
-          <span class="modalEyebrow">{{ activeItem().type | uppercase }}</span>
-          <strong class="modalName">{{ activeItem().title }}</strong>
-        </div>
-
-        <div class="modalActions">
-          <button type="button" class="iconBtn" (click)="toggleAutoplay()">
-            {{ autoPlay() ? 'Pause' : 'Auto' }}
-          </button>
-          <button type="button" class="iconBtn" (click)="close()">Close ✕</button>
-        </div>
-      </div>
-
-      <div
-        class="viewer"
-        (mouseenter)="autoPlay.set(false)"
-        (mouseleave)="autoPlay.set(true)"
+    <!-- ✅ Modern responsive grid (fast) -->
+    <div class="grid" role="list">
+      <button
+        *ngFor="let item of items()"
+        class="tile"
+        type="button"
+        role="listitem"
+        (click)="open(item)"
+        [attr.aria-label]="item.kind === 'image' ? item.alt : item.title"
       >
-        <button type="button" class="nav left" (click)="prev()" aria-label="Previous">‹</button>
+        <img
+          class="thumb"
+          [src]="item.thumbUrl"
+          [alt]="item.kind === 'image' ? item.alt : item.title"
+          loading="lazy"
+          decoding="async"
+        />
 
-        <div class="stage" (click)="$event.stopPropagation()">
-          @if (!isVideo(activeItem())) {
-            <img
-              [ngSrc]="activeItem().srcUrl"
-              [alt]="activeItem().alt ?? activeItem().title"
-              [width]="activeItem().width ?? 1600"
-              [height]="activeItem().height ?? 900"
-              priority="true"
-              class="fullImg"
-            />
-          } @else {
-            <!-- Video is only created inside modal: preload none keeps it fast -->
-            <video
-              class="video"
-              controls
-              playsinline
-              preload="none"
-              [attr.poster]="activeItem().posterUrl ?? null"
-            >
-              <source [src]="activeItem().srcUrl" type="video/mp4" />
-              Your browser does not support the video tag.
-            </video>
-          }
-        </div>
+        <span class="chip" *ngIf="item.kind === 'video'">Video</span>
+        <span class="fade"></span>
+      </button>
+    </div>
 
-        <button type="button" class="nav right" (click)="next()" aria-label="Next">›</button>
-      </div>
+    <div class="gallery-footer">
+  <button class="btn primary large" type="button" (click)="seeMore()">
+    See More Photos & Videos
+  </button>
+</div>
 
-      <div class="thumbRow" aria-label="Gallery thumbnails">
-        @for (item of items(); track item.id; let i = $index) {
-          <button
-            type="button"
-            class="mini"
-            [class.active]="i === activeIndex()"
-            (click)="activeIndex.set(i)"
-            [attr.aria-label]="'Go to ' + item.title"
-          >
-            <img
-              [ngSrc]="item.thumbUrl"
-              [alt]="item.title"
-              width="88"
-              height="62"
-              class="miniImg"
-            />
-          </button>
-        }
+
+    <!-- ✅ Lightbox modal -->
+    <div class="modal-backdrop" *ngIf="isOpen()" (click)="close()"></div>
+
+    <div class="modal" *ngIf="isOpen()" role="dialog" aria-modal="true">
+      <div class="modal-shell">
+        <button class="icon-btn" type="button" (click)="close()" aria-label="Close">✕</button>
+
+        <button class="nav-btn left" type="button" (click)="prev()" aria-label="Previous">‹</button>
+        <button class="nav-btn right" type="button" (click)="next()" aria-label="Next">›</button>
+
+        <ng-container *ngIf="activeItem() as active">
+          <!-- Image -->
+          <img
+            *ngIf="active.kind === 'image'"
+            class="full"
+            [src]="active.fullUrl"
+            [alt]="active.alt"
+            decoding="async"
+          />
+
+          <!-- Video (loaded only when modal opens) -->
+          <ng-container *ngIf="active.kind === 'video'">
+            <ng-container *ngIf="shouldLoadVideo(); else videoThumb">
+              <video
+                *ngIf="active.provider !== 'youtube'; else youtubeEmbed"
+                class="full"
+                controls
+                playsinline
+                preload="metadata"
+                [attr.poster]="active.thumbUrl"
+              >
+                <source [src]="active.videoUrl" type="video/mp4" />
+              </video>
+
+              <ng-template #youtubeEmbed>
+                <!-- If you use YouTube: store embed URL and load only here -->
+                <iframe
+                  class="full"
+                  [src]="active.videoUrl"
+                  title="Video"
+                  loading="lazy"
+                  referrerpolicy="strict-origin-when-cross-origin"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowfullscreen
+                ></iframe>
+              </ng-template>
+            </ng-container>
+
+            <ng-template #videoThumb>
+              <img class="full" [src]="active.thumbUrl" [alt]="active.title" />
+            </ng-template>
+          </ng-container>
+        </ng-container>
       </div>
     </div>
-  }
+  </div>
 </section>
