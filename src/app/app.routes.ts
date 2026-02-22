@@ -30,7 +30,7 @@ export const routes: Routes = [
   {
     path: 'reviews',
     loadComponent: () =>
-      import('./home/testimonials/testimonials.component').then(m => m.TestimonialsComponent),
+      import('./testimonials/testimonials.component').then(m => m.TestimonialsComponent),
   },
   {
     path: 'quick-quote',

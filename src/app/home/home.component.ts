@@ -2,7 +2,7 @@ import { CommonModule, NgOptimizedImage, isPlatformBrowser } from '@angular/comm
 import { Component, PLATFORM_ID, inject } from '@angular/core';
 import { animate, style, transition, trigger } from '@angular/animations';
 import { GalleryComponent } from '../gallery/gallery.component';
-import { TestimonialsComponent } from './testimonials/testimonials.component';
+import { TestimonialsComponent } from '../testimonials/testimonials.component';
 import { ExploreComponent } from '../explore/explore.component';
 import { YachtOptionsComponent } from '../yachtOptions/yachtOptions.component';
 

@@ -1,0 +1,57 @@
+<section #testimonialSection class="testimonials-section">
+  <div class="container">
+    <header class="gallery__header testimonials__header">
+  <h2 class="gallery__title">Hear from our Customers</h2>
+  <h3 class="gallery__tagline">Loved by guests in Goa</h3>
+</header>
+
+    <!-- Multi-review grid -->
+    <div class="grid" role="list">
+      <article class="card" role="listitem" *ngFor="let t of visibleTestimonials()">
+        <div class="top">
+          <div class="stars" aria-label="Rating">
+            <span *ngFor="let s of starsFor(t.rating)" class="star">★</span>
+            <span *ngFor="let s of starsFor(5 - t.rating)" class="star off">★</span>
+          </div>
+          <time class="date">{{ t.date }}</time>
+        </div>
+
+        <p class="text">“{{ t.text }}”</p>
+
+        <div class="author">
+          
+        
+          <div class="review-meta">
+  <span class="author">{{ t.author }}</span>
+  <span class="yacht-badge">{{ t.yacht }} Yacht</span>
+</div>
+        </div>
+      </article>
+    </div>
+
+   <div class="footer">
+  <button
+    *ngIf="hasMore()"
+    class="btn"
+    type="button"
+    (click)="showMore()"
+    aria-label="Show more reviews"
+  >
+    See more reviews
+  </button>
+
+  <button
+    *ngIf="canShowLess()"
+    class="btn"
+    type="button"
+    (click)="showLess()"
+    aria-label="Show fewer reviews"
+  >
+    Show less
+  </button>
+</div>
+
+    <!-- SEO Structured Data -->
+    <script type="application/ld+json" [textContent]="jsonLd()"></script>
+  </div>
+</section>
