@@ -1,17 +1,18 @@
 <section id="contactus" class="contact" aria-labelledby="contactTitle">
   <div class="contact__wrap">
-    <header class="contact__header">
-      <p class="contact__eyebrow">Contact</p>
-      <h2 id="contactTitle" class="contact__title">Let’s plan your perfect ride</h2>
-      <p class="contact__subtitle">
+    <!-- Header: same style as Enquire/Testimonial header -->
+    <header class="gallery__header contact__header">
+      <h2 id="contactTitle" class="gallery__title">Contact SeaRider</h2>
+      <h3 class="gallery__tagline">Let’s plan your perfect ride</h3>
+      <p class="gallery__description">
         Reach out for bookings, pricing, timings, or custom plans. We usually respond quickly.
       </p>
     </header>
 
     <div class="contact__grid">
-      <!-- Card 1: Quick contact -->
-      <article class="card" aria-label="Quick contact">
-        <h3 class="card__title">Quick contact</h3>
+      <!-- Card 1: Quick contact (ONLY place for Maps + WhatsApp) -->
+      <article class="enquire__card contact__card" aria-label="Quick contact">
+        <h3 class="enquire__cardTitle">Quick contact</h3>
 
         <a class="row" [attr.href]="'tel:' + phoneTel" aria-label="Call us">
           <span class="icon" aria-hidden="true">📞</span>
@@ -41,41 +42,73 @@
           </span>
         </div>
 
-        <div class="card__actions">
-          <a class="btn btn--primary" href="#enquire">Get Quick Quote</a>
+        <div class="card__actions" aria-label="Primary actions">
           <a
-  class="btn btn--ghost"
-  [attr.href]="mapUrl"
-  target="_blank"
-  rel="noopener"
->
-  Get Directions
-</a>
+            class="btn btn--ghost"
+            [attr.href]="mapUrl"
+            target="_blank"
+            rel="noopener"
+            aria-label="Open directions in Google Maps"
+          >
+            Google Maps
+          </a>
+
+          <a
+            *ngIf="whatsAppUrl"
+            class="btn btn--primary"
+            [attr.href]="whatsAppUrl"
+            target="_blank"
+            rel="noopener"
+            aria-label="Chat on WhatsApp"
+          >
+            WhatsApp
+          </a>
         </div>
+
+        <p class="contact__micro">
+          Faster help: share <strong>date</strong>, <strong>slot</strong>, and <strong>group size</strong>.
+        </p>
       </article>
 
-      <!-- Card 2: Social / business -->
-      <article class="card" aria-label="Keep connected">
-        <h3 class="card__title">Keep connected</h3>
+      <!-- Card 2: Social + info (NO WhatsApp/Maps here) -->
+      <article class="enquire__card contact__card contact__card--info" aria-label="More info">
+        <h3 class="enquire__cardTitle">More info</h3>
 
-        <div class="pillGrid" role="list">
-          <a class="pill" role="listitem" href="#" target="_blank" rel="noopener">
+        <div class="pillGrid" role="list" aria-label="Social links">
+          <a
+            *ngIf="instagramUrl"
+            class="pill"
+            role="listitem"
+            [attr.href]="instagramUrl"
+            target="_blank"
+            rel="noopener"
+            aria-label="Open Instagram"
+          >
             <span aria-hidden="true">📸</span> Instagram
           </a>
-          <a class="pill" role="listitem" href="#" target="_blank" rel="noopener">
+
+          <a
+            *ngIf="facebookUrl"
+            class="pill"
+            role="listitem"
+            [attr.href]="facebookUrl"
+            target="_blank"
+            rel="noopener"
+            aria-label="Open Facebook"
+          >
             <span aria-hidden="true">📘</span> Facebook
-          </a>
-          <a class="pill" role="listitem" href="#" target="_blank" rel="noopener">
-            <span aria-hidden="true">🧭</span> Google
-          </a>
-          <a class="pill" role="listitem" href="#" target="_blank" rel="noopener">
-            <span aria-hidden="true">💬</span> WhatsApp
           </a>
         </div>
 
-        <div class="note" role="note">
-          <strong>Best time to contact:</strong> 9 AM – 8 PM (IST).  
-          For faster quotes, share date, time, and number of people.
+        <ul class="contact__bullets" aria-label="What we can help with">
+          <li>Yacht availability & pricing</li>
+          <li>Custom routes, timings & celebrations</li>
+          <li>Pickup point guidance & boarding support</li>
+        </ul>
+
+        <div class="note" role="note" aria-label="Best time to contact">
+          <strong>Best time to contact:</strong> 9 AM – 8 PM (IST).<br />
+          For quick booking help, mention <strong>date</strong>, <strong>slot</strong>, and <strong>group size</strong>.
         </div>
       </article>
     </div>

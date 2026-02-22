@@ -12,13 +12,15 @@
   --radius-md: 14px;
 }
 
+/* Section wrapper (match Enquire) */
 .contact {
   padding-top: 72px;
   scroll-margin-top: 72px;
-  /* background:
-    radial-gradient(900px 320px at 10% 0%, rgba(0, 128, 200, 0.09), transparent 60%),
-    radial-gradient(900px 320px at 90% 0%, rgba(200, 160, 0, 0.10), transparent 60%),
-    var(--surface); */
+
+  background:
+    radial-gradient(900px 320px at 10% 0%, rgba(0, 128, 200, 0.10), transparent 60%),
+    radial-gradient(900px 320px at 90% 0%, rgba(200, 160, 0, 0.12), transparent 60%),
+    var(--surface);
 }
 
 .contact__wrap {
@@ -26,56 +28,86 @@
   margin: 0 auto;
 }
 
-.contact__header {
+/* ================= Header (same system as Enquire/Testimonial) ================= */
+.gallery__header {
   text-align: center;
-  margin-bottom: clamp(14px, 2vw, 24px);
+  padding: 0 clamp(16px, 4vw, 60px);
+  margin-bottom: clamp(30px, 5vw, 50px);
 }
 
-.contact__eyebrow {
-  margin: 0 0 6px;
-  color: var(--brand-blue);
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  font-size: 0.8rem;
+.gallery__title {
+  font-size: clamp(28px, 3.2vw, 40px);
+  font-weight: 800;
+  background: linear-gradient(90deg, #0d3b66, #0fb9b1, #ffb703);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 10px;
+  background-size: 200% auto;
+  animation: shimmer 6s linear infinite;
 }
 
-.contact__title {
-  margin: 0;
-  color: var(--text);
-  font-size: clamp(1.5rem, 3.2vw, 2.25rem);
-  line-height: 1.15;
+.gallery__tagline {
+  font-size: clamp(18px, 2vw, 24px);
+  font-weight: 600;
+  color: #0d3b66;
+  margin-bottom: 12px;
 }
 
-.contact__subtitle {
-  margin: 10px auto 0;
-  color: var(--muted);
-  max-width: 62ch;
-  font-size: 1rem;
+.gallery__description {
+  max-width: 750px;
+  margin: 0 auto;
+  font-size: clamp(14px, 1.2vw, 16px);
   line-height: 1.6;
+  color: #444;
 }
 
+@keyframes shimmer {
+  0% { background-position: 0% center; }
+  100% { background-position: 200% center; }
+}
+
+/* ================= Layout ================= */
 .contact__grid {
   display: grid;
   gap: clamp(14px, 2vw, 22px);
-  grid-template-columns: 1.1fr 0.9fr;
+  grid-template-columns: 0.95fr 1.05fr;
   align-items: start;
 }
 
-.card {
-  background: var(--bg);
-  border: 1px solid var(--border);
+/* Reuse Enquire card feel (keep class name consistent with enquire) */
+.enquire__card {
+  background: linear-gradient(
+    145deg,
+    rgba(255, 255, 255, 0.95),
+    rgba(240, 249, 255, 0.85)
+  );
+  border: 1px solid rgba(13, 59, 102, 0.15);
   border-radius: var(--radius-lg);
-  padding: clamp(16px, 2vw, 22px);
-  box-shadow: 0 10px 26px rgba(2, 6, 23, 0.06);
+  padding: clamp(18px, 2vw, 24px);
+  box-shadow:
+    0 12px 30px rgba(13, 59, 102, 0.10),
+    0 4px 12px rgba(255, 183, 3, 0.08);
+  backdrop-filter: blur(14px);
+  transition: transform 260ms ease, box-shadow 260ms ease;
 }
 
-.card__title {
+.enquire__card:hover {
+  transform: translateY(-4px);
+  box-shadow:
+    0 18px 40px rgba(13, 59, 102, 0.16),
+    0 6px 18px rgba(255, 183, 3, 0.15);
+}
+
+.enquire__cardTitle {
   margin: 0 0 12px;
-  color: var(--text);
-  font-size: 1.1rem;
+  font-size: 1.15rem;
+  font-weight: 800;
+  background: linear-gradient(90deg, #0d3b66, #0fb9b1);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
+/* Rows */
 .row {
   display: flex;
   gap: 12px;
@@ -117,10 +149,11 @@
 
 .row__value {
   color: var(--text);
-  font-weight: 600;
+  font-weight: 700;
   word-break: break-word;
 }
 
+/* Buttons */
 .card__actions {
   margin-top: 14px;
   display: flex;
@@ -133,7 +166,7 @@
   border: 0;
   border-radius: 999px;
   padding: 12px 16px;
-  font-weight: 700;
+  font-weight: 800;
   font-size: 0.95rem;
   cursor: pointer;
   text-decoration: none;
@@ -144,12 +177,20 @@
 
 .btn--primary {
   color: #fff;
-  background: linear-gradient(90deg, var(--brand-blue), #0aa0ff);
-  box-shadow: 0 10px 18px rgba(0, 128, 200, 0.18);
+  background: linear-gradient(90deg, #0d3b66, #0fb9b1, #ffb703);
+  background-size: 200% auto;
+  box-shadow:
+    0 12px 24px rgba(13, 59, 102, 0.22),
+    0 4px 14px rgba(255, 183, 3, 0.16);
+  transition: transform 240ms ease, box-shadow 240ms ease, background-position 240ms ease;
 }
 
 .btn--primary:hover {
-  filter: brightness(1.02);
+  background-position: 100% center;
+  transform: translateY(-2px);
+  box-shadow:
+    0 16px 36px rgba(13, 59, 102, 0.28),
+    0 6px 20px rgba(255, 183, 3, 0.22);
 }
 
 .btn--ghost {
@@ -158,10 +199,16 @@
   border: 1px solid rgba(2, 6, 23, 0.10);
 }
 
+/* Pills */
 .pillGrid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 10px;
+  margin-bottom: 12px;
+}
+
+.pillGrid:has(.pill:only-child) {
+  grid-template-columns: 1fr;
 }
 
 .pill {
@@ -171,7 +218,7 @@
   background: #fff;
   text-decoration: none;
   color: var(--text);
-  font-weight: 700;
+  font-weight: 800;
   display: inline-flex;
   gap: 8px;
   align-items: center;
@@ -189,12 +236,24 @@
   margin-top: 14px;
   padding: 12px 14px;
   border-radius: var(--radius-md);
-  background: rgba(200, 160, 0, 0.08);
-  border: 1px solid rgba(200, 160, 0, 0.16);
-  color: var(--text);
+  background: linear-gradient(
+    135deg,
+    rgba(255, 183, 3, 0.08),
+    rgba(13, 59, 102, 0.05)
+  );
+  border: 1px solid rgba(255, 183, 3, 0.35);
+  color: #0d3b66;
   line-height: 1.6;
 }
 
+.contact__micro {
+  margin: 12px 0 0;
+  color: var(--muted);
+  font-size: 0.92rem;
+  line-height: 1.5;
+}
+
+/* Responsive */
 @media (max-width: 960px) {
   .contact__grid {
     grid-template-columns: 1fr;
@@ -202,17 +261,40 @@
 }
 
 @media (max-width: 640px) {
-  .contact__wrap {
+  /* .contact__wrap {
     width: min(1120px, calc(100% - 1.25rem));
-  }
-  .pillGrid {
+  } */
+ 
+   .pillGrid {
     grid-template-columns: 1fr;
+  }
+  .contact__bullets {
+    margin-top: 6px;
   }
 }
 
+/* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
+  .enquire__card,
   .row,
-  .pill {
+  .pill,
+  .btn--primary {
     transition: none;
   }
+  .gallery__title {
+    animation: none;
+  }
+}
+
+.contact__bullets {
+  margin: 8px 0 14px;
+  padding-left: 18px;
+  color: var(--text);
+  line-height: 1.7;
+  font-weight: 600;
+}
+
+.contact__bullets li {
+  margin: 6px 0;
+  color: #0f172a;
 }

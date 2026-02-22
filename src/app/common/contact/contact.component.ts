@@ -16,17 +16,15 @@ export class ContactComponent implements OnInit {
 
   readonly email = 'info@omsaiaquasafari.com';
 
-  readonly addressLines = [
-    'Om Sai Aqua Safari',
-    'Goa, India',
-  ];
+  readonly addressLines = ['Om Sai Aqua Safari', 'Goa, India'];
 
   readonly mapQuery = 'Om Sai Aqua Safari Goa';
 
-  constructor(
-    private readonly title: Title,
-    private readonly meta: Meta
-  ) {}
+  // Optional socials (leave empty to hide the button automatically)
+  readonly instagramUrl = '';
+  readonly facebookUrl = '';
+
+  constructor(private readonly title: Title, private readonly meta: Meta) {}
 
   ngOnInit(): void {
     this.title.setTitle('Contact | Om Sai Aqua Safari');
@@ -36,8 +34,16 @@ export class ContactComponent implements OnInit {
         'Contact Om Sai Aqua Safari for yacht and cruise rentals in Goa. Call, email, or get directions for quick assistance.',
     });
   }
-  get mapUrl(): string {
-  return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(this.mapQuery)}`;
-}
 
+  get mapUrl(): string {
+    return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+      this.mapQuery
+    )}`;
+  }
+
+  get whatsAppUrl(): string {
+    // whatsapp expects digits only (country code + number)
+    const digits = (this.phoneTel || '').replace(/[^\d]/g, '');
+    return digits ? `https://wa.me/${digits}` : '';
+  }
 }
