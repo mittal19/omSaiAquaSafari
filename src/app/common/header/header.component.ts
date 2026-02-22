@@ -3,18 +3,17 @@ import {
   Component,
   DestroyRef,
   PLATFORM_ID,
+  afterNextRender,
+  computed,
   inject,
   signal,
-  afterNextRender,
 } from '@angular/core';
 import { NavigationEnd, Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { fromEvent } from 'rxjs';
 import { debounceTime, filter } from 'rxjs/operators';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
-type NavLink =
-  | { label: string; kind: 'route'; path: string }
-  | { label: string; kind: 'fragment'; fragment: string };
+type NavLink = { label: string; path: string; exact?: boolean };
 
 @Component({
   selector: 'app-header',
@@ -31,26 +30,32 @@ export class HeaderComponent {
   readonly isMenuOpen = signal(false);
   readonly isMobile = signal(false);
 
+  // ✅ Use E.164 for best compatibility. Change as needed.
+  readonly phoneNumberDisplay = '+91 90275 04141';
+  readonly phoneNumberDial = '+919027504141';
+
+  // ✅ Dialer link (SEO-safe: it’s a normal href)
+  readonly telHref = computed(() => `tel:${this.phoneNumberDial}`);
+
+  // ✅ WhatsApp link
+  readonly whatsappHref = computed(() => {
+    const msg = encodeURIComponent('Hello! I want to book a yacht/cruise in Goa.');
+    // wa.me expects digits (no +). Keep country code.
+    const digits = this.phoneNumberDial.replace(/\D/g, '');
+    return `https://wa.me/${digits}?text=${msg}`;
+  });
+
   readonly links: NavLink[] = [
-    { label: 'Home', kind: 'fragment', fragment: 'home' },
-    { label: 'Explore', kind: 'fragment', fragment: 'explore' },
-    { label: 'Book Yacht', kind: 'route', path: '/book-yacht' },
-    { label: 'Book Cruise', kind: 'route', path: '/book-yacht' },
-    { label: 'Gallery', kind: 'fragment', fragment: 'gallery' },
-    { label: 'Reviews', kind: 'fragment', fragment: 'reviews-testimonials' },
-     { label: 'Quick Quote', kind: 'fragment', fragment: 'enquire' },
-    { label: 'Contact', kind: 'fragment', fragment: 'contactus' },
+    { label: 'Home', path: '', exact: true },
+    { label: 'Explore', path: '/explore' },
+    { label: 'Book Yacht', path: '/book-yacht' },
+    { label: 'Gallery', path: '/gallery' }, // change if your route differs
+    { label: 'Reviews', path: '/reviews' },
+    { label: 'Contact', path: '/contact' },
+     { label: 'Quick Quote', path: '/quick-quote' },
   ];
 
-   phoneNumber = '9027504141'; // Replace with your actual WhatsApp number
-  
-  openWhatsApp() {
-    const message = encodeURIComponent('Hello from OmSaiWaveRiders!');
-    window.open(`https://wa.me/${this.phoneNumber}?text=${message}`, '_blank');
-  }
-
-  readonly activeFragment = signal<string | null>(null);
-
+  readonly trackByPath = (_: number, item: NavLink) => item.path;
 
   constructor() {
     if (!isPlatformBrowser(this.platformId)) return;
@@ -62,15 +67,13 @@ export class HeaderComponent {
         .pipe(debounceTime(120), takeUntilDestroyed(this.destroyRef))
         .subscribe(() => this.updateIsMobile());
 
-      // Close menu if user clicks outside
+      // Close menu if user clicks outside header
       fromEvent<MouseEvent>(document, 'click')
         .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe((event) => {
           const target = event.target as HTMLElement | null;
           if (!target) return;
-          if (!target.closest('[data-header-root]')) {
-            this.isMenuOpen.set(false);
-          }
+          if (!target.closest('[data-header-root]')) this.isMenuOpen.set(false);
         });
 
       // Close menu on Escape
@@ -80,36 +83,14 @@ export class HeaderComponent {
           if (e.key === 'Escape') this.isMenuOpen.set(false);
         });
 
-          // initial fragment
-      this.activeFragment.set(window.location.hash?.replace('#', '') || null);
-
+      // Close menu on route change (best UX on mobile)
       this.router.events
         .pipe(
           filter((e) => e instanceof NavigationEnd),
           takeUntilDestroyed(this.destroyRef)
         )
-        .subscribe(() => {
-          this.activeFragment.set(window.location.hash?.replace('#', '') || null);
-        });
+        .subscribe(() => this.isMenuOpen.set(false));
     });
-  }
-
-
-  isActive(item: NavLink): boolean {
-  if (item.kind === 'route') {
-    return this.router.isActive(item.path, {
-      paths: 'exact',
-      queryParams: 'ignored',
-      fragment: 'ignored',
-      matrixParams: 'ignored',
-    });
-  }
-  return this.activeFragment() === item.fragment;
-}
-
-  goToHome() {
-    this.isMenuOpen.set(false);
-    this.router.navigate(['/'], { fragment: 'home' });
   }
 
   toggleMenu() {
@@ -121,8 +102,12 @@ export class HeaderComponent {
   }
 
   onNavClick() {
-    // Close menu after selection on mobile
     if (this.isMobile()) this.isMenuOpen.set(false);
+  }
+
+  goToHome() {
+    this.isMenuOpen.set(false);
+    this.router.navigate(['/'], { fragment: 'home' });
   }
 
   private updateIsMobile() {

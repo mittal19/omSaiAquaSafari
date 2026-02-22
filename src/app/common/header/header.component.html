@@ -4,40 +4,46 @@
       <img
         class="brand-logo"
         src="assets/header.png"
-        alt="Om Sai Aqua Safari - Yacht & Cruise Rentals in Goa"
+        alt="SeaRider Goa Yacht - Yacht & Cruise Rentals in Goa"
         width="140"
         height="44"
         fetchpriority="high"
+        decoding="async"
       />
-      <span class="sr-only">Om Sai Aqua Safari</span>
+      <span class="sr-only">SeaRider Goa Yacht</span>
     </a>
 
     <!-- Desktop nav -->
-    <nav class="nav-desktop" aria-label="Primary">
+    <nav class="nav-desktop" aria-label="Primary navigation">
       <a
-        *ngFor="let item of links"
+        *ngFor="let item of links; trackBy: trackByPath"
         class="nav-link"
-        [class.active]="isActive(item)"
-        [routerLink]="item.kind === 'route' ? [item.path] : ['/']"
-        [fragment]="item.kind === 'fragment' ? item.fragment : undefined"
+        [routerLink]="[item.path]"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: item.exact ?? false }"
         (click)="onNavClick()"
       >
         {{ item.label }}
       </a>
     </nav>
 
-    <!-- Right side CTA -->
+    <!-- Right side actions -->
     <div class="actions">
-      <a 
-      (click)="openWhatsApp()"
-        class="cta"
-      
-
-        aria-label="Book a yacht in Goa"
-      
-      >
-       Whatsapp
+      <!-- ✅ Call Us opens dialer -->
+      <a class="cta" [href]="telHref()" aria-label="Call us">
+        Call Us
       </a>
+
+      <!-- Optional: WhatsApp quick action -->
+      <!-- <a
+        class="ghost"
+        [href]="whatsappHref()"
+        target="_blank"
+        rel="noopener"
+        aria-label="Chat on WhatsApp"
+      >
+        WhatsApp
+      </a> -->
 
       <!-- Mobile hamburger -->
       <button
@@ -55,35 +61,46 @@
     </div>
   </div>
 
-  <!-- Mobile drawer -->
+  <!-- Mobile backdrop -->
   <div class="backdrop" [class.show]="isMenuOpen()" (click)="closeMenu()"></div>
 
+  <!-- Mobile drawer -->
   <nav
     id="mobile-menu"
     class="nav-mobile"
-    aria-label="Mobile primary"
+    aria-label="Mobile primary navigation"
     [class.open]="isMenuOpen()"
   >
-    <!-- <div class="mobile-top">
+    <div class="mobile-top">
       <span class="mobile-title">Menu</span>
       <button class="icon-btn" type="button" (click)="closeMenu()" aria-label="Close menu">
         ✕
       </button>
-    </div> -->
+    </div>
 
     <a
-      *ngFor="let item of links"
+      *ngFor="let item of links; trackBy: trackByPath"
       class="mobile-link"
-      [routerLink]="item.kind === 'route' ? [item.path] : ['/']"
-      [fragment]="item.kind === 'fragment' ? item.fragment : undefined"
+      [routerLink]="[item.path]"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: item.exact ?? false }"
       (click)="onNavClick()"
     >
       {{ item.label }}
     </a>
 
-    <!-- <div class="mobile-cta-wrap">
-      <a class="cta full" [routerLink]="['/book-cruise']" (click)="onNavClick()">Book Cruise</a>
-      <a class="ghost full" [routerLink]="['/book-yacht']" (click)="onNavClick()">Book Yacht</a>
-    </div> -->
+    <div class="mobile-cta-wrap">
+      <a class="cta full" [href]="telHref()" aria-label="Call us">Call Us</a>
+      <!-- <a
+        class="ghost full"
+        [href]="whatsappHref()"
+        target="_blank"
+        rel="noopener"
+        aria-label="Chat on WhatsApp"
+      >
+        WhatsApp
+      </a> -->
+      <div class="mini-note">Call: {{ phoneNumberDisplay }}</div>
+    </div>
   </nav>
 </header>

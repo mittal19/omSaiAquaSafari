@@ -31,9 +31,11 @@ export class HomeComponent {
   private intervalId: number | null = null;
 
   slides = [
-    { imageUrl: 'assets/slider/one.jpg' },
-    { imageUrl: 'assets/slider/two.jpg' },
-    { imageUrl: 'assets/slider/one.jpg' },
+    // { imageUrl: 'assets/slider/one.png', },
+    { imageUrl: 'assets/slider/two.jpeg',  subTitle :'Premium yachts and curated experiences.' },
+    { imageUrl: 'assets/slider/three.jpeg',  subTitle :'The Finest Yacht Charters for every Occasion.' },
+     { imageUrl: 'assets/slider/four.png', subTitle:'Redefine your Events, Celebrations and Parties.' },
+    { imageUrl: 'assets/slider/three.jpeg',  subTitle :'Transparent pricing and easy booking.' },
   ];
 
   ngOnInit(): void {
@@ -96,5 +98,15 @@ export class HomeComponent {
   const url = this.slides[this.currentIndex]?.imageUrl ?? '';
   return url ? `url(${url})` : 'none';
 }
+
+get currentSlide(): string {
+  return this.slides[this.currentIndex]?.imageUrl ?? '';
+}
+
+get currentSubtitle(): string {
+  return this.slides[this.currentIndex]?.subTitle ?? '';
+}
+
+
 
 }

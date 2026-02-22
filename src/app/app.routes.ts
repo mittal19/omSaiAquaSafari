@@ -12,21 +12,42 @@ export const routes: Routes = [
   },
   {
     path: 'book-yacht',
-    component:YachtdetailsComponent
-  },
-  { path: 'book-yacht/:id', component: YachtBookComponent },
-  {
-    path: 'book-cruise',
-    component:CruisedetailsComponent
+    loadComponent: () =>
+      import('./details/yachtdetails/yachtdetails.component').then(m => m.YachtdetailsComponent),
   },
   {
-    path: 'book-water-activities',
-    component:ActivitiesdetailsComponent
+    path: 'explore',
+    loadComponent: () =>
+      import('./home/explore/explore.component').then(m => m.ExploreComponent),
   },
   {
     path: 'gallery',
     loadComponent: () =>
+      import('./home/gallery/gallery.component').then(m => m.GalleryComponent),
+  },
+  {
+    path: 'reviews',
+    loadComponent: () =>
+      import('./home/testimonials/testimonials.component').then(m => m.TestimonialsComponent),
+  },
+  {
+    path: 'quick-quote',
+    loadComponent: () =>
+      import('./common/enquire/enquire.component').then(m => m.EnquireComponent),
+  },
+
+  { path: 'book-yacht/:id',
+    loadComponent: () =>
+      import('./details/yachtdetails/yachtbook/yachtbook.component').then(m => m.YachtBookComponent),
+   },
+    { path: 'contact',
+    loadComponent: () =>
+      import('./common/contact/contact.component').then(m => m.ContactComponent),
+   },
+ /* {
+    path: 'gallery',
+    loadComponent: () =>
       import('./gallery/gallery.component').then(m => m.GalleryComponent),
     title: 'Gallery | Om Sai Aqua Safari',
-  },
+  },*/
 ];
