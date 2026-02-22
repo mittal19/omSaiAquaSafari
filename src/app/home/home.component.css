@@ -1,21 +1,23 @@
 :host {
   display: block;
 
-  /* Brand system (tweak if needed to match your logo) */
-  --brand-1: #0284c7; /* sky-600 */
-  --brand-2: #0ea5e9; /* sky-500 */
-  --brand-3: #38bdf8; /* sky-400 */
+  /* SeaRider Brand System (Logo Based) */
+  --brand-1: #0f4c5c;  /* deep ocean teal */
+  --brand-2: #0ea5a4;  /* ocean teal */
+  --brand-3: #2dd4bf;  /* aqua highlight */
 
-  --ink: #0f172a;
-  --glass: rgba(255, 255, 255, 0.14);
-  --glass-2: rgba(255, 255, 255, 0.18);
-  --stroke: rgba(255, 255, 255, 0.22);
-  --shadow: 0 18px 44px rgba(2, 6, 23, 0.35);
+  --gold-1: #fbbf24;   /* primary gold */
+  --gold-2: #f59e0b;   /* darker gold */
+
+  --ink: #0b1f2a;      /* deep navy */
+  --glass: rgba(15, 76, 92, 0.18);
+  --glass-2: rgba(15, 76, 92, 0.24);
+  --stroke: rgba(255, 255, 255, 0.25);
+  --shadow: 0 18px 44px rgba(11, 31, 42, 0.45);
 
   --radius-xl: 22px;
   --radius-lg: 16px;
 
-  /* smoother text rendering */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -61,9 +63,9 @@
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(75% 70% at 20% 30%, rgba(56, 189, 248, 0.22), rgba(0, 0, 0, 0) 60%),
-    radial-gradient(80% 80% at 70% 20%, rgba(2, 132, 199, 0.22), rgba(0, 0, 0, 0) 55%),
-    linear-gradient(90deg, rgba(2, 6, 23, 0.62) 0%, rgba(2, 6, 23, 0.28) 55%, rgba(2, 6, 23, 0.35) 100%);
+    radial-gradient(75% 70% at 20% 30%, rgba(45, 212, 191, 0.25), rgba(0, 0, 0, 0) 60%),
+    radial-gradient(80% 80% at 70% 20%, rgba(15, 76, 92, 0.35), rgba(0, 0, 0, 0) 55%),
+    linear-gradient(90deg, rgba(11, 31, 42, 0.75) 0%, rgba(11, 31, 42, 0.45) 55%, rgba(11, 31, 42, 0.6) 100%);
 }
 
 /* content shell */
@@ -100,7 +102,7 @@
 
 /* Accent: gradient text to look “designed”, not plain color */
 .accent {
-  background: linear-gradient(135deg, #e0f2fe, #bfeaff 45%, #7dd3fc);
+   background: linear-gradient(135deg, #fbbf24, #f59e0b 45%, #fde68a);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -145,11 +147,13 @@
   font-size: 13px;
   padding: 10px 12px;
   border-radius: 999px;
-  background: var(--glass);
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   box-shadow: 0 10px 22px rgba(2, 6, 23, 0.18);
+
+  background: rgba(15, 76, 92, 0.35);
+  border: 1px solid rgba(45, 212, 191, 0.4);
 }
 
 /* Right card */
@@ -211,8 +215,12 @@
 /* Primary: gradient + subtle shine */
 .btn.primary {
   color: #fff;
-  background: linear-gradient(135deg, var(--brand-1), var(--brand-2));
-  box-shadow: 0 14px 28px rgba(2, 132, 199, 0.28);
+  background: linear-gradient(135deg, #0f4c5c, #0ea5a4);
+  box-shadow: 0 14px 28px rgba(15, 76, 92, 0.35);
+}
+
+.btn.primary:hover {
+  background: linear-gradient(135deg, #0c3f4c, #0d9488);
 }
 
 .btn.primary::before {
@@ -270,7 +278,7 @@
 }
 
 .dot-btn.active {
-  background: rgba(255, 255, 255, 0.95);
+ background: #fbbf24;
   transform: scale(1.15);
 }
 
