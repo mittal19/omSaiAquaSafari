@@ -4,11 +4,12 @@ import { animate, style, transition, trigger } from '@angular/animations';
 import { GalleryComponent } from './gallery/gallery.component';
 import { TestimonialsComponent } from './testimonials/testimonials.component';
 import { ExploreComponent } from '../explore/explore.component';
+import { YachtOptionsComponent } from '../yachtOptions/yachtOptions.component';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, NgOptimizedImage, ExploreComponent, GalleryComponent, TestimonialsComponent],
+  imports: [CommonModule, NgOptimizedImage, ExploreComponent, GalleryComponent,YachtOptionsComponent, TestimonialsComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css',
   animations: [
@@ -74,7 +75,7 @@ export class HomeComponent {
 
   startAutoSlide(): void {
     this.stopAutoSlide();
-    this.intervalId = window.setInterval(() => this.nextSlide(), 5000);
+    this.intervalId = window.setInterval(() => this.nextSlide(), 2500);
   }
 
   stopAutoSlide(): void {

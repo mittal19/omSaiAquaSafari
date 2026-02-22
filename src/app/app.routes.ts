@@ -1,7 +1,4 @@
 import { Routes } from '@angular/router';
-import { YachtdetailsComponent } from './details/yachtdetails/yachtdetails.component';
-import { CruisedetailsComponent } from './details/cruisedetails/cruisedetails.component';
-import { ActivitiesdetailsComponent } from './details/activitiesdetails/activitiesdetails.component';
 import { HomeComponent } from './home/home.component';
 import { YachtBookComponent } from './details/yachtdetails/yachtbook/yachtbook.component';
 
@@ -10,10 +7,15 @@ export const routes: Routes = [
     path: '',
     component:HomeComponent
   },
-  {
+  { 
     path: 'book-yacht',
     loadComponent: () =>
-      import('./details/yachtdetails/yachtdetails.component').then(m => m.YachtdetailsComponent),
+      import('./yachtOptions/yachtOptions.component').then(m => m.YachtOptionsComponent),
+  },
+  { 
+    path: 'yacht-options',
+    loadComponent: () =>
+      import('./yachtOptions/yachtOptions.component').then(m => m.YachtOptionsComponent),
   },
   {
     path: 'explore',
