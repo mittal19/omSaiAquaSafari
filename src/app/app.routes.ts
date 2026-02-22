@@ -13,7 +13,7 @@ export const routes: Routes = [
       import('./yachtOptions/yachtOptions.component').then(m => m.YachtOptionsComponent),
   },
   { 
-    path: 'yacht-options',
+    path: 'yachts',
     loadComponent: () =>
       import('./yachtOptions/yachtOptions.component').then(m => m.YachtOptionsComponent),
   },
