@@ -1,29 +1,68 @@
-<section id="footer">
-  <footer class="footer">
-    <div class="footer-container">
-      
-      <!-- Quick Links -->
-      <!-- <nav class="footer-links" aria-label="Quick links">
-        <a href="#home">Home</a>
-        <a href="#explore">Explore</a>
-        <a href="#reviews">Reviews</a>
-        <a href="#enquire">Quick Quote</a>
-        <a href="#contactus">Contact</a>
-      </nav> -->
+<section id="footer" class="footer" aria-label="Site footer">
+  <footer class="footer__inner">
+    <div class="footer__wrap">
+      <div class="footer__grid">
+        <!-- Brand / About -->
+        <div class="footer__card footer__brand" aria-label="Brand">
+          <p class="footer__brandName">Om Sai Aqua Safari</p>
+          <p class="footer__brandTagline">
+            Premium yacht rentals and curated cruise experiences in Goa.
+          </p>
 
-      <!-- Bottom Bar -->
-      <div class="footer-bottom">
-        <p class="copyright">
-          © {{ currentYear }} Om Sai Aqua Safari. All rights reserved.
-        </p>
+          <div class="footer__badges" aria-label="Highlights">
+            <span class="footer__badge">Trusted crew</span>
+            <span class="footer__badge">Scenic routes</span>
+            <span class="footer__badge">Flexible timings</span>
+          </div>
+        </div>
 
-        <div class="legal">
-          <a routerLink="/privacy">Privacy Policy</a>
-          <span class="dot">•</span>
-          <a routerLink="/terms">Terms of Service</a>
+        <!-- Quick Links -->
+        <nav class="footer__card footer__nav" aria-label="Quick links">
+          <p class="footer__cardTitle">Quick links</p>
+
+          <div class="footer__links">
+            <a class="footer__link" href="#home">Home</a>
+            <a class="footer__link" href="#explore">Explore</a>
+            <a class="footer__link" href="#gallery">Gallery</a>
+            <a class="footer__link" href="#reviews">Reviews</a>
+            <a class="footer__link" href="#enquire">Quick Quote</a>
+            <a class="footer__link" href="#contactus">Contact</a>
+          </div>
+        </nav>
+
+        <!-- Legal / CTA -->
+        <div class="footer__card footer__legal" aria-label="Legal and policies">
+          <p class="footer__cardTitle">Policies</p>
+
+          <div class="footer__legalLinks">
+            <a class="footer__link footer__link--muted" routerLink="/privacy" aria-label="Privacy policy">
+              Privacy Policy
+            </a>
+            <a class="footer__link footer__link--muted" routerLink="/terms" aria-label="Terms of service">
+              Terms of Service
+            </a>
+          </div>
+
+          <a class="footer__cta" href="#enquire" aria-label="Request a quick quote">
+            Request a quick quote
+          </a>
+
+          <p class="footer__fineprint">
+            We respond with availability, pricing and the best time slots.
+          </p>
         </div>
       </div>
 
+      <!-- Bottom Bar -->
+      <div class="footer__bottom" aria-label="Copyright">
+        <p class="footer__copyright">
+          © {{ currentYear }} Om Sai Aqua Safari. All rights reserved.
+        </p>
+
+        <p class="footer__meta">
+          Made with care for fast loading and accessibility.
+        </p>
+      </div>
     </div>
   </footer>
 </section>
