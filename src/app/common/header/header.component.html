@@ -1,6 +1,6 @@
 <header class="site-header" data-header-root>
   <div class="header-shell">
-    <a class="brand" [routerLink]="['/']" fragment="home" (click)="goToHome()">
+    <a class="brand" [routerLink]="['/']" (click)="goToHome()">
       <img
         class="brand-logo"
         src="assets/header.png"
@@ -86,8 +86,5 @@
       {{ item.label }}
     </a>
 
-    <div class="mobile-cta-wrap">
-      <a class="cta full" [href]="telHref()" aria-label="Call us">Call Us</a>
-    </div>
   </nav>
 </header>

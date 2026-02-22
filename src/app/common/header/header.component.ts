@@ -49,7 +49,6 @@ export class HeaderComponent {
     { label: 'Home', path: '', exact: true },
     { label: 'Explore', path: '/explore' },
     { label: 'Book Yacht', path: '/book-yacht' },
-    { label: 'Blogs', path: '/gallery' }, 
     { label: 'Gallery', path: '/gallery' }, // change if your route differs
     { label: 'Reviews', path: '/reviews' },
     { label: 'Contact', path: '/contact' },
@@ -108,7 +107,7 @@ export class HeaderComponent {
 
   goToHome() {
     this.isMenuOpen.set(false);
-    this.router.navigate(['/'], { fragment: 'home' });
+    this.router.navigate(['/']);
   }
 
   private updateIsMobile() {
