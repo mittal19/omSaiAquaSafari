@@ -16,7 +16,7 @@ type YachtCard = {
   rate: string;
   cruiseTime: string;
   anchoringTime: string;
-  rateType: string;
+  totalTime: string;
   imageUrl: string;
   imageAlt: string;
   bookRoute: any[]; // routerLink array
@@ -45,8 +45,8 @@ export class YachtOptionsComponent implements OnInit {
       crew: 3,
       cruiseTime: '',
       anchoringTime: '',
+      totalTime: '1 day',
       rate: "23,000 Rs",
-      rateType: 'day',
       imageUrl: 'assets/yacht/type/peagus.jpeg',
       imageAlt: 'Peagus luxury yacht in Goa',
       bookRoute: ['/book-yacht', 'peagus-yacht'],
@@ -61,9 +61,9 @@ export class YachtOptionsComponent implements OnInit {
       cabin: 0,
       crew: 0,
       rate: "15,000 Rs",
-      rateType: 'hour',
       cruiseTime: '1 hour',
       anchoringTime : '1 hour',
+      totalTime : '2 hours',
       imageUrl: 'assets/yacht/type/aquila.jpeg',
       imageAlt: 'Aquila luxury yacht in Goa',
       bookRoute: ['/book-yacht', 'peagus-yacht'],
@@ -79,8 +79,8 @@ export class YachtOptionsComponent implements OnInit {
       crew: 0,
       cruiseTime: '1 hour',
       anchoringTime : '1 hour',
+      totalTime: '2 hours',
       rate: "20,000 Rs",
-      rateType: 'hour',
       imageUrl: 'assets/yacht/type/coco.jpeg',
       imageAlt: 'Coco luxury yacht in Goa',
       bookRoute: ['/book-yacht', 'peagus-yacht'],
