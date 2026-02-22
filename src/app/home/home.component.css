@@ -34,12 +34,15 @@
 
 /* Background container (img + overlay + content) */
 .hero-bg {
-  position: relative;
+ position: relative;
   width: 100%;
   overflow: hidden;
 
-  /* controlled hero height on all devices */
   height: clamp(420px, calc(100dvh - 72px), 760px);
+
+  /* ADD THESE */
+  display: flex;
+  align-items: center; 
 }
 
 /* responsive hero image */
@@ -70,10 +73,11 @@
 
 /* content shell */
 .hero-shell {
-  position: relative;
+   position: relative;
   z-index: 2;
   margin: 0 auto;
-  padding: 18vh 6vw 0;
+  padding: 0 6vw;      /* remove vertical vh padding */
+  width: 100%;
 }
 
 /* (optional) grid exists in HTML; you can style it here */
