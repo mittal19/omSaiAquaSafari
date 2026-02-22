@@ -1,64 +1,62 @@
-import { CommonModule, isPlatformBrowser } from '@angular/common';
-import {
-  Component,
-  ElementRef,
-  Inject,
-  ViewChild,
-  PLATFORM_ID,
-  inject,
-} from '@angular/core';
-import { interval, Subscription } from 'rxjs';
+import { CommonModule, NgOptimizedImage, isPlatformBrowser } from '@angular/common';
+import { Component, PLATFORM_ID, inject } from '@angular/core';
+import { animate, style, transition, trigger } from '@angular/animations';
 import { GalleryComponent } from './gallery/gallery.component';
 import { TestimonialsComponent } from './testimonials/testimonials.component';
 import { ExploreComponent } from './explore/explore.component';
-import { Router } from '@angular/router';
-import { FirebaseService } from '../services/firebase.service';
-import { Title, Meta } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule,ExploreComponent,GalleryComponent,TestimonialsComponent],
+  imports: [CommonModule, NgOptimizedImage, ExploreComponent, GalleryComponent, TestimonialsComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css',
+  animations: [
+    // Slider images only: fade-in / fade-out
+    trigger('imageFade', [
+      // Fade when the element is created
+      transition(':enter', [
+        style({ opacity: 0 }),
+        animate('{{t}}ms ease', style({ opacity: 1 })),
+      ], { params: { t: 650 } }),
+
+      // Fade when the bound value changes (slideAnimKey increments)
+      transition('* => *', [
+        style({ opacity: 0 }),
+        animate('{{t}}ms ease', style({ opacity: 1 })),
+      ], { params: { t: 650 } }),
+
+      // Fade when the element is removed
+      transition(':leave', [
+        animate('{{t}}ms ease', style({ opacity: 0 })),
+      ], { params: { t: 650 } }),
+    ]),
+  ],
 })
 export class HomeComponent {
-   private readonly platformId = inject(PLATFORM_ID);
-  private readonly title = inject(Title);
-  private readonly meta = inject(Meta);
+  private readonly platformId = inject(PLATFORM_ID);
 
   currentIndex = 0;
+  reducedMotion = false;
+
+  // for true fade-out + fade-in
+  showPrev = false;
+  prevSlideUrl: string | null = null;
+  slideAnimKey = 0;
+
   private intervalId: number | null = null;
 
   slides = [
-    // { imageUrl: 'assets/slider/one.png', },
-    { imageUrl: 'assets/slider/two.jpeg',  subTitle :'Premium yachts and curated experiences.' },
-    { imageUrl: 'assets/slider/three.jpeg',  subTitle :'The Finest Yacht Charters for every Occasion.' },
-     { imageUrl: 'assets/slider/four.png', subTitle:'Redefine your Events, Celebrations and Parties.' },
-    { imageUrl: 'assets/slider/three.jpeg',  subTitle :'Transparent pricing and easy booking.' },
+    { imageUrl: 'assets/slider/two.jpeg', subTitle: 'Premium yachts and curated experiences.' },
+    { imageUrl: 'assets/slider/three.jpeg', subTitle: 'The Finest Yacht Charters for every Occasion.' },
+    { imageUrl: 'assets/slider/four.png', subTitle: 'Redefine your Events, Celebrations and Parties.' },
+    { imageUrl: 'assets/slider/three.jpeg', subTitle: 'Transparent pricing and easy booking.' },
   ];
 
   ngOnInit(): void {
-    // ✅ SEO (works in SSR too)
-    this.title.setTitle('Om Sai Aqua Safari | Yacht & Cruise Rentals in Goa');
-    this.meta.updateTag({
-      name: 'description',
-      content:
-        'Book premium yacht rentals and cruises in Goa with Om Sai Aqua Safari. Private & shared options, sunset cruises, and easy online booking.',
-    });
-    this.meta.updateTag({
-      property: 'og:title',
-      content: 'Om Sai Aqua Safari - Goa Yacht & Cruise Rentals',
-    });
-    this.meta.updateTag({
-      property: 'og:description',
-      content:
-        'Premium yacht rentals & cruises in Goa. Private and shared experiences with instant booking support.',
-    });
-
-    // ✅ Autoplay only on browser (SSR-safe)
     if (isPlatformBrowser(this.platformId)) {
-      this.startAutoSlide();
+      this.reducedMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches ?? false;
+      if (!this.reducedMotion) this.startAutoSlide();
     }
   }
 
@@ -66,12 +64,17 @@ export class HomeComponent {
     this.stopAutoSlide();
   }
 
-  startAutoSlide(): void {
-    this.stopAutoSlide(); // avoid duplicates
+  get currentSlide(): string {
+    return this.slides[this.currentIndex]?.imageUrl ?? '';
+  }
 
-    this.intervalId = window.setInterval(() => {
-      this.nextSlide();
-    }, 5000);
+  get currentSubtitle(): string {
+    return this.slides[this.currentIndex]?.subTitle ?? '';
+  }
+
+  startAutoSlide(): void {
+    this.stopAutoSlide();
+    this.intervalId = window.setInterval(() => this.nextSlide(), 5000);
   }
 
   stopAutoSlide(): void {
@@ -81,32 +84,46 @@ export class HomeComponent {
     }
   }
 
+  pauseAutoplay(): void {
+    if (isPlatformBrowser(this.platformId)) this.stopAutoSlide();
+  }
+
+  resumeAutoplay(): void {
+    if (isPlatformBrowser(this.platformId) && !this.reducedMotion) this.startAutoSlide();
+  }
+
   nextSlide(): void {
-    this.currentIndex = (this.currentIndex + 1) % this.slides.length;
+    const next = (this.currentIndex + 1) % this.slides.length;
+    this.setSlide(next);
   }
 
   goToSlide(index: number): void {
-    this.currentIndex = index;
-
-    // restart timer for better UX (browser only)
-    if (isPlatformBrowser(this.platformId)) {
-      this.startAutoSlide();
-    }
+    this.setSlide(index);
+    if (isPlatformBrowser(this.platformId) && !this.reducedMotion) this.startAutoSlide();
   }
 
-  get heroBg(): string {
-  const url = this.slides[this.currentIndex]?.imageUrl ?? '';
-  return url ? `url(${url})` : 'none';
-}
+  private setSlide(index: number): void {
+    if (index === this.currentIndex) return;
 
-get currentSlide(): string {
-  return this.slides[this.currentIndex]?.imageUrl ?? '';
-}
+    // previous image fades out
+    this.prevSlideUrl = this.currentSlide;
+    this.showPrev = true;
 
-get currentSubtitle(): string {
-  return this.slides[this.currentIndex]?.subTitle ?? '';
-}
+    // switch to new slide -> new image fades in
+    this.currentIndex = index;
 
+    // triggers the fade transition
+    this.slideAnimKey++;
 
-
+    // after fade duration, remove prev from DOM
+    if (isPlatformBrowser(this.platformId)) {
+      window.setTimeout(() => {
+        this.showPrev = false;
+        this.prevSlideUrl = null;
+      }, this.reducedMotion ? 0 : 650);
+    } else {
+      this.showPrev = false;
+      this.prevSlideUrl = null;
+    }
+  }
 }

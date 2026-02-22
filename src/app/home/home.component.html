@@ -1,27 +1,50 @@
 <section id="home" class="home-hero">
   <div class="hero-frame">
-    <div class="hero-bg">
-      <!-- Responsive image (better than background-image for mobile + SEO) -->
-      <img
-        class="hero-media"
-        [src]="currentSlide"
-        alt="Luxury yacht & cruise rentals in Goa"
-        decoding="async"
-        fetchpriority="high"
-      />
+    <div
+      class="hero-bg"
+      (mouseenter)="pauseAutoplay()"
+      (mouseleave)="resumeAutoplay()"
+      (focusin)="pauseAutoplay()"
+      (focusout)="resumeAutoplay()"
+      (touchstart)="pauseAutoplay()"
+    >
+      <div class="hero-media-stack">
+        <!-- previous image (fades out) -->
+        <img
+          *ngIf="showPrev && prevSlideUrl"
+          class="hero-media"
+          [ngSrc]="prevSlideUrl"
+          fill
+          alt=""
+          decoding="async"
+          [@imageFade]="{ value: slideAnimKey, params: { t: reducedMotion ? 0 : 650 } }"
+        />
+
+        <!-- current image (fades in) -->
+        <img
+          *ngIf="currentSlide"
+          class="hero-media"
+          [ngSrc]="currentSlide"
+          fill
+          [priority]="true"
+          [attr.fetchpriority]="'high'"
+          alt="Luxury yacht & cruise rentals in Goa"
+          decoding="async"
+          [@imageFade]="{ value: slideAnimKey, params: { t: reducedMotion ? 0 : 650 } }"
+        />
+      </div>
 
       <div class="hero-overlay"></div>
 
       <div class="hero-shell">
         <div class="hero-grid">
-          <!-- Left content -->
           <div class="hero-copy">
             <h1 class="hero-title">
-              Set Sail in Style <br/><span class="accent">with<br/>Sea Riders</span>
+              Set Sail in Style <br /><span class="accent">with<br />Sea Riders</span>
             </h1>
 
-            <p class="hero-subtitle">
-              {{currentSubtitle}}
+            <p class="hero-subtitle" aria-live="polite">
+              {{ currentSubtitle }}
             </p>
 
             <div class="hero-badges" aria-label="Highlights">
@@ -30,7 +53,7 @@
             </div>
           </div>
 
-          <!-- Right quick card -->
+          <!-- removed [@copyIn] -->
           <div class="hero-card" aria-label="Quick booking">
             <div class="card-actions">
               <a class="btn primary full" href="#explore">Book Now</a>
@@ -41,7 +64,6 @@
           </div>
         </div>
 
-        <!-- dots -->
         <div class="hero-dots" aria-label="Hero image selectors">
           <button
             *ngFor="let s of slides; let i = index"

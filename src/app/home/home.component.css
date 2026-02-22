@@ -327,3 +327,6 @@
     transition: none !important;
   }
 }
+
+.hero-media { will-change: opacity, transform; }
+.hero-copy, .hero-card { will-change: opacity, transform; }
