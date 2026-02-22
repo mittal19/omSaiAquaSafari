@@ -1,11 +1,36 @@
 <section id="enquire" class="enquire" aria-labelledby="enquireTitle">
+  <!-- Success/Error Toast -->
+  <div
+    class="toast"
+    *ngIf="toast.visible"
+    [class.toast--success]="toast.type === 'success'"
+    [class.toast--error]="toast.type === 'error'"
+    role="status"
+    aria-live="polite"
+    aria-atomic="true"
+  >
+    <div class="toast__icon" aria-hidden="true">
+      <span *ngIf="toast.type === 'success'">✓</span>
+      <span *ngIf="toast.type === 'error'">!</span>
+    </div>
+
+    <div class="toast__content">
+      <p class="toast__title">{{ toast.title }}</p>
+      <p class="toast__message">{{ toast.message }}</p>
+    </div>
+
+    <button type="button" class="toast__close" aria-label="Close notification" (click)="hideToast()">
+      ×
+    </button>
+  </div>
+
   <div class="enquire__wrap">
-    <header class="enquire__header">
-      <p class="enquire__eyebrow">Request a quick quote</p>
-      <h2 id="enquireTitle" class="enquire__title">Tell us what you want to book</h2>
-      <p class="enquire__subtitle">
+    <header class="gallery__header testimonials__header">
+      <h2 id="enquireTitle" class="gallery__title">Tell us what you want to book</h2>
+      <h3 class="gallery__tagline">Request a quick quote</h3>
+      <p class="gallery__description">
         Fill out this form and we’ll get back with the best options for your
-        dream yacht / cruise experience in Goa.
+        dream yacht experience in Goa.
       </p>
     </header>
 
@@ -39,8 +64,19 @@
         >
           <!-- FormSubmit helpers -->
           <input type="hidden" name="_subject" value="New Quick Quote Request" />
+          <input
+            type="hidden"
+            name="_replyto"
+            [value]="contactForm.get('email')?.value || ''"
+          />
           <input type="hidden" name="_captcha" value="false" />
-          <input type="text" name="_honey" class="sr-only" tabindex="-1" autocomplete="off" />
+          <input
+            type="text"
+            name="_honey"
+            class="sr-only"
+            tabindex="-1"
+            autocomplete="off"
+          />
 
           <p id="enquireHelp" class="form__help">
             Fields marked <span aria-hidden="true">*</span> are required.
@@ -59,6 +95,8 @@
                 name="name"
                 autocomplete="name"
                 placeholder="Your full name"
+                required
+                minlength="2"
                 [attr.aria-invalid]="submitted && f['fullName'].invalid"
               />
               <p class="field__error" *ngIf="submitted && f['fullName'].invalid">
@@ -67,9 +105,7 @@
             </div>
 
             <div class="field">
-              <label class="field__label" for="email">
-                Email <span aria-hidden="true">*</span>
-              </label>
+              <label class="field__label" for="email">Email (optional)</label>
               <input
                 id="email"
                 class="field__control"
@@ -79,9 +115,14 @@
                 autocomplete="email"
                 inputmode="email"
                 placeholder="you@example.com"
-                [attr.aria-invalid]="submitted && f['email'].invalid"
+                [attr.aria-invalid]="
+                  submitted && f['email'].invalid && f['email'].value
+                "
               />
-              <p class="field__error" *ngIf="submitted && f['email'].invalid">
+              <p
+                class="field__error"
+                *ngIf="submitted && f['email'].invalid && f['email'].value"
+              >
                 Please enter a valid email.
               </p>
             </div>
@@ -89,7 +130,9 @@
 
           <div class="form__row">
             <div class="field">
-              <label class="field__label" for="phone">Phone (optional)</label>
+              <label class="field__label" for="phone">
+                Phone <span aria-hidden="true">*</span>
+              </label>
               <input
                 id="phone"
                 class="field__control"
@@ -99,6 +142,8 @@
                 autocomplete="tel"
                 inputmode="numeric"
                 placeholder="10-digit number"
+                required
+                pattern="[0-9]{10}"
                 [attr.aria-invalid]="submitted && f['phone'].invalid"
               />
               <p class="field__hint">We’ll only use this for your quote.</p>
@@ -118,6 +163,8 @@
               formControlName="message"
               name="message"
               rows="6"
+              required
+              minlength="10"
               placeholder="Example: Date, number of people, yacht/cruise preference, pickup location…"
               [attr.aria-invalid]="submitted && f['message'].invalid"
             ></textarea>
@@ -129,7 +176,11 @@
           <div class="form__actions">
             <button class="btn" type="submit" [disabled]="isSubmitting">
               <span *ngIf="!isSubmitting">Get Quick Quote</span>
-              <span *ngIf="isSubmitting" aria-live="polite">Submitting…</span>
+
+              <span *ngIf="isSubmitting" class="btn__loader" aria-live="polite">
+                <span class="spinner"></span>
+                Submitting...
+              </span>
             </button>
 
             <p class="form__fineprint">
