@@ -1,5 +1,6 @@
 import { CommonModule, NgOptimizedImage, isPlatformBrowser } from '@angular/common';
 import { Component, PLATFORM_ID, inject } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { animate, style, transition, trigger } from '@angular/animations';
 import { GalleryComponent } from '../gallery/gallery.component';
 import { TestimonialsComponent } from '../testimonials/testimonials.component';
@@ -9,7 +10,7 @@ import { YachtOptionsComponent } from '../yachtOptions/yachtOptions.component';
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, NgOptimizedImage, ExploreComponent, GalleryComponent,YachtOptionsComponent, TestimonialsComponent],
+  imports: [CommonModule, NgOptimizedImage, RouterLink, ExploreComponent, YachtOptionsComponent, GalleryComponent, TestimonialsComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css',
   animations: [
@@ -83,6 +84,30 @@ export class HomeComponent {
       clearInterval(this.intervalId);
       this.intervalId = null;
     }
+  }
+
+  /**
+   * Lightweight ripple (no libs). Uses CSS vars + a short class toggle.
+   * Works for <a> buttons with the .btn class.
+   */
+  ctaRipple(ev: PointerEvent): void {
+    const el = ev.currentTarget as HTMLElement | null;
+    if (!el) return;
+
+    const rect = el.getBoundingClientRect();
+    const x = ev.clientX - rect.left;
+    const y = ev.clientY - rect.top;
+
+    el.style.setProperty('--ripple-x', `${x}px`);
+    el.style.setProperty('--ripple-y', `${y}px`);
+
+    // retrigger animation
+    el.classList.remove('rippling');
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+    (el as any).offsetWidth;
+    el.classList.add('rippling');
+
+    window.setTimeout(() => el.classList.remove('rippling'), 550);
   }
 
   pauseAutoplay(): void {

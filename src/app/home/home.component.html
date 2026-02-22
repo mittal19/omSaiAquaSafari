@@ -55,26 +55,30 @@
 
           <!-- removed [@copyIn] -->
           <div class="hero-card" aria-label="Quick booking">
-  <div class="card-actions">
-    <a
-      class="btn primary full"
-      routerLink="/book-yacht"
-      aria-label="Book a luxury yacht in Goa"
-    >
-      Book Now
-    </a>
+            <div class="card-actions">
+              <a
+                class="btn primary full"
+                routerLink="/book-yacht"
+                (pointerdown)="ctaRipple($event)"
+                aria-label="Book a luxury yacht in Goa"
+              >
+                Book Now
+                <span class="btn-ripple" aria-hidden="true"></span>
+              </a>
 
-    <a
-      class="btn secondary full"
-      routerLink="/quick-quote"
-      aria-label="Get a quick quote for yacht rental"
-    >
-      Get a Quote
-    </a>
-  </div>
+              <a
+                class="btn secondary full"
+                routerLink="/quick-quote"
+                (pointerdown)="ctaRipple($event)"
+                aria-label="Get a quick quote for yacht rental"
+              >
+                Get a Quote
+                <span class="btn-ripple" aria-hidden="true"></span>
+              </a>
+            </div>
 
-  <p class="card-note">No hidden charges • Instant support</p>
-</div>
+            <p class="card-note">No hidden charges • Instant support</p>
+          </div>
         </div>
 
         <div class="hero-dots" aria-label="Hero image selectors">
