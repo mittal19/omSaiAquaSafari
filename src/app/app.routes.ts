@@ -18,7 +18,7 @@ export const routes: Routes = [
   {
     path: 'explore',
     loadComponent: () =>
-      import('./home/explore/explore.component').then(m => m.ExploreComponent),
+      import('./explore/explore.component').then(m => m.ExploreComponent),
   },
   {
     path: 'gallery',

@@ -1,0 +1,223 @@
+/* ========= Brand tokens (match your existing palette) ========= */
+:host {
+  --brand-blue: #0b5fd7;   /* set to your existing primary */
+  --brand-blue-2: #00a6e8; /* set to your existing secondary */
+  --brand-orange: #f28c28; /* matches your button accent in screenshots */
+  --ink: #0b1220;
+  --card-radius: 16px;
+}
+
+/* ========= Section wrapper ========= */
+.explore {
+  
+     padding-top: 72px;
+  scroll-margin-top: 72px; 
+}
+
+.explore__header {
+  width: min(1100px, 92%);
+  margin: 0 auto 18px;
+}
+
+.explore__title {
+  margin: 0 0 6px;
+  font-size: clamp(20px, 2.2vw, 28px);
+  color: var(--ink);
+  letter-spacing: 0.2px;
+}
+
+.explore__subtitle {
+  margin: 0;
+  color: rgba(11, 18, 32, 0.75);
+  font-size: clamp(14px, 1.4vw, 16px);
+  line-height: 1.5;
+}
+
+/* ========= Grid layout (desktop like screenshot) ========= */
+.exploreGrid {
+   /* width: min(1400px, 96%); */
+  /* margin: 0 auto; */
+  display: grid;
+  gap: clamp(14px, 2vw, 22px);
+
+  grid-template-columns: 2fr 1fr 1fr;
+  grid-template-areas: "yachts events celebrations";
+  align-items: stretch;
+
+  width: 100%;
+  padding: 0 clamp(16px, 4vw, 60px);
+  margin: 0;
+}
+
+.card[data-area="yachts"] {
+  grid-area: yachts;
+  min-height: 320px;
+}
+.card[data-area="events"] {
+  grid-area: events;
+  min-height: 320px;
+}
+.card[data-area="celebrations"] {
+  grid-area: celebrations;
+  min-height: 320px;
+}
+
+/* Tablet */
+@media (max-width: 900px) {
+  .exploreGrid {
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas:
+      "yachts yachts"
+      "events celebrations";
+  }
+  .card[data-area="yachts"] {
+    min-height: 280px;
+  }
+}
+
+/* Mobile (stack) */
+@media (max-width: 560px) {
+  .exploreGrid {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "yachts"
+      "events"
+      "celebrations";
+  }
+  .card {
+    min-height: 280px;
+  }
+}
+
+/* ========= Card ========= */
+.card {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--card-radius);
+  background: #0a1020;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+  transform: translateZ(0);
+}
+
+.card__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Gradient overlay + subtle "wave" pattern */
+.card__overlay {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(80% 90% at 70% 30%, rgba(0, 166, 232, 0.35) 0%, rgba(0, 0, 0, 0) 55%),
+    linear-gradient(110deg, rgba(11, 95, 215, 0.75), rgba(0, 0, 0, 0.15) 55%, rgba(242, 140, 40, 0.35));
+  opacity: 0.95;
+}
+
+.card__overlay::after {
+  content: "";
+  position: absolute;
+  inset: -20%;
+  background:
+    radial-gradient(circle at 30% 40%, rgba(255, 255, 255, 0.14) 0 2px, rgba(255, 255, 255, 0) 3px),
+    radial-gradient(circle at 65% 55%, rgba(255, 255, 255, 0.12) 0 2px, rgba(255, 255, 255, 0) 3px);
+  opacity: 0.35;
+  transform: rotate(-8deg);
+}
+
+/* Content */
+.card__content {
+  position: absolute;
+  inset: 0;
+  padding: clamp(16px, 2vw, 26px);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 10px;
+  color: #fff;
+}
+
+.card__title {
+  margin: 0;
+  font-size: clamp(18px, 2.4vw, 30px);
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.card__text {
+  margin: 0;
+  max-width: 28ch;
+  font-size: clamp(13px, 1.4vw, 15px);
+  line-height: 1.45;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* CTA button hidden by default */
+.card__cta {
+  margin-top: 12px;
+  align-self: flex-start;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 12px 18px;
+  border-radius: 10px;
+  text-decoration: none;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--brand-orange);
+
+  /* Start hidden */
+  opacity: 0;
+  transform: translateY(10px) scale(0.96);
+  pointer-events: none;
+}
+
+/* ========= Desktop behaviour: show CTA on hover/focus (popup animation) ========= */
+@media (hover: hover) and (pointer: fine) {
+  .card:hover .card__cta,
+  .card:focus-within .card__cta {
+    pointer-events: auto;
+    animation: popIn 260ms cubic-bezier(0.2, 0.9, 0.25, 1) forwards;
+  }
+}
+
+/* ========= Tablet/Mobile behaviour: show CTA when section is in view ========= */
+@media (hover: none), (pointer: coarse) {
+  .card.is-inview .card__cta {
+    pointer-events: auto;
+    animation: popIn 260ms cubic-bezier(0.2, 0.9, 0.25, 1) forwards;
+  }
+}
+
+/* Popup animation */
+@keyframes popIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .card__cta {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+/* Nice focus outline for keyboard users */
+.card__cta:focus-visible {
+  outline: 3px solid rgba(255, 255, 255, 0.8);
+  outline-offset: 3px;
+}
