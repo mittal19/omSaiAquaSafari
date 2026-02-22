@@ -73,9 +73,6 @@
   >
     <div class="mobile-top">
       <span class="mobile-title">Menu</span>
-      <button class="icon-btn" type="button" (click)="closeMenu()" aria-label="Close menu">
-        ✕
-      </button>
     </div>
 
     <a
@@ -91,16 +88,6 @@
 
     <div class="mobile-cta-wrap">
       <a class="cta full" [href]="telHref()" aria-label="Call us">Call Us</a>
-      <!-- <a
-        class="ghost full"
-        [href]="whatsappHref()"
-        target="_blank"
-        rel="noopener"
-        aria-label="Chat on WhatsApp"
-      >
-        WhatsApp
-      </a> -->
-      <div class="mini-note">Call: {{ phoneNumberDisplay }}</div>
     </div>
   </nav>
 </header>

@@ -326,6 +326,11 @@
  .hero-dots {
     margin-top: 4vh;
   }
+  .hero-subtitle {
+    display: block;
+    /* Reserve space for 2 lines (your line-height is 1.65) */
+    min-height: calc(1.65em * 2);
+  }
 }
 
 /* Respect reduced motion */
