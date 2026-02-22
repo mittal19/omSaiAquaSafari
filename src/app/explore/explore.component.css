@@ -1,12 +1,12 @@
 /* ========= Brand tokens (match your existing palette) ========= */
 :host {
-  --brand-blue: #0b5fd7;   /* set to your existing primary */
-  --brand-blue-2: #00a6e8; /* set to your existing secondary */
-  --brand-orange: #f28c28; /* matches your button accent in screenshots */
-  --ink: #0b1220;
+  --brand-deep-blue: #0d3b66;
+  --brand-teal: #0fb9b1;
+  --brand-gold: #ffb703;
+  --brand-orange: #fb8500;
+  --brand-dark: #0a1f33;
   --card-radius: 16px;
 }
-
 /* ========= Section wrapper ========= */
 .explore {
   
@@ -111,9 +111,37 @@
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(80% 90% at 70% 30%, rgba(0, 166, 232, 0.35) 0%, rgba(0, 0, 0, 0) 55%),
-    linear-gradient(110deg, rgba(11, 95, 215, 0.75), rgba(0, 0, 0, 0.15) 55%, rgba(242, 140, 40, 0.35));
-  opacity: 0.95;
+    radial-gradient(
+      130% 130% at 0% 0%,
+      rgba(10, 31, 51, 0.9) 0%,
+      rgba(13, 59, 102, 0.75) 35%,
+      rgba(15, 185, 177, 0.45) 55%,
+      rgba(0, 0, 0, 0) 80%
+    ),
+    linear-gradient(
+      120deg,
+      rgba(13, 59, 102, 0.6),
+      rgba(15, 185, 177, 0.4) 50%,
+      rgba(251, 133, 0, 0.35)
+    );
+  opacity: 1;
+}
+
+.card[data-area="events"] .card__overlay {
+  background:
+    radial-gradient(
+      130% 130% at 0% 0%,
+      rgba(0, 0, 0, 0.85) 0%,
+      rgba(11, 95, 215, 0.65) 35%,
+      rgba(0, 0, 0, 0.35) 60%,
+      rgba(0, 0, 0, 0) 80%
+    ),
+    linear-gradient(
+      110deg,
+      rgba(11, 95, 215, 0.6),
+      rgba(0, 0, 0, 0.1) 55%,
+      rgba(242, 140, 40, 0.3)
+    );
 }
 
 .card__overlay::after {
@@ -141,17 +169,20 @@
 
 .card__title {
   margin: 0;
-  font-size: clamp(18px, 2.4vw, 30px);
-  font-weight: 700;
+  font-size: clamp(24px, 2.4vw, 30px);
+  font-weight: bolder;
   line-height: 1.1;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
 }
 
 .card__text {
   margin: 0;
   max-width: 28ch;
-  font-size: clamp(13px, 1.4vw, 15px);
+  font-size: clamp(16px, 1.4vw, 15px);
   line-height: 1.45;
+  font-weight: bold;
   color: rgba(255, 255, 255, 0.9);
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.5);
 }
 
 /* CTA button hidden by default */
@@ -169,13 +200,19 @@
   font-weight: 700;
   letter-spacing: 0.2px;
 
-  background: rgba(255, 255, 255, 0.92);
-  color: var(--brand-orange);
+ background: rgba(255, 255, 255, 0.92);
+  color: var( --brand-orange);
 
   /* Start hidden */
   opacity: 0;
   transform: translateY(10px) scale(0.96);
   pointer-events: none;
+  
+}
+
+.card__cta:hover {
+  background: var(--brand-orange);
+  color: white;
 }
 
 /* ========= Desktop behaviour: show CTA on hover/focus (popup animation) ========= */
