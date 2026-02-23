@@ -336,7 +336,7 @@ html.no-scroll {
   }
 
   .modal-title { display: none; }
-  .mobile-only { display: inline-flex; }
+
 
   /* tighter but still safe on small screens */
   .modal {
@@ -360,4 +360,12 @@ html.no-scroll {
 .infinite-sentinel {
   height: 1px;
   width: 100%;
+}
+
+/* Hide keyboard navigation hints on mobile & tablet */
+@media (max-width: 1024px) {
+ .desktop-only {
+    display: none !important;
+  }
+    .mobile-only { display: inline-flex; }
 }

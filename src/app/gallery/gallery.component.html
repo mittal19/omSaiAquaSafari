@@ -89,6 +89,7 @@
                 *ngIf="active.provider !== 'youtube'; else youtubeEmbed"
                 class="full"
                 controls
+                autoplay
                 playsinline
                 preload="metadata"
                 [attr.poster]="active.thumbUrl"
@@ -116,8 +117,8 @@
         </ng-container>
 
         <div class="modal-hint" aria-hidden="true">
-          <span class="hint-pill">Esc to close</span>
-          <span class="hint-pill">← / → to navigate</span>
+          <span class="hint-pill desktop-only">Esc to close</span>
+          <span class="hint-pill desktop-only">← / → to navigate</span>
           <span class="hint-pill mobile-only">Swipe to navigate</span>
         </div>
       </div>
