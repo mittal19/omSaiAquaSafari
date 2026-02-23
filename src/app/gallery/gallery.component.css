@@ -13,7 +13,7 @@ html.no-scroll {
 .container {
   /* width: min(1120px, calc(100% - 32px)); */
   /* margin: 0 auto; */
-  padding:  clamp(16px, 4vw, 60px)
+  padding: clamp(16px, 4vw, 60px);
 }
 
 /* ================= Gallery Header Styling ================= */
@@ -157,18 +157,26 @@ html.no-scroll {
   z-index: 1500;
 }
 
+/* ✅ Fix: consistent padding on both sides for all widths */
 .modal {
   position: fixed;
   inset: 0;
   display: grid;
   place-items: center;
   z-index: 1600;
-  padding: 18px;
+
+  /* controls spacing everywhere (prevents edge-to-edge on any device) */
+  padding: clamp(16px, 4vw, 32px);
 }
 
 .modal-shell {
   position: relative;
-  width: min(1040px, 96vw);
+
+  /* ✅ Fix: respect modal padding (no 100vw math, no scrollbar issues) */
+  width: 100%;
+  max-width: 1040px;
+  margin: 0 auto;
+
   border-radius: 22px;
   overflow: hidden;
   background: #0b1220;
@@ -263,7 +271,6 @@ html.no-scroll {
 .nav-btn {
   position: absolute;
   top: 48%;
-  /* transform: translateY(-50%); */
   width: 54px;
   height: 54px;
   font-size: 34px;
@@ -321,13 +328,27 @@ html.no-scroll {
 
 @media (max-width: 560px) {
   .full { height: 70dvh; }
+
   .nav-btn {
     width: 46px;
     height: 46px;
     font-size: 30px;
   }
+
   .modal-title { display: none; }
   .mobile-only { display: inline-flex; }
+
+  /* tighter but still safe on small screens */
+  .modal {
+    padding: 14px;
+  }
+
+  .modal-shell {
+    border-radius: 18px;
+  }
+
+  .nav-btn.left { left: 6px; }
+  .nav-btn.right { right: 6px; }
 }
 
 /* Reduce motion */
