@@ -34,28 +34,16 @@
         {{ yacht()?.name }}
       </h1>
 
-      <h2 class="gallery__tagline">
-        Premium Luxury Yacht Experience in Goa
-      </h2>
+      <h2 class="gallery__tagline">Premium Luxury Yacht Experience in Goa</h2>
 
       <p class="gallery__description">
         Ideal for couples, families, birthdays, proposals and corporate celebrations.
       </p>
 
-      <div class="badges" role="list" aria-label="Key yacht highlights">
-        <div class="badge" role="listitem">
-          <span class="badge__k">Length</span>
-          <span class="badge__v">{{ yacht()?.length || "—" }}</span>
-        </div>
-
-        <div class="badge" role="listitem">
-          <span class="badge__k">Rating</span>
-          <span class="badge__v">{{ yacht()?.rating || 4 }} ★</span>
-        </div>
-
-        <div class="badge" role="listitem">
-          <span class="badge__k">Guests</span>
-          <span class="badge__v">{{ yacht()?.capacity || "—" }}</span>
+      <div class="badges" role="list" aria-label="Key yacht highlights" *ngIf="headerBadges().length">
+        <div class="badge" role="listitem" *ngFor="let b of headerBadges()">
+          <span class="badge__k">{{ b.k }}</span>
+          <span class="badge__v">{{ b.v }}</span>
         </div>
       </div>
     </header>
@@ -107,8 +95,6 @@
             >
               <span aria-hidden="true">›</span>
             </button>
-
-          
           </div>
 
           <div class="thumbs" role="list" aria-label="Gallery thumbnails" *ngIf="galleryImages().length">
@@ -128,52 +114,35 @@
 
         <article class="specCard" aria-label="Yacht overview and highlights">
           <h2 class="cardTitle">About this yacht</h2>
-          <p class="desc">{{ yacht()?.description }}</p>
+          <p class="desc">
+            {{ yacht()?.description || "A premium yacht experience in Goa with professional crew and curated sea routes." }}
+          </p>
 
-          <h3 class="cardTitle cardTitle--sm">Exclusive onboard experiences</h3>
-          <div class="includes" role="list">
-            <span class="pill ok" role="listitem" *ngFor="let h of yacht()?.highlights">{{ h }}</span>
-          </div>
+          <ng-container *ngIf="inclusionsList().length">
+            <h3 class="cardTitle cardTitle--sm">Inclusions</h3>
+            <div class="includes" role="list" aria-label="Included with this yacht">
+              <span class="pill ok" role="listitem" *ngFor="let inc of inclusionsList()">{{ inc }}</span>
+            </div>
+          </ng-container>
         </article>
 
         <article class="specCard" aria-label="Yacht quick specs">
           <h2 class="cardTitle">Quick specs</h2>
 
-          <div class="specGrid" role="list">
-            <div class="spec" role="listitem">
-              <span class="k">Guests</span>
-              <span class="v">{{ yacht()?.capacity || "—" }}</span>
-            </div>
-
-            <div class="spec" role="listitem">
-              <span class="k">Length</span>
-              <span class="v">{{ yacht()?.length || "—" }}</span>
-            </div>
-
-            <div class="spec" role="listitem">
-              <span class="k">Speed</span>
-              <span class="v">{{ yacht()?.speed || "—" }}</span>
-            </div>
-
-            <div class="spec" role="listitem">
-              <span class="k">Cabins</span>
-              <span class="v">{{ yacht()?.cabin ?? 0 }}</span>
-            </div>
-
-            <div class="spec" role="listitem">
-              <span class="k">Crew</span>
-              <span class="v">{{ yacht()?.crew ?? 0 }}</span>
-            </div>
-
-            <div class="spec" role="listitem">
-              <span class="k">Duration</span>
-              <span class="v">{{ yacht()?.totalTime || "—" }}</span>
+          <div class="specGrid" role="list" *ngIf="specItems().length; else noSpecs">
+            <div class="spec" role="listitem" *ngFor="let s of specItems()">
+              <span class="k">{{ s.k }}</span>
+              <span class="v">{{ s.v }}</span>
             </div>
           </div>
+
+          <ng-template #noSpecs>
+            <p class="desc" style="margin: 0">Specs will appear here once you select a yacht.</p>
+          </ng-template>
         </article>
       </div>
 
-      <!-- RIGHT: Packages + Enquire Form -->
+      <!-- RIGHT: Enquire Form -->
       <aside class="rightCol" aria-label="Booking panel">
         <article class="formCard">
           <h2 class="cardTitle">Request booking</h2>
@@ -220,24 +189,6 @@
                   Please enter your name (min 2 characters).
                 </p>
               </div>
-
-              <div class="field">
-                <label class="field__label" for="email">Email (optional)</label>
-                <input
-                  id="email"
-                  class="field__control"
-                  type="email"
-                  formControlName="email"
-                  name="email"
-                  autocomplete="email"
-                  inputmode="email"
-                  placeholder="you@example.com"
-                  [attr.aria-invalid]="submitted && f.email.invalid && f.email.value"
-                />
-                <p *ngIf="submitted && f.email.invalid && f.email.value" class="field__error">
-                  Please enter a valid email.
-                </p>
-              </div>
             </div>
 
             <div class="form__row">
@@ -262,6 +213,23 @@
                 <p class="field__error" *ngIf="submitted && f.phone.invalid">
                   Please enter a 10-digit phone number.
                 </p>
+              </div>
+            </div>
+
+            <div class="form__row">
+              <div class="field">
+                <label class="field__label" for="email">Email</label>
+                <input
+                  id="email"
+                  class="field__control"
+                  type="email"
+                  formControlName="email"
+                  name="email"
+                  autocomplete="email"
+                  placeholder="Optional"
+                  [attr.aria-invalid]="submitted && f.email.invalid"
+                />
+                <p class="field__error" *ngIf="submitted && f.email.invalid">Please enter a valid email.</p>
               </div>
             </div>
 
@@ -295,9 +263,7 @@
                 </span>
               </button>
 
-              <p class="form__fineprint">
-                By submitting, you agree to be contacted about your request.
-              </p>
+              <p class="form__fineprint">By submitting, you agree to be contacted about your request.</p>
             </div>
           </form>
         </article>
@@ -305,7 +271,7 @@
     </div>
   </div>
 
-  <!-- ✅ Lightbox modal (same UX as Gallery) -->
+  <!-- ✅ Lightbox modal -->
   <div class="modal-backdrop" *ngIf="isLightboxOpen()"></div>
 
   <div
@@ -316,37 +282,33 @@
     aria-label="Yacht image preview"
     (click)="closeLightbox()"
   >
-    <div
-      class="modal-shell"
-      (click)="stopPropagation($event)"
-      (touchstart)="onTouchStart($event)"
-      (touchend)="onTouchEnd($event)"
-    >
+    <div class="modal-shell" (click)="stopPropagation($event)" (touchstart)="onTouchStart($event)" (touchend)="onTouchEnd($event)">
       <div class="modal-topbar">
-        <div class="modal-meta" aria-hidden="true">
-          
-        </div>
+        <div class="modal-meta" aria-hidden="true"></div>
 
         <button class="icon-btn close" type="button" (click)="closeLightbox()" aria-label="Close">
           <span aria-hidden="true">✕</span>
         </button>
       </div>
 
-      <button class="nav-btn left" type="button" (click)="prevLightbox()" aria-label="Previous">
-        <span aria-hidden="true">‹</span>
-      </button>
-      <button class="nav-btn right" type="button" (click)="nextLightbox()" aria-label="Next">
-        <span aria-hidden="true">›</span>
-      </button>
+      <div class="modal-body">
+        <button class="icon-btn nav left" type="button" (click)="prevMain()" aria-label="Previous image">
+          <span aria-hidden="true">‹</span>
+        </button>
 
-      <ng-container *ngIf="lightboxItem() as active">
-        <img class="full" [src]="active.url" [alt]="active.alt" decoding="async" />
-      </ng-container>
+        <img
+          class="modal-img"
+          *ngIf="activeImg() as img"
+          [ngSrc]="img.url"
+          width="1600"
+          height="900"
+          [alt]="img.alt"
+          priority="false"
+        />
 
-      <div class="modal-hint" aria-hidden="true">
-        <span class="hint-pill">Esc to close</span>
-        <span class="hint-pill">← / → to navigate</span>
-        <span class="hint-pill mobile-only">Swipe to navigate</span>
+        <button class="icon-btn nav right" type="button" (click)="nextMain()" aria-label="Next image">
+          <span aria-hidden="true">›</span>
+        </button>
       </div>
     </div>
   </div>
