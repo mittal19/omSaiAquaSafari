@@ -76,8 +76,8 @@ export class GalleryComponent {
     {
       id: 'v1',
       kind: 'video',
-      thumbUrl: 'assets/gallery/goaVideoThumb.png',
-      videoUrl: 'assets/gallery/goaVideo.mp4',
+      thumbUrl: 'assets/gallery/thumbnail/video1.png',
+      videoUrl: 'assets/gallery/video1.mp4',
       title: 'Yacht experience video in Goa',
       provider: 'mp4',
     },
@@ -300,15 +300,16 @@ ngAfterViewInit(): void {
       .map((file, idx) => {
         const url = `assets/gallery/${file}`;
         const isVideo = /\.mp4$/i.test(file);
-
+        
         if (isVideo) {
+          const fileName = file.split('.')[0];
           return {
             id: `vid-${idx}-${file}`,
             kind: 'video' as const,
             provider: 'mp4' as const,
             videoUrl: url,
             // ✅ use a common poster/thumb (add one image in assets/gallery/)
-            thumbUrl: 'assets/gallery/goaVideoThumb.png',
+            thumbUrl: 'assets/gallery/thumbnail/'+fileName+'.png',
             title: 'Yacht experience video in Goa',
           };
         }
