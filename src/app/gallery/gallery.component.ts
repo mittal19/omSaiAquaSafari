@@ -7,9 +7,13 @@ import {
   effect,
   inject,
   signal,
+  ViewChild,
+  ElementRef,
+  AfterViewInit,
 } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl, Title, Meta } from '@angular/platform-browser';
-import { Router } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
+import { filter } from 'rxjs/operators';
 
 type MediaItem =
   | {
@@ -27,7 +31,6 @@ type MediaItem =
       thumbUrl: string;
       title: string;
       provider: 'mp4' | 'youtube';
-      /** mp4 url OR youtube embed url */
       videoUrl: string;
     };
 
@@ -47,9 +50,12 @@ export class GalleryComponent {
   private readonly doc = inject(DOCUMENT);
   private readonly destroyRef = inject(DestroyRef);
 
-  /** Replace with your real gallery data (keep ids stable). */
-  readonly items = signal<MediaItem[]>([
-   {
+  @ViewChild('infiniteSentinel') infiniteSentinel?: ElementRef<HTMLElement>;
+  private io?: IntersectionObserver;
+
+  /** Home/embedded gallery items (KEEP your current view intact) */
+  private readonly homeItems = signal<MediaItem[]>([
+    {
       id: 'y1',
       kind: 'image',
       thumbUrl: 'assets/gallery/27.jpeg',
@@ -74,14 +80,35 @@ export class GalleryComponent {
       videoUrl: 'assets/gallery/goaVideo.mp4',
       title: 'Yacht experience video in Goa',
       provider: 'mp4',
-    }
+    },
   ]);
+
+  /** Full-page (/gallery) items loaded from manifest */
+  private readonly fullAllItems = signal<MediaItem[]>([]);
+  private readonly fullVisibleCount = signal(18);
+  private readonly pageSize = 6;
+
+  /** Detect when component is shown on /gallery route */
+  readonly isFullPage = signal(false);
+
+  /** Items exposed to template */
+  readonly items = computed<MediaItem[]>(() => {
+    if (!this.isFullPage()) return this.homeItems();
+    const all = this.fullAllItems();
+    const count = this.fullVisibleCount();
+    return all.slice(0, Math.min(count, all.length));
+  });
+
+  readonly canLoadMore = computed(() => {
+    if (!this.isFullPage()) return false;
+    return this.items().length < this.fullAllItems().length;
+  });
 
   /** Lightbox state */
   readonly isOpen = signal(false);
   private readonly activeIndex = signal<number>(-1);
 
-  /** Lazy-load video only after modal opens (keeps initial load fast). */
+  /** Lazy-load video only after modal opens */
   private readonly loadVideo = signal(false);
 
   /** Touch swipe */
@@ -103,35 +130,48 @@ export class GalleryComponent {
   readonly safeEmbedUrl = computed<SafeResourceUrl | null>(() => {
     const active = this.activeItem();
     if (!active || active.kind !== 'video' || active.provider !== 'youtube') return null;
-    // Use youtube-nocookie embed urls when possible.
     return this.sanitizer.bypassSecurityTrustResourceUrl(active.videoUrl);
   });
 
   constructor() {
-    // Basic SEO for the Gallery route/section
+    // SEO basics
     this.title.setTitle('Gallery | Om Sai Aqua Safari');
     this.meta.updateTag({
       name: 'description',
       content: 'Photo and video gallery of our yacht and cruise experiences in Goa.',
     });
 
-    // When modal opens/closes, control video lazy loading + prevent background scroll.
-    effect(() => {
-      const open = this.isOpen();
-      if (!isPlatformBrowser(this.platformId)) return;
+    // Set initial route mode + subscribe to route changes
+    this.applyRouteMode(this.router.url);
 
-      if (open) {
-        this.doc.documentElement.classList.add('no-scroll');
-        // load video on next tick so CSS animation feels smooth
-        queueMicrotask(() => this.loadVideo.set(true));
-      } else {
-        this.doc.documentElement.classList.remove('no-scroll');
-        this.loadVideo.set(false);
-        this.activeIndex.set(-1);
-      }
-    });
+    if (isPlatformBrowser(this.platformId)) {
+      const sub = this.router.events
+        .pipe(filter((e): e is NavigationEnd => e instanceof NavigationEnd))
+        .subscribe((e) => this.applyRouteMode(e.urlAfterRedirects));
 
-    // Keyboard controls (Esc, ←, →)
+      this.destroyRef.onDestroy(() => sub.unsubscribe());
+    }
+
+    // ✅ Modal side-effects (this writes signals, so allowSignalWrites is required)
+    effect(
+      () => {
+        const open = this.isOpen();
+
+        if (!isPlatformBrowser(this.platformId)) return;
+
+        if (open) {
+          this.doc.documentElement.classList.add('no-scroll');
+          queueMicrotask(() => this.loadVideo.set(true));
+        } else {
+          this.doc.documentElement.classList.remove('no-scroll');
+          this.loadVideo.set(false);
+          this.activeIndex.set(-1);
+        }
+      },
+      { allowSignalWrites: true }
+    );
+
+    // Keyboard controls (no effect needed)
     if (isPlatformBrowser(this.platformId)) {
       const controller = new AbortController();
       this.doc.addEventListener(
@@ -160,6 +200,145 @@ export class GalleryComponent {
 
       this.destroyRef.onDestroy(() => controller.abort());
     }
+
+//     effect(() => {
+//   if (!isPlatformBrowser(this.platformId)) return;
+//   if (!this.isFullPage()) return;
+
+//   // wait until Angular renders the sentinel into the DOM
+//   afterNextRender(() => this.setupInfiniteObserver());
+// });
+
+  }
+
+  private scheduleObserverRebind(): void {
+  if (!isPlatformBrowser(this.platformId)) return;
+
+  // Let Angular finish rendering first
+  queueMicrotask(() => {
+    requestAnimationFrame(() => this.setupInfiniteObserver());
+  });
+}
+
+
+ngAfterViewInit(): void {
+  this.setupInfiniteObserver(); // initial bind
+}
+
+  private applyRouteMode(url: string): void {
+    const isGallery = url === '/gallery' || url.startsWith('/gallery?');
+    const wasFull = this.isFullPage();
+
+    this.isFullPage.set(isGallery);
+
+    // entering /gallery
+    if (isGallery && !wasFull && isPlatformBrowser(this.platformId)) {
+      this.fullVisibleCount.set(this.pageSize);
+
+      if (this.fullAllItems().length === 0) {
+        void this.loadFromManifest();
+      }
+
+      // observer may not exist yet (ViewChild not ready until AfterViewInit)
+      queueMicrotask(() => this.setupInfiniteObserver());
+    }
+
+    // leaving /gallery (optional cleanup)
+    if (!isGallery && wasFull) {
+      this.io?.disconnect();
+      this.io = undefined;
+    }
+  }
+
+  private setupInfiniteObserver(): void {
+  if (!isPlatformBrowser(this.platformId)) return;
+
+  // Reset old observer
+  this.io?.disconnect();
+  this.io = undefined;
+
+  if (!this.isFullPage()) return;
+
+  const el = this.infiniteSentinel?.nativeElement;
+  if (!el) return;
+
+  // If we're already fully loaded, no need to observe
+  if (!this.canLoadMore()) return;
+
+  this.io = new IntersectionObserver(
+    (entries) => {
+      const entry = entries[0];
+      if (entry?.isIntersecting) {
+        this.loadMore();
+      }
+    },
+    { root: null, rootMargin: '900px 0px', threshold: 0.01 }
+  );
+
+  this.io.observe(el);
+}
+
+  private async loadFromManifest(): Promise<void> {
+  try {
+    const res = await fetch('assets/gallery/manifest.json', { cache: 'no-cache' });
+    if (!res.ok) throw new Error(`manifest fetch failed: ${res.status}`);
+    const raw = (await res.json()) as string[];
+
+    // ✅ Deduplicate while keeping order
+    const files: string[] = [];
+    const seen = new Set<string>();
+    for (const f of raw) {
+      const key = (f ?? '').trim();
+      if (!key) continue;
+      if (seen.has(key)) continue;
+      seen.add(key);
+      files.push(key);
+    }
+
+    const items: MediaItem[] = files
+      .filter((f) => /\.(png|jpe?g|webp|avif|mp4)$/i.test(f)) // ✅ include mp4
+      .map((file, idx) => {
+        const url = `assets/gallery/${file}`;
+        const isVideo = /\.mp4$/i.test(file);
+
+        if (isVideo) {
+          return {
+            id: `vid-${idx}-${file}`,
+            kind: 'video' as const,
+            provider: 'mp4' as const,
+            videoUrl: url,
+            // ✅ use a common poster/thumb (add one image in assets/gallery/)
+            thumbUrl: 'assets/gallery/goaVideoThumb.png',
+            title: 'Yacht experience video in Goa',
+          };
+        }
+
+        return {
+          id: `img-${idx}-${file}`,
+          kind: 'image' as const,
+          thumbUrl: url,
+          fullUrl: url,
+          alt: 'Yacht & cruise gallery photo in Goa',
+        };
+      });
+
+    this.fullAllItems.set(items);
+    this.scheduleObserverRebind();
+
+    // ✅ Ensure infinite scroll observer attaches AFTER sentinel is in DOM
+    queueMicrotask(() => this.setupInfiniteObserver());
+  } catch (e) {
+    // Fallback: don't crash
+    this.fullAllItems.set(this.homeItems());
+    queueMicrotask(() => this.setupInfiniteObserver());
+  }
+}
+
+  private loadMore(): void {
+    if (!this.canLoadMore()) return;
+    this.fullVisibleCount.update((n) => n + this.pageSize);
+    // rebind so sentinel stays watched after DOM grows
+  this.scheduleObserverRebind();
   }
 
   open(item: MediaItem): void {
@@ -182,7 +361,6 @@ export class GalleryComponent {
     const idx = this.activeIndex();
     const nextIdx = idx < 0 ? 0 : (idx + 1) % list.length;
 
-    // Reset video loading momentarily so mp4/iframe re-mounts (stops audio)
     this.loadVideo.set(false);
     this.activeIndex.set(nextIdx);
     queueMicrotask(() => this.loadVideo.set(true));
@@ -200,12 +378,10 @@ export class GalleryComponent {
     queueMicrotask(() => this.loadVideo.set(true));
   }
 
-  /** Only load the video element when the modal is open (better performance). */
   shouldLoadVideo(): boolean {
     return this.isOpen() && this.loadVideo();
   }
 
-  /** Backdrop click closes modal; clicks inside modal should not. */
   stopPropagation(ev: Event): void {
     ev.stopPropagation();
   }

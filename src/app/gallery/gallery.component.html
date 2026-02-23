@@ -6,7 +6,6 @@
       <p class="gallery__description">Tap any photo or video to view in full.</p>
     </header>
 
-    <!-- ✅ Modern responsive grid (fast) -->
     <div class="grid" role="list">
       <button
         *ngFor="let item of items()"
@@ -29,11 +28,20 @@
       </button>
     </div>
 
-    <div class="gallery-footer">
+    <!-- Home/embed only -->
+    <div class="gallery-footer" *ngIf="!isFullPage()">
       <button class="btn primary large" type="button" (click)="seeMore()">
         See More Photos &amp; Videos
       </button>
     </div>
+
+    <!-- /gallery only: sentinel for scroll loading -->
+    <div
+  *ngIf="isFullPage()"
+  #infiniteSentinel
+  class="infinite-sentinel"
+  aria-hidden="true"
+></div>
 
     <!-- ✅ Lightbox modal -->
     <div class="modal-backdrop" *ngIf="isOpen()"></div>
@@ -52,12 +60,7 @@
         (touchend)="onTouchEnd($event)"
       >
         <div class="modal-topbar">
-          <div class="modal-meta">
-            <!-- <span class="modal-counter">{{ counterText() }}</span>
-            <span class="modal-title" *ngIf="activeItem() as active">
-              {{ active.kind === 'image' ? active.alt : active.title }}
-            </span> -->
-          </div>
+          <div class="modal-meta"></div>
 
           <button class="icon-btn close" type="button" (click)="close()" aria-label="Close">
             <span aria-hidden="true">✕</span>
@@ -72,7 +75,6 @@
         </button>
 
         <ng-container *ngIf="activeItem() as active">
-          <!-- Image -->
           <img
             *ngIf="active.kind === 'image'"
             class="full"
@@ -81,7 +83,6 @@
             decoding="async"
           />
 
-          <!-- Video (loaded only when modal opens) -->
           <ng-container *ngIf="active.kind === 'video'">
             <ng-container *ngIf="shouldLoadVideo(); else videoThumb">
               <video

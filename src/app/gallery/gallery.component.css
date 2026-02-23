@@ -335,3 +335,8 @@ html.no-scroll {
   .modal-shell { animation: none; opacity: 1; transform: none; }
   .tile, .thumb { transition: none; }
 }
+
+.infinite-sentinel {
+  height: 1px;
+  width: 100%;
+}
