@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { Meta, Title } from '@angular/platform-browser';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { NgOptimizedImage } from '@angular/common';
 
 type YachtCard = {
@@ -19,7 +19,9 @@ type YachtCard = {
   totalTime: string;
   imageUrl: string;
   imageAlt: string;
-  bookRoute: any[]; // routerLink array
+  slider: string[];
+  inclusions: string;
+  description: string;
 };
 
 @Component({
@@ -45,11 +47,13 @@ export class YachtOptionsComponent implements OnInit {
       crew: 3,
       cruiseTime: '',
       anchoringTime: '',
+       inclusions:'',
       totalTime: '1 day',
       rate: "23,000 Rs",
       imageUrl: 'assets/yacht/type/peagus.jpeg',
       imageAlt: 'Peagus luxury yacht in Goa',
-      bookRoute: ['/book-yacht', 'peagus-yacht'],
+             slider:['assets/yacht/type/peagus.jpeg','assets/yacht/type/coco.jpeg','assets/yacht/type/aquila.jpeg','assets/yacht/type/peagus.jpeg','assets/yacht/type/coco.jpeg','assets/yacht/type/aquila.jpeg','assets/yacht/type/peagus.jpeg','assets/yacht/type/coco.jpeg','assets/yacht/type/aquila.jpeg'],
+description:'test'
     },
     {
        id: 'aquila-yacht',
@@ -66,7 +70,9 @@ export class YachtOptionsComponent implements OnInit {
       totalTime : '2 hours',
       imageUrl: 'assets/yacht/type/aquila.jpeg',
       imageAlt: 'Aquila luxury yacht in Goa',
-      bookRoute: ['/book-yacht', 'peagus-yacht'],
+      description:'test',
+      inclusions:"Ice, Mineral water, Cold drinks, Bluetooth music",
+       slider:['assets/yacht/type/aquila.jpeg','assets/yacht/type/peagus.jpeg','assets/yacht/type/coco.jpeg']
     },
     {
       id: 'coco-yacht',
@@ -74,20 +80,22 @@ export class YachtOptionsComponent implements OnInit {
       capacity: 22,
       length: '16 meters',
       speed: '12 knots',
+       inclusions:"Ice, Mineral water, Cold drinks, Bluetooth music",
       sleeping: 0,
       cabin: 0,
       crew: 0,
       cruiseTime: '1 hour',
       anchoringTime : '1 hour',
       totalTime: '2 hours',
+      description:'test',
       rate: "20,000 Rs",
       imageUrl: 'assets/yacht/type/coco.jpeg',
       imageAlt: 'Coco luxury yacht in Goa',
-      bookRoute: ['/book-yacht', 'peagus-yacht'],
+        slider:['assets/yacht/type/coco.jpeg','assets/yacht/type/aquila.jpeg','assets/yacht/type/peagus.jpeg']
     }
   ];
 
-  constructor(private title: Title, private meta: Meta) {}
+  constructor(private title: Title, private meta: Meta,private router: Router) {}
 
   ngOnInit(): void {
     // SEO
@@ -121,6 +129,12 @@ export class YachtOptionsComponent implements OnInit {
 
   get gridCols(): number {
   return Math.min(3, this.yachts.length);
+}
+
+goToYacht(yacht:YachtCard) {
+  this.router.navigate(['/book-yacht',yacht.id], {
+    state: yacht
+  });
 }
 
 }

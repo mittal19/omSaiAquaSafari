@@ -86,8 +86,7 @@
 
         <div class="yacht-divider" aria-hidden="true"></div>
 
-        <a  class="card__cta"
-  [routerLink]="y.bookRoute"
+        <a  class="card__cta" (click)="goToYacht(y)"
   [attr.aria-label]="'Book now for ' + y.name">
           <span>Book Now</span>
           <span class="arrow" aria-hidden="true">→</span>

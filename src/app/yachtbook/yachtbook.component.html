@@ -1,0 +1,353 @@
+<section class="page" aria-labelledby="ybTitle">
+  <!-- Success/Error Toast (same as Enquire) -->
+  <div
+    class="toast"
+    *ngIf="toast.visible"
+    [class.toast--success]="toast.type === 'success'"
+    [class.toast--error]="toast.type === 'error'"
+    role="status"
+    aria-live="polite"
+    aria-atomic="true"
+  >
+    <div class="toast__icon" aria-hidden="true">
+      <span *ngIf="toast.type === 'success'">✓</span>
+      <span *ngIf="toast.type === 'error'">!</span>
+    </div>
+
+    <div class="toast__content">
+      <p class="toast__title">{{ toast.title }}</p>
+      <p class="toast__message">{{ toast.message }}</p>
+    </div>
+
+    <button type="button" class="toast__close" aria-label="Close notification" (click)="hideToast()">
+      ×
+    </button>
+  </div>
+
+  <div class="wrap">
+    <nav class="crumbs" aria-label="Breadcrumb">
+      <a routerLink="/yachts">← Back to Yachts</a>
+    </nav>
+
+    <header class="gallery__header">
+      <h1 id="ybTitle" class="gallery__title">
+        {{ yacht()?.name }}
+      </h1>
+
+      <h2 class="gallery__tagline">
+        Premium Luxury Yacht Experience in Goa
+      </h2>
+
+      <p class="gallery__description">
+        Ideal for couples, families, birthdays, proposals and corporate celebrations.
+      </p>
+
+      <div class="badges" role="list" aria-label="Key yacht highlights">
+        <div class="badge" role="listitem">
+          <span class="badge__k">Length</span>
+          <span class="badge__v">{{ yacht()?.length || "—" }}</span>
+        </div>
+
+        <div class="badge" role="listitem">
+          <span class="badge__k">Rating</span>
+          <span class="badge__v">{{ yacht()?.rating || 4 }} ★</span>
+        </div>
+
+        <div class="badge" role="listitem">
+          <span class="badge__k">Guests</span>
+          <span class="badge__v">{{ yacht()?.capacity || "—" }}</span>
+        </div>
+      </div>
+    </header>
+
+    <div class="layout">
+      <!-- LEFT: Gallery + Description -->
+      <div class="leftCol">
+        <article class="galleryCard" aria-label="Yacht gallery">
+          <div
+            class="mainImg"
+            *ngIf="activeImg() as img"
+            (mouseenter)="onGalleryMouseEnter()"
+            (mouseleave)="onGalleryMouseLeave()"
+            (focusin)="onGalleryMouseEnter()"
+            (focusout)="onGalleryMouseLeave()"
+          >
+            <button
+              type="button"
+              class="mainImg__btn"
+              (click)="openLightbox(activeImgIndex())"
+              [attr.aria-label]="'Open image ' + (activeImgIndex() + 1) + ' in full view'"
+            >
+              <img
+                class="imgMain"
+                [ngSrc]="img.url"
+                width="1200"
+                height="720"
+                [alt]="img.alt"
+                priority="false"
+              />
+            </button>
+
+            <button
+              *ngIf="galleryImages().length > 1"
+              class="mainNav mainNav--left"
+              type="button"
+              (click)="prevMain()"
+              aria-label="Previous image"
+            >
+              <span aria-hidden="true">‹</span>
+            </button>
+
+            <button
+              *ngIf="galleryImages().length > 1"
+              class="mainNav mainNav--right"
+              type="button"
+              (click)="nextMain()"
+              aria-label="Next image"
+            >
+              <span aria-hidden="true">›</span>
+            </button>
+
+          
+          </div>
+
+          <div class="thumbs" role="list" aria-label="Gallery thumbnails" *ngIf="galleryImages().length">
+            <button
+              class="thumbBtn"
+              type="button"
+              role="listitem"
+              *ngFor="let t of galleryImages(); let i = index"
+              [class.active]="i === activeImgIndex()"
+              (click)="setActiveImg(i)"
+              [attr.aria-label]="'View image ' + (i + 1) + ' of ' + galleryImages().length"
+            >
+              <img class="thumbImg" [ngSrc]="t.url" width="156" height="112" [alt]="t.alt" />
+            </button>
+          </div>
+        </article>
+
+        <article class="specCard" aria-label="Yacht overview and highlights">
+          <h2 class="cardTitle">About this yacht</h2>
+          <p class="desc">{{ yacht()?.description }}</p>
+
+          <h3 class="cardTitle cardTitle--sm">Exclusive onboard experiences</h3>
+          <div class="includes" role="list">
+            <span class="pill ok" role="listitem" *ngFor="let h of yacht()?.highlights">{{ h }}</span>
+          </div>
+        </article>
+
+        <article class="specCard" aria-label="Yacht quick specs">
+          <h2 class="cardTitle">Quick specs</h2>
+
+          <div class="specGrid" role="list">
+            <div class="spec" role="listitem">
+              <span class="k">Guests</span>
+              <span class="v">{{ yacht()?.capacity || "—" }}</span>
+            </div>
+
+            <div class="spec" role="listitem">
+              <span class="k">Length</span>
+              <span class="v">{{ yacht()?.length || "—" }}</span>
+            </div>
+
+            <div class="spec" role="listitem">
+              <span class="k">Speed</span>
+              <span class="v">{{ yacht()?.speed || "—" }}</span>
+            </div>
+
+            <div class="spec" role="listitem">
+              <span class="k">Cabins</span>
+              <span class="v">{{ yacht()?.cabin ?? 0 }}</span>
+            </div>
+
+            <div class="spec" role="listitem">
+              <span class="k">Crew</span>
+              <span class="v">{{ yacht()?.crew ?? 0 }}</span>
+            </div>
+
+            <div class="spec" role="listitem">
+              <span class="k">Duration</span>
+              <span class="v">{{ yacht()?.totalTime || "—" }}</span>
+            </div>
+          </div>
+        </article>
+      </div>
+
+      <!-- RIGHT: Packages + Enquire Form -->
+      <aside class="rightCol" aria-label="Booking panel">
+        <article class="formCard">
+          <h2 class="cardTitle">Request booking</h2>
+
+          <!-- ✅ SAME exact form as Enquire -->
+          <form
+            #nativeForm
+            class="form"
+            [formGroup]="contactForm"
+            [attr.action]="formSubmitAction"
+            method="POST"
+            (ngSubmit)="onSubmit()"
+            novalidate
+            aria-describedby="enquireHelp"
+          >
+            <!-- FormSubmit helpers -->
+            <input type="hidden" name="_subject" value="New Quick Quote Request" />
+            <input type="hidden" name="_replyto" [value]="contactForm.get('email')?.value || ''" />
+            <input type="hidden" name="_captcha" value="false" />
+            <input type="text" name="_honey" class="sr-only" tabindex="-1" autocomplete="off" />
+
+            <p id="enquireHelp" class="form__help">
+              Fields marked <span aria-hidden="true">*</span> are required.
+            </p>
+
+            <div class="form__row">
+              <div class="field">
+                <label class="field__label" for="fullName">
+                  Full name <span aria-hidden="true">*</span>
+                </label>
+                <input
+                  id="fullName"
+                  class="field__control"
+                  type="text"
+                  formControlName="fullName"
+                  name="name"
+                  autocomplete="name"
+                  placeholder="Your full name"
+                  required
+                  minlength="2"
+                  [attr.aria-invalid]="submitted && f.fullName.invalid"
+                />
+                <p class="field__error" *ngIf="submitted && f.fullName.invalid">
+                  Please enter your name (min 2 characters).
+                </p>
+              </div>
+
+              <div class="field">
+                <label class="field__label" for="email">Email (optional)</label>
+                <input
+                  id="email"
+                  class="field__control"
+                  type="email"
+                  formControlName="email"
+                  name="email"
+                  autocomplete="email"
+                  inputmode="email"
+                  placeholder="you@example.com"
+                  [attr.aria-invalid]="submitted && f.email.invalid && f.email.value"
+                />
+                <p *ngIf="submitted && f.email.invalid && f.email.value" class="field__error">
+                  Please enter a valid email.
+                </p>
+              </div>
+            </div>
+
+            <div class="form__row">
+              <div class="field">
+                <label class="field__label" for="phone">
+                  Phone <span aria-hidden="true">*</span>
+                </label>
+                <input
+                  id="phone"
+                  class="field__control"
+                  type="tel"
+                  formControlName="phone"
+                  name="phone"
+                  autocomplete="tel"
+                  inputmode="numeric"
+                  placeholder="10-digit number"
+                  required
+                  pattern="[0-9]{10}"
+                  [attr.aria-invalid]="submitted && f.phone.invalid"
+                />
+                <p class="field__hint">We’ll only use this for your quote.</p>
+                <p class="field__error" *ngIf="submitted && f.phone.invalid">
+                  Please enter a 10-digit phone number.
+                </p>
+              </div>
+            </div>
+
+            <div class="field">
+              <label class="field__label" for="message">
+                Message <span aria-hidden="true">*</span>
+              </label>
+              <textarea
+                id="message"
+                class="field__control field__control--textarea"
+                formControlName="message"
+                name="message"
+                rows="6"
+                required
+                minlength="10"
+                placeholder="Example: Date, number of people, yacht/cruise preference, pickup location…"
+                [attr.aria-invalid]="submitted && f.message.invalid"
+              ></textarea>
+              <p class="field__error" *ngIf="submitted && f.message.invalid">
+                Please add a short message (min 10 characters).
+              </p>
+            </div>
+
+            <div class="form__actions">
+              <button class="btn" type="submit" [disabled]="isSubmitting">
+                <span *ngIf="!isSubmitting">Get Quick Quote</span>
+
+                <span *ngIf="isSubmitting" class="btn__loader" aria-live="polite">
+                  <span class="spinner"></span>
+                  Submitting...
+                </span>
+              </button>
+
+              <p class="form__fineprint">
+                By submitting, you agree to be contacted about your request.
+              </p>
+            </div>
+          </form>
+        </article>
+      </aside>
+    </div>
+  </div>
+
+  <!-- ✅ Lightbox modal (same UX as Gallery) -->
+  <div class="modal-backdrop" *ngIf="isLightboxOpen()"></div>
+
+  <div
+    class="modal"
+    *ngIf="isLightboxOpen()"
+    role="dialog"
+    aria-modal="true"
+    aria-label="Yacht image preview"
+    (click)="closeLightbox()"
+  >
+    <div
+      class="modal-shell"
+      (click)="stopPropagation($event)"
+      (touchstart)="onTouchStart($event)"
+      (touchend)="onTouchEnd($event)"
+    >
+      <div class="modal-topbar">
+        <div class="modal-meta" aria-hidden="true">
+          
+        </div>
+
+        <button class="icon-btn close" type="button" (click)="closeLightbox()" aria-label="Close">
+          <span aria-hidden="true">✕</span>
+        </button>
+      </div>
+
+      <button class="nav-btn left" type="button" (click)="prevLightbox()" aria-label="Previous">
+        <span aria-hidden="true">‹</span>
+      </button>
+      <button class="nav-btn right" type="button" (click)="nextLightbox()" aria-label="Next">
+        <span aria-hidden="true">›</span>
+      </button>
+
+      <ng-container *ngIf="lightboxItem() as active">
+        <img class="full" [src]="active.url" [alt]="active.alt" decoding="async" />
+      </ng-container>
+
+      <div class="modal-hint" aria-hidden="true">
+        <span class="hint-pill">Esc to close</span>
+        <span class="hint-pill">← / → to navigate</span>
+        <span class="hint-pill mobile-only">Swipe to navigate</span>
+      </div>
+    </div>
+  </div>
+</section>

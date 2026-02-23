@@ -1,6 +1,5 @@
 import { Routes } from '@angular/router';
 import { HomeComponent } from './home/home.component';
-import { YachtBookComponent } from './details/yachtdetails/yachtbook/yachtbook.component';
 
 export const routes: Routes = [
   {
@@ -40,7 +39,7 @@ export const routes: Routes = [
 
   { path: 'book-yacht/:id',
     loadComponent: () =>
-      import('./details/yachtdetails/yachtbook/yachtbook.component').then(m => m.YachtBookComponent),
+      import('./yachtbook/yachtbook.component').then(m => m.YachtBookComponent),
    },
     { path: 'contact',
     loadComponent: () =>
