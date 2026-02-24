@@ -9,7 +9,7 @@ import {
   inject,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 
 type ExploreCard = {
   title: string;
@@ -31,6 +31,7 @@ type ExploreCard = {
 })
 export class ExploreComponent implements AfterViewInit {
   private readonly destroyRef = inject(DestroyRef);
+   isExploreRoute = false;
 
   @ViewChildren('cardEl') cardEls!: QueryList<ElementRef<HTMLElement>>;
 
@@ -63,6 +64,13 @@ export class ExploreComponent implements AfterViewInit {
       area: 'celebrations',
     },
   ];
+
+  constructor(private router: Router) {}
+
+    ngOnInit() {
+    this.isExploreRoute = this.router.url === '/explore';
+  }
+
 
   ngAfterViewInit(): void {
     const io = new IntersectionObserver(

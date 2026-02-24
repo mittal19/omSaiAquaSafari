@@ -7,6 +7,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { Meta, Title } from '@angular/platform-browser';
+import { Router } from '@angular/router';
 
 type ToastType = 'success' | 'error';
 
@@ -45,13 +46,18 @@ export class EnquireComponent implements OnInit, OnDestroy {
   readonly formSubmitAction =
     'https://formsubmit.co/mittalpriyanshu19@gmail.com';
 
+    isEnquireRoute = false;
+
   constructor(
     private readonly fb: FormBuilder,
     private readonly title: Title,
-    private readonly meta: Meta
+    private readonly meta: Meta,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
+    this.isEnquireRoute = this.router.url === '/quick-quote';
+
     this.contactForm = this.fb.group({
       fullName: ['', [Validators.required, Validators.minLength(2)]],
       // Email is optional, but if provided it must be valid

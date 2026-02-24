@@ -1,4 +1,7 @@
 <section class="page" aria-labelledby="ybTitle">
+  <!-- JSON-LD (SEO) -->
+  <script type="application/ld+json" [textContent]="seoJsonLd()"></script>
+
   <!-- Success/Error Toast (same as Enquire) -->
   <div
     class="toast"
@@ -124,6 +127,44 @@
               <span class="pill ok" role="listitem" *ngFor="let inc of inclusionsList()">{{ inc }}</span>
             </div>
           </ng-container>
+
+          <ng-container *ngIf="additionsList().length">
+            <h3 class="cardTitle cardTitle--sm">Optional add-ons</h3>
+            <p class="desc" style="margin-top: -4px">
+              Available on request (charges may apply).
+            </p>
+            <div class="includes" role="list" aria-label="Optional add-ons">
+              <span class="pill" role="listitem" *ngFor="let a of additionsList()">{{ a }}</span>
+            </div>
+          </ng-container>
+        </article>
+
+        <!-- Pricing -->
+        <article class="specCard" aria-label="Pricing" *ngIf="pricingCards().length">
+          <h2 class="cardTitle">Pricing</h2>
+          <div class="pkgGrid" role="list" aria-label="Pricing options">
+            <div class="pkg" role="listitem" *ngFor="let p of pricingCards()">
+              <p class="pkg__title" style="margin:0; font-weight: 950">{{ p.title }}</p>
+              <p class="pkg__price" style="margin:6px 0 0; font-weight: 950; color: var(--text)">{{ p.price }}</p>
+              <p class="pkg__meta" *ngIf="p.sub" style="margin:6px 0 0; color: rgba(15, 23, 42, 0.72)">{{ p.sub }}</p>
+            </div>
+          </div>
+        </article>
+
+        <!-- ✅ Trip details -->
+        <article class="specCard" aria-label="Trip details" *ngIf="tripDetails().length">
+          <h2 class="cardTitle">Trip details</h2>
+
+          <ul class="infoList" aria-label="Activity information">
+            <li class="infoItem" *ngFor="let item of tripDetails()">
+              <span class="infoCheck" aria-hidden="true">✓</span>
+              <span class="infoIcon" aria-hidden="true">{{ item.icon }}</span>
+              <p class="infoText">
+                <span class="infoLabel">{{ item.label }}:</span>
+                <span class="infoValue">{{ item.value }}</span>
+              </p>
+            </li>
+          </ul>
         </article>
 
         <article class="specCard" aria-label="Yacht quick specs">
@@ -147,7 +188,6 @@
         <article class="formCard">
           <h2 class="cardTitle">Request booking</h2>
 
-          <!-- ✅ SAME exact form as Enquire -->
           <form
             #nativeForm
             class="form"
@@ -158,7 +198,6 @@
             novalidate
             aria-describedby="enquireHelp"
           >
-            <!-- FormSubmit helpers -->
             <input type="hidden" name="_subject" value="New Quick Quote Request" />
             <input type="hidden" name="_replyto" [value]="contactForm.get('email')?.value || ''" />
             <input type="hidden" name="_captcha" value="false" />
@@ -282,7 +321,12 @@
     aria-label="Yacht image preview"
     (click)="closeLightbox()"
   >
-    <div class="modal-shell" (click)="stopPropagation($event)" (touchstart)="onTouchStart($event)" (touchend)="onTouchEnd($event)">
+    <div
+      class="modal-shell"
+      (click)="stopPropagation($event)"
+      (touchstart)="onTouchStart($event)"
+      (touchend)="onTouchEnd($event)"
+    >
       <div class="modal-topbar">
         <div class="modal-meta" aria-hidden="true"></div>
 

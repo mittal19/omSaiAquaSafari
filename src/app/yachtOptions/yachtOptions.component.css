@@ -2,11 +2,15 @@
   display: block;
 }
 
+
+.yacht-options--route{
+   padding-top: 92px;
+  scroll-margin-top: 92px; 
+}
 /* Page */
 .yacht-page {
   background: #ffffff;
-   padding-top: 72px;
-  scroll-margin-top: 72px; 
+
 }
 
 .yacht-header {

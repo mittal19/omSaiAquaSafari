@@ -5,16 +5,11 @@ html.no-scroll {
   overflow: hidden;
 }
 
-.gallery {
-  padding-top: 22px;
-  scroll-margin-top: 22px;
+.gallery--route {
+  padding-top: 92px;
+  scroll-margin-top: 92px;
 }
 
-.container {
-  /* width: min(1120px, calc(100% - 32px)); */
-  /* margin: 0 auto; */
-  padding: clamp(16px, 4vw, 60px);
-}
 
 /* ================= Gallery Header Styling ================= */
 

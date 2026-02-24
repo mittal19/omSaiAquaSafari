@@ -12,10 +12,14 @@
   --radius-md: 14px;
 }
 
+.contact--route{
+ padding-top: 92px;
+  scroll-margin-top: 92px;
+}
+
 /* Section wrapper (match Enquire) */
 .contact {
-  padding-top: 72px;
-  scroll-margin-top: 72px;
+ 
 
   background:
     radial-gradient(900px 320px at 10% 0%, rgba(0, 128, 200, 0.10), transparent 60%),

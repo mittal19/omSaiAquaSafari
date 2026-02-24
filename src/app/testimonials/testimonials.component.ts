@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, computed, signal, ElementRef, ViewChild } from '@angular/core';
 import { Meta, Title } from '@angular/platform-browser';
+import { Router } from '@angular/router';
 
 type Testimonial = {
   author: string;
@@ -66,6 +67,7 @@ export class TestimonialsComponent {
     },
   ]);
 
+  isTestimonialRoute = false;
   // Pagination
   readonly pageSize = 3;
   readonly visibleCount = signal(this.pageSize);
@@ -87,7 +89,7 @@ export class TestimonialsComponent {
     return Math.round((sum / list.length) * 10) / 10;
   });
 
-  constructor(private title: Title, private meta: Meta) {
+  constructor(private title: Title, private meta: Meta,private router: Router) {
     this.title.setTitle('Customer Reviews | Yacht Experiences in Goa');
     this.meta.updateTag({
       name: 'description',
@@ -95,6 +97,11 @@ export class TestimonialsComponent {
         'Read authentic customer reviews for Peagus, Aquila, and Coco yachts in Goa.',
     });
   }
+
+   ngOnInit() {
+    this.isTestimonialRoute = this.router.url === '/reviews';
+  }
+
 
   showMore() {
     const total = this.testimonials().length;

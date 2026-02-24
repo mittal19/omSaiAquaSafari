@@ -16,15 +16,15 @@ import { NgOptimizedImage } from '@angular/common';
 type YachtDetail = {
   id: string;
   name: string;
-  capacity: number; 
+  capacity: number;
   length: string;
   speed: string;
   sleeping: number;
-  cabin:number;
+  cabin: number;
   crew: number;
-    morningRate: string;
-      eveningRate: string;
-      startingFrom: string;
+  morningRate: string;
+  eveningRate: string;
+  startingFrom: string;
   cruiseTime: string;
   anchoringTime: string;
   totalTime: string;
@@ -36,12 +36,24 @@ type YachtDetail = {
   additions: string;
 };
 
-
 type PackageOption = {
   title: string;
   duration: string;
   price: string;
   points: string[];
+};
+
+type TripDetailItem = {
+  icon: string;
+  label: string;
+  value: string;
+};
+
+type PriceCard = {
+  title: string;
+  price: string;
+  sub?: string;
+  points?: string[];
 };
 
 @Component({
@@ -69,11 +81,12 @@ export class YachtBookComponent implements OnInit, OnDestroy {
       out.push({ k, v: s });
     };
 
+    // Keep only the most decision-driving info in the header
     add('Guests', y.capacity);
     add('Length', y.length);
-    add('Cruise time', y.cruiseTime);
+    add('Speed', y.speed);
     add('Total time', y.totalTime);
-    add('Rate', y.startingFrom);
+    add('Starting from', y.startingFrom);
 
     // Keep it tidy on the top row
     return out.slice(0, 5);
@@ -115,6 +128,117 @@ export class YachtBookComponent implements OnInit, OnDestroy {
       .split(/\r?\n|,/g)
       .map(s => s.trim())
       .filter(Boolean);
+  });
+
+  readonly additionsList = computed(() => {
+    const raw = (this.yacht()?.additions ?? '').trim();
+    if (!raw) return [] as string[];
+
+    return raw
+      .split(/\r?\n|,/g)
+      .map(s => s.trim())
+      .filter(Boolean);
+  });
+
+  /** Pricing cards (better UX than hiding prices inside text) */
+  readonly pricingCards = computed(() => {
+    const y = this.yacht();
+    if (!y) return [] as PriceCard[];
+
+    const cards: PriceCard[] = [];
+    const addCard = (title: string, price?: string, sub?: string, points?: string[]) => {
+      const p = (price ?? '').trim();
+      if (!p) return;
+      cards.push({ title, price: p, sub, points });
+    };
+
+    const total = (y.totalTime ?? '').trim();
+    const cruise = (y.cruiseTime ?? '').trim();
+    const anchor = (y.anchoringTime ?? '').trim();
+
+    const durationBits = [
+      total ? `Total: ${total}` : '',
+      cruise ? `Cruise: ${cruise}` : '',
+      anchor ? `Anchoring: ${anchor}` : '',
+    ].filter(Boolean);
+
+    const durationLine = durationBits.length ? durationBits.join(' • ') : undefined;
+
+    addCard('Morning charter', y.morningRate, durationLine);
+    addCard('Evening charter', y.eveningRate, durationLine);
+
+    // Show “starting from” only when it adds new info
+    const start = (y.startingFrom ?? '').trim();
+    const morning = (y.morningRate ?? '').trim();
+    const evening = (y.eveningRate ?? '').trim();
+    if (start && start !== morning && start !== evening) {
+      addCard('Starting from', start, durationLine);
+    }
+
+    return cards;
+  });
+
+  /** JSON-LD for better SEO (safe textContent binding) */
+  readonly seoJsonLd = computed(() => {
+    const y = this.yacht();
+    if (!y) return '';
+
+    const offerPrices = [y.startingFrom, y.morningRate, y.eveningRate]
+      .map(v => String(v ?? '').trim())
+      .filter(Boolean);
+
+    const jsonLd: any = {
+      '@context': 'https://schema.org',
+      '@type': 'TouristTrip',
+      name: `${y.name} Yacht Booking`,
+      description: (y.description ?? '').trim() || `Book ${y.name} yacht in Goa.`,
+      touristType: ['Luxury travel', 'Private charter'],
+      provider: { '@type': 'LocalBusiness', name: 'Yacht Charter Goa' },
+      location: { '@type': 'Place', name: 'Goa, India' },
+    };
+
+    if (offerPrices.length) {
+      jsonLd.offers = offerPrices.map(p => ({
+        '@type': 'Offer',
+        price: p.replace(/[^0-9.]/g, ''),
+        priceCurrency: 'INR',
+        availability: 'https://schema.org/InStock',
+        url: this.router.url,
+      }));
+    }
+
+    return JSON.stringify(jsonLd);
+  });
+
+  /**
+   * Trip details (section like the provided screenshot)
+   * - keeps the content stable, but uses yacht data where it helps (guests, duration)
+   */
+  readonly tripDetails = computed(() => {
+    const y = this.yacht();
+    if (!y) return [] as TripDetailItem[];
+
+    const totalTime = (y.totalTime ?? '').trim();
+    const minHoursText = totalTime
+      ? `Minimum ${totalTime} are necessary to book this yacht, additional hours can be taken.`
+      : 'Minimum 2 hours are necessary to book this yacht, additional hours can be taken.';
+
+    const maxGuests = y.capacity ? `${y.capacity} Pax` : '—';
+
+    const items: TripDetailItem[] = [
+      { icon: '⚓', label: 'Activity Location', value: 'Panjim, North Goa' },
+      { icon: '🛥️', label: 'Departure Point', value: 'Will be shared after booking.' },
+      { icon: '📍', label: 'Reporting Time', value: '30 mins prior to the departure time' },
+      {
+        icon: '⏱️',
+        label: 'Timings & Duration',
+        value: `Custom timing as per the requirement between 9:00 AM to 11:00 PM, available 7 days a week in season. ${minHoursText}`,
+      },
+      { icon: '🛟', label: 'End point', value: 'This activity ends back at the departure point.' },
+      { icon: '👥', label: 'Max Guests Allowed', value: maxGuests },
+    ];
+
+    return items;
   });
 
   // Gallery state
@@ -210,7 +334,7 @@ export class YachtBookComponent implements OnInit, OnDestroy {
       this.contactForm.patchValue({ message: base });
     }
 
-    // Auto-slide gallery on hover (as you already had)
+    // Auto-slide gallery on hover
     this.startAutoSlideOnHover();
   }
 
@@ -298,7 +422,6 @@ export class YachtBookComponent implements OnInit, OnDestroy {
       payload.append('email', this.f.email.value ?? '');
       payload.append('message', this.f.message.value ?? '');
 
-      // If you rely on native form posting, keep it as-is
       const res = await fetch(this.formSubmitAction, {
         method: 'POST',
         body: payload,
@@ -326,7 +449,7 @@ export class YachtBookComponent implements OnInit, OnDestroy {
     this.toast.visible = false;
   }
 
-  // Touch swipe handlers kept (if present in your original)
+  // Touch swipe handlers
   private touchStartX = 0;
   onTouchStart(e: TouchEvent) {
     this.touchStartX = e.changedTouches[0]?.clientX ?? 0;

@@ -83,6 +83,8 @@ export class GalleryComponent {
     },
   ]);
 
+
+  isGalleryRoute= false;
   /** Full-page (/gallery) items loaded from manifest */
   private readonly fullAllItems = signal<MediaItem[]>([]);
   private readonly fullVisibleCount = signal(18);
@@ -210,6 +212,11 @@ export class GalleryComponent {
 // });
 
   }
+
+   ngOnInit() {
+    this.isGalleryRoute = this.router.url === '/gallery';
+  }
+
 
   private scheduleObserverRebind(): void {
   if (!isPlatformBrowser(this.platformId)) return;

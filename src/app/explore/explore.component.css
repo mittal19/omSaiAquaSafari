@@ -8,10 +8,9 @@
   --card-radius: 16px;
 }
 /* ========= Section wrapper ========= */
-.explore {
-  
-     padding-top: 72px;
-  scroll-margin-top: 72px; 
+.explore--route {
+  padding-top: 92px;
+  scroll-margin-top: 92px;
 }
 
 .explore__header {

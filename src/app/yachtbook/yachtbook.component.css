@@ -21,8 +21,8 @@
 /* ===== Existing yachtbook layout ===== */
 
 .page {
-  padding-top: 72px;
-  scroll-margin-top: 72px;
+  padding-top: 112px;
+  scroll-margin-top: 112px;
 
   background:
     radial-gradient(900px 320px at 10% 0%, rgba(251, 133, 0, 0.12), transparent 60%),
@@ -30,7 +30,8 @@
     var(--surface);
 }
 
-.wrap {  width: 100%;
+.wrap {
+  width: 100%;
   margin: 0 auto;
   padding: 0 clamp(16px, 4vw, 60px);
   box-sizing: border-box;
@@ -119,11 +120,13 @@
   width: 100%;
 }
 
-.imgMain {  width: 100%;
+.imgMain {
+  width: 100%;
   height: 100%;
   display: block;
   object-fit: cover;       /* crops instead of stretching */
-  object-position: center; /* keep subject centered */ }
+  object-position: center; /* keep subject centered */
+}
 
 .priceTag {
   position: absolute;
@@ -192,6 +195,63 @@
   background: rgba(251, 133, 0, 0.10);
   border-color: rgba(251, 133, 0, 0.22);
   color: var(--text);
+}
+
+/* ================= Trip details (✅ screenshot-like list) ================= */
+
+.infoList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 14px;
+}
+
+.infoItem {
+  display: grid;
+  grid-template-columns: 26px 30px 1fr;
+  gap: 12px;
+  align-items: start;
+}
+
+.infoCheck {
+  width: 26px;
+  height: 26px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  font-weight: 950;
+  font-size: 14px;
+  color: #16a34a; /* green */
+  background: rgba(22, 163, 74, 0.10);
+  border: 1px solid rgba(22, 163, 74, 0.30);
+}
+
+.infoIcon {
+  width: 30px;
+  height: 30px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  background: rgba(2, 6, 23, 0.04);
+  border: 1px solid rgba(2, 6, 23, 0.08);
+  font-size: 16px;
+}
+
+.infoText {
+  margin: 0;
+  color: rgba(15, 23, 42, 0.78);
+  line-height: 1.6;
+  font-weight: 650;
+}
+
+.infoLabel {
+  font-weight: 950;
+  color: var(--text);
+}
+
+.infoValue {
+  margin-left: 6px;
 }
 
 /* packages */
@@ -404,10 +464,7 @@
   .specGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .form__row { grid-template-columns: 1fr; }
 }
-@media (max-width: 560px) {
-  /* .wrap { width: min(1120px, calc(100% - 1.25rem)); } */
-  /* .imgMain { height: 260px; } */
-}
+@media (max-width: 560px) {}
 @media (max-width: 640px) {
   .toast { top: 76px; right: 12px; }
 }
@@ -418,6 +475,7 @@
   .toast__close { transition: none; }
   .spinner { animation: none; }
 }
+
 /* ================= Yacht Header (Same as Enquire) ================= */
 
 .gallery__header {
@@ -456,6 +514,7 @@
   0% { background-position: 0% center; }
   100% { background-position: 200% center; }
 }
+
 /* ================= YachtBook Gallery Slider Enhancements ================= */
 
 .mainImg__btn{
@@ -514,7 +573,6 @@
 }
 
 .thumbs{
-  /* flex-wrap: nowrap; */
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
   padding-bottom: 6px;
@@ -739,5 +797,3 @@ iframe {
 .modal-shell {
   width: min(1040px, 100%);
 }
-
-

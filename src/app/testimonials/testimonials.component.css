@@ -10,10 +10,10 @@
   border: 0;
 }
 
-.reviews {
+.testimonials--route {
   /* padding: clamp(26px, 4vw, 54px) 0; */
-   padding-top: 72px;
-  scroll-margin-top: 72px; 
+   padding-top: 92px;
+  scroll-margin-top: 92px; 
 }
 
 .container {

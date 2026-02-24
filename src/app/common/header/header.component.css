@@ -59,7 +59,7 @@
 }
 
 .header-shell {
-  height: 72px;
+  height: 92px;
   padding: 0 4vw;
 
   display: flex;
@@ -78,7 +78,7 @@
 
 .brand-logo {
   display: block;
-  width: 98px;
+  width: 118px;
   height: auto;
   filter: drop-shadow(0 10px 20px rgba(13, 59, 102, 0.10));
 }

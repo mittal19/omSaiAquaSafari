@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { Meta, Title } from '@angular/platform-browser';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-contact',
@@ -23,10 +24,12 @@ export class ContactComponent implements OnInit {
   // Optional socials (leave empty to hide the button automatically)
   readonly instagramUrl = '';
   readonly facebookUrl = '';
+  isContactRoute = false;
 
-  constructor(private readonly title: Title, private readonly meta: Meta) {}
+  constructor(private readonly title: Title, private readonly meta: Meta, private readonly router: Router) {}
 
   ngOnInit(): void {
+     this.isContactRoute = this.router.url === '/contact';
     this.title.setTitle('Contact | Sea Rider Goa - Yacht Service');
     this.meta.updateTag({
       name: 'description',
