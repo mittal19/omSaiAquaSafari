@@ -16,7 +16,7 @@ export class ContactComponent implements OnInit {
 
   readonly email = 'bookings.searider@gmail.com';
 
-  readonly addressLines = ['Sea Rider Goa - Yacht Service', 'Goa, India'];
+  readonly addressLines = ['Dharma Jetty, Britona, Alto Porvorim, Penha de Franc, Bardez', 'Goa 403101'];
 
   readonly mapQuery = 'Sea Rider Goa';
 
