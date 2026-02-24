@@ -1,8 +1,32 @@
+@defer (on viewport) {
 <app-header></app-header>
+}@placeholder {
+<div></div>
+}
+@defer (on viewport) {
 <main class="page-offset">
+  @defer (on viewport) {
   <router-outlet></router-outlet>
+  }@placeholder {
+<div></div>
+}
 </main>
+}@placeholder {
+<div></div>
+}
+@defer (on viewport) {
 <app-enquire *ngIf="showEnquire"></app-enquire>
+} @placeholder {
+<div></div>
+}
+@defer (on viewport) {
 <app-contact *ngIf="showContact"></app-contact>
-<app-whatsapp></app-whatsapp>
+} @placeholder {
+<div></div>
+}
+@defer (on viewport) {
 <app-footer></app-footer>
+} @placeholder {
+<div></div>
+}
+<app-whatsapp></app-whatsapp>
