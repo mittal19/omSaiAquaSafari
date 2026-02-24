@@ -7,6 +7,7 @@
   --brand-dark: #0a1f33;
   --card-radius: 16px;
 }
+
 /* ========= Section wrapper ========= */
 .explore--route {
   padding-top: 92px;
@@ -32,15 +33,14 @@
   line-height: 1.5;
 }
 
-/* ========= Grid layout (desktop like screenshot) ========= */
+/* ========= Grid layout =========
+   Desktop: 2 cards in one row (50/50)
+   Tablet/Mobile: stack in a column
+*/
 .exploreGrid {
-   /* width: min(1400px, 96%); */
-  /* margin: 0 auto; */
-  display: grid;
+  display: flex;
+  flex-wrap: wrap;
   gap: clamp(14px, 2vw, 22px);
-
-  /* grid-template-columns: 1fr 1fr; */
-  grid-template-areas: "yachts events celebrations";
   align-items: stretch;
 
   width: 100%;
@@ -48,40 +48,36 @@
   margin: 0;
 }
 
-.card[data-area="yachts"] {
-  grid-area: yachts;
-  min-height: 320px;
-}
-.card[data-area="events"] {
-  grid-area: events;
-  min-height: 320px;
-}
-.card[data-area="celebrations"] {
-  grid-area: celebrations;
-  min-height: 320px;
+/* Desktop: both cards side-by-side */
+.exploreGrid > .card {
+  flex: 1 1 calc((100% - clamp(14px, 2vw, 22px)) / 2);
+  min-width: 320px;
 }
 
-/* Tablet */
+/* Keep your existing height caps */
+.card[data-area="yachts"],
+.card[data-area="celebrations"] {
+  max-height: 360px;
+}
+
+/* Tablet & down: stack cards in a single column */
 @media (max-width: 900px) {
   .exploreGrid {
-    /* grid-template-columns: 1fr 1fr; */
-    grid-template-areas:
-      "yachts yachts"
-      "events celebrations";
+    flex-direction: column;
   }
+
+  .exploreGrid > .card {
+    flex-basis: 100%;
+    min-width: 0;
+  }
+
   .card[data-area="yachts"] {
     min-height: 280px;
   }
 }
 
-/* Mobile (stack) */
+/* Mobile */
 @media (max-width: 560px) {
-  .exploreGrid {
-    /* grid-template-columns: 1fr; */
-    grid-template-areas:
-      "yachts"
-      "celebrations";
-  }
   .card {
     min-height: 280px;
   }
@@ -123,23 +119,6 @@
       rgba(251, 133, 0, 0.35)
     );
   opacity: 1;
-}
-
-.card[data-area="events"] .card__overlay {
-  background:
-    radial-gradient(
-      130% 130% at 0% 0%,
-      rgba(0, 0, 0, 0.85) 0%,
-      rgba(11, 95, 215, 0.65) 35%,
-      rgba(0, 0, 0, 0.35) 60%,
-      rgba(0, 0, 0, 0) 80%
-    ),
-    linear-gradient(
-      110deg,
-      rgba(11, 95, 215, 0.6),
-      rgba(0, 0, 0, 0.1) 55%,
-      rgba(242, 140, 40, 0.3)
-    );
 }
 
 .card__overlay::after {
@@ -198,14 +177,13 @@
   font-weight: 700;
   letter-spacing: 0.2px;
 
- background: rgba(255, 255, 255, 0.92);
-  color: var( --brand-orange);
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--brand-orange);
 
   /* Start hidden */
   opacity: 0;
   transform: translateY(10px) scale(0.96);
   pointer-events: none;
-  
 }
 
 .card__cta:hover {
@@ -295,7 +273,6 @@
 }
 
 /* Feature Highlights Row */
-
 .explore__features {
   display: flex;
   justify-content: center;

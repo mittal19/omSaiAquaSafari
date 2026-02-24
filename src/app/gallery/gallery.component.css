@@ -10,6 +10,12 @@ html.no-scroll {
   scroll-margin-top: 92px;
 }
 
+.container {
+  /* width: min(1120px, calc(100% - 32px)); */
+  /* margin: 0 auto; */
+  padding-left: clamp(16px, 4vw, 60px);
+  padding-right: clamp(16px, 4vw, 60px);
+}
 
 /* ================= Gallery Header Styling ================= */
 

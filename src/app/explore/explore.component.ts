@@ -18,7 +18,7 @@ type ExploreCard = {
   route: string;
   imageSrc: string;
   imageAlt: string;
-  area: 'yachts' | 'events' | 'celebrations';
+  area: 'yachts' | 'celebrations';
 };
 
 @Component({
@@ -46,7 +46,7 @@ export class ExploreComponent implements AfterViewInit {
       area: 'yachts',
     },
     {
-      title: 'Events/Private Celebrations',
+      title: 'Events or Private Celebrations',
       subtitle: 'Unforgettable Personal Milestones',
       cta: 'Learn More',
       route: '/events-details',
