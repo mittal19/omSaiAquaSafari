@@ -136,7 +136,7 @@ export class HomeComponent {
 
     this.intervalId = window.setInterval(() => {
       this.nextSlide();
-    }, 5200);
+    }, 2000);
   }
 
   private stopAutoplay(): void {

@@ -16,22 +16,26 @@ import { NgOptimizedImage } from '@angular/common';
 type YachtDetail = {
   id: string;
   name: string;
-  capacity?: number;
-  length?: string;
-  speed?: string;
-  cabin?: number;
-  crew?: number;
-  sleeping?: number;
-  cruiseTime?: string;
-  anchoringTime?: string;
-  totalTime?: string;
-  rate?: string;
-  inclusions?: string;
-  description?: string;
-  images?: string[];
-  imageAlt?: string;
-  highlights?: string[];
+  capacity: number; 
+  length: string;
+  speed: string;
+  sleeping: number;
+  cabin:number;
+  crew: number;
+    morningRate: string;
+      eveningRate: string;
+      startingFrom: string;
+  cruiseTime: string;
+  anchoringTime: string;
+  totalTime: string;
+  imageUrl: string;
+  imageAlt: string;
+  images: string[];
+  inclusions: string;
+  description: string;
+  additions: string;
 };
+
 
 type PackageOption = {
   title: string;
@@ -69,7 +73,7 @@ export class YachtBookComponent implements OnInit, OnDestroy {
     add('Length', y.length);
     add('Cruise time', y.cruiseTime);
     add('Total time', y.totalTime);
-    add('Rate', y.rate);
+    add('Rate', y.startingFrom);
 
     // Keep it tidy on the top row
     return out.slice(0, 5);
@@ -97,7 +101,7 @@ export class YachtBookComponent implements OnInit, OnDestroy {
     add('Cruise time', y.cruiseTime);
     add('Anchoring time', y.anchoringTime);
     add('Total time', y.totalTime);
-    add('Rate', y.rate);
+    add('Rate', y.startingFrom);
 
     return out;
   });
@@ -171,7 +175,7 @@ export class YachtBookComponent implements OnInit, OnDestroy {
       this.yacht.set({
         ...incoming,
         // YachtOptions uses "slider" — normalize to images if needed
-        images: (incoming.images?.length ? incoming.images : (state.slider ?? state.images)) ?? [],
+        images: incoming.images,
         imageAlt: incoming.imageAlt ?? state.imageAlt ?? `${incoming.name} yacht in Goa`,
       });
     }
