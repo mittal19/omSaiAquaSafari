@@ -135,7 +135,7 @@ export class GalleryComponent {
 
   constructor() {
     // SEO basics
-    this.title.setTitle('Gallery | Om Sai Aqua Safari');
+    this.title.setTitle('Gallery | Sea Rider Goa - Yacht Service');
     this.meta.updateTag({
       name: 'description',
       content: 'Photo and video gallery of our yacht and cruise experiences in Goa.',

@@ -99,11 +99,11 @@ description:'test'
 
   ngOnInit(): void {
     // SEO
-    this.title.setTitle('Luxury Yacht Options in Goa | Om Sai Aqua Safari');
+    this.title.setTitle('Luxury Yacht Options in Goa | Sea Rider Goa - Yacht Service');
     this.meta.updateTag({
       name: 'description',
       content:
-        'Explore our most loved luxury yachts in Goa. Compare capacity, rating, year and size. Book your private yacht experience with Om Sai Aqua Safari.',
+        'Explore our most loved luxury yachts in Goa. Compare capacity, rating, year and size. Book your private yacht experience with Sea Rider Goa - Yacht Service.',
     });
     this.meta.updateTag({
       name: 'robots',

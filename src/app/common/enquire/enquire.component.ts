@@ -62,7 +62,7 @@ export class EnquireComponent implements OnInit, OnDestroy {
     });
 
     // SEO (works best when this is a routed page/section)
-    this.title.setTitle('Quick Quote | Om Sai Aqua Safari');
+    this.title.setTitle('Quick Quote | Sea Rider Goa - Yacht Service');
     this.meta.updateTag({
       name: 'description',
       content:

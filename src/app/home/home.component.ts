@@ -1,34 +1,35 @@
-import { CommonModule, NgOptimizedImage, isPlatformBrowser } from '@angular/common';
+import { CommonModule, DOCUMENT, NgOptimizedImage, isPlatformBrowser } from '@angular/common';
 import { Component, PLATFORM_ID, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { animate, style, transition, trigger } from '@angular/animations';
+
 import { GalleryComponent } from '../gallery/gallery.component';
 import { TestimonialsComponent } from '../testimonials/testimonials.component';
 import { ExploreComponent } from '../explore/explore.component';
 import { YachtOptionsComponent } from '../yachtOptions/yachtOptions.component';
 
+type Slide = { imageUrl: string; subTitle: string };
+
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, NgOptimizedImage, RouterLink, ExploreComponent, YachtOptionsComponent, GalleryComponent, TestimonialsComponent],
+  imports: [
+    CommonModule,
+    NgOptimizedImage,
+    RouterLink,
+    ExploreComponent,
+    YachtOptionsComponent,
+    GalleryComponent,
+    TestimonialsComponent,
+  ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css',
   animations: [
-    // Slider images only: fade-in / fade-out
     trigger('imageFade', [
-      // Fade when the element is created
       transition(':enter', [
         style({ opacity: 0 }),
         animate('{{t}}ms ease', style({ opacity: 1 })),
       ], { params: { t: 650 } }),
-
-      // Fade when the bound value changes (slideAnimKey increments)
-      transition('* => *', [
-        style({ opacity: 0 }),
-        animate('{{t}}ms ease', style({ opacity: 1 })),
-      ], { params: { t: 650 } }),
-
-      // Fade when the element is removed
       transition(':leave', [
         animate('{{t}}ms ease', style({ opacity: 0 })),
       ], { params: { t: 650 } }),
@@ -37,34 +38,29 @@ import { YachtOptionsComponent } from '../yachtOptions/yachtOptions.component';
 })
 export class HomeComponent {
   private readonly platformId = inject(PLATFORM_ID);
+  private readonly doc = inject(DOCUMENT);
 
-  currentIndex = 0;
-  reducedMotion = false;
-
-  // for true fade-out + fade-in
-  showPrev = false;
-  prevSlideUrl: string | null = null;
-  slideAnimKey = 0;
-
-  private intervalId: number | null = null;
-
-  slides = [
+  // ----- Slider data -----
+  slides: Slide[] = [
     { imageUrl: 'assets/slider/two.jpeg', subTitle: 'Premium yachts and curated experiences.' },
     { imageUrl: 'assets/slider/three.jpeg', subTitle: 'The Finest Yacht Charters for every Occasion.' },
     { imageUrl: 'assets/slider/four.png', subTitle: 'Redefine your Events, Celebrations and Parties.' },
     { imageUrl: 'assets/slider/three.jpeg', subTitle: 'Transparent pricing and easy booking.' },
   ];
 
-  ngOnInit(): void {
-    if (isPlatformBrowser(this.platformId)) {
-      this.reducedMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches ?? false;
-      if (!this.reducedMotion) this.startAutoSlide();
-    }
-  }
+  currentIndex = 0;
+  reducedMotion = false;
 
-  ngOnDestroy(): void {
-    this.stopAutoSlide();
-  }
+  // for true fade-out + fade-in (prev image stays briefly)
+  showPrev = false;
+  prevSlideUrl: string | null = null;
+  slideAnimKey = 0;
+
+  private intervalId: number | null = null;
+  private firstSlideReady = false;
+
+  // Keep references so the browser keeps these in memory during session
+  private preloadImages: HTMLImageElement[] = [];
 
   get currentSlide(): string {
     return this.slides[this.currentIndex]?.imageUrl ?? '';
@@ -74,82 +70,183 @@ export class HomeComponent {
     return this.slides[this.currentIndex]?.subTitle ?? '';
   }
 
-  startAutoSlide(): void {
-    this.stopAutoSlide();
-    this.intervalId = window.setInterval(() => this.nextSlide(), 2500);
-  }
-
-  stopAutoSlide(): void {
-    if (this.intervalId !== null) {
-      clearInterval(this.intervalId);
-      this.intervalId = null;
+  constructor() {
+    // Start fetching ASAP (even before ngOnInit)
+    if (isPlatformBrowser(this.platformId)) {
+      this.addPreloadLinksToHead();
     }
   }
 
-  /**
-   * Lightweight ripple (no libs). Uses CSS vars + a short class toggle.
-   * Works for <a> buttons with the .btn class.
-   */
-  ctaRipple(ev: PointerEvent): void {
-    const el = ev.currentTarget as HTMLElement | null;
-    if (!el) return;
+  async ngOnInit(): Promise<void> {
+    if (!isPlatformBrowser(this.platformId)) return;
 
-    const rect = el.getBoundingClientRect();
-    const x = ev.clientX - rect.left;
-    const y = ev.clientY - rect.top;
+    this.reducedMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches ?? false;
 
-    el.style.setProperty('--ripple-x', `${x}px`);
-    el.style.setProperty('--ripple-y', `${y}px`);
+    // Warm cache for ALL slides (helps next/prev transitions too)
+    this.preloadAllSlides();
 
-    // retrigger animation
-    el.classList.remove('rippling');
-    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-    (el as any).offsetWidth;
-    el.classList.add('rippling');
+    // Ensure first slide is decoded before autoplay kicks in
+    await this.ensureFirstSlideDecoded();
 
-    window.setTimeout(() => el.classList.remove('rippling'), 550);
+    this.firstSlideReady = true;
+    this.startAutoplay();
+  }
+
+  ngOnDestroy(): void {
+    this.stopAutoplay();
   }
 
   pauseAutoplay(): void {
-    if (isPlatformBrowser(this.platformId)) this.stopAutoSlide();
+    this.stopAutoplay();
   }
 
   resumeAutoplay(): void {
-    if (isPlatformBrowser(this.platformId) && !this.reducedMotion) this.startAutoSlide();
-  }
-
-  nextSlide(): void {
-    const next = (this.currentIndex + 1) % this.slides.length;
-    this.setSlide(next);
+    if (!isPlatformBrowser(this.platformId)) return;
+    if (!this.firstSlideReady) return;
+    this.startAutoplay();
   }
 
   goToSlide(index: number): void {
-    this.setSlide(index);
-    if (isPlatformBrowser(this.platformId) && !this.reducedMotion) this.startAutoSlide();
+    if (index === this.currentIndex) return;
+    if (index < 0 || index >= this.slides.length) return;
+    this.swapTo(index);
   }
 
-  private setSlide(index: number): void {
-    if (index === this.currentIndex) return;
+  // ---- UI micro-interaction (your template calls this) ----
+  ctaRipple(ev: PointerEvent): void {
+    const btn = ev.currentTarget as HTMLElement | null;
+    if (!btn) return;
 
-    // previous image fades out
+    const rect = btn.getBoundingClientRect();
+    const x = ev.clientX - rect.left;
+    const y = ev.clientY - rect.top;
+
+    btn.style.setProperty('--ripple-x', `${x}px`);
+    btn.style.setProperty('--ripple-y', `${y}px`);
+    btn.classList.remove('rippling');
+    // force reflow
+    void btn.offsetWidth;
+    btn.classList.add('rippling');
+  }
+
+  // ---- Autoplay ----
+  private startAutoplay(): void {
+    if (this.reducedMotion) return; // respect reduced motion
+    if (this.intervalId != null) return;
+
+    this.intervalId = window.setInterval(() => {
+      this.nextSlide();
+    }, 5200);
+  }
+
+  private stopAutoplay(): void {
+    if (!isPlatformBrowser(this.platformId)) return;
+    if (this.intervalId == null) return;
+
+    window.clearInterval(this.intervalId);
+    this.intervalId = null;
+  }
+
+  private nextSlide(): void {
+    const next = (this.currentIndex + 1) % this.slides.length;
+    this.swapTo(next);
+  }
+
+  private swapTo(nextIndex: number): void {
+    // keep current as "prev" for fade-out
     this.prevSlideUrl = this.currentSlide;
     this.showPrev = true;
 
-    // switch to new slide -> new image fades in
-    this.currentIndex = index;
+    // switch
+    this.currentIndex = nextIndex;
 
     // triggers the fade transition
     this.slideAnimKey++;
 
     // after fade duration, remove prev from DOM
-    if (isPlatformBrowser(this.platformId)) {
-      window.setTimeout(() => {
-        this.showPrev = false;
-        this.prevSlideUrl = null;
-      }, this.reducedMotion ? 0 : 650);
-    } else {
+    const t = this.reducedMotion ? 0 : 650;
+    window.setTimeout(() => {
       this.showPrev = false;
       this.prevSlideUrl = null;
+    }, t);
+  }
+
+  // ---- Preload logic (fixes first-load delay) ----
+  private addPreloadLinksToHead(): void {
+    // Preload the first 2 slides with highest priority
+    const urls = this.uniqueSlideUrls().slice(0, 2);
+
+    for (const href of urls) {
+      // Avoid duplicates
+      const already = this.doc.head?.querySelector(`link[rel="preload"][as="image"][href="${href}"]`);
+      if (already) continue;
+
+      const link = this.doc.createElement('link');
+      link.rel = 'preload';
+      link.as = 'image';
+      link.href = href;
+
+      // Hint priority where supported
+      link.setAttribute('fetchpriority', 'high');
+
+      // If you ever serve images from a CDN domain, you can also add:
+      // link.crossOrigin = 'anonymous';
+
+      this.doc.head?.appendChild(link);
     }
+  }
+
+  private preloadAllSlides(): void {
+    const urls = this.uniqueSlideUrls();
+
+    this.preloadImages = urls.map((u) => {
+      const img = new Image();
+      img.decoding = 'async';
+      img.loading = 'eager';
+      img.src = u;
+      return img;
+    });
+  }
+
+  private async ensureFirstSlideDecoded(): Promise<void> {
+    const first = this.currentSlide;
+    if (!first) return;
+
+    // If we already created an Image() for it, use that; otherwise create one.
+    let img = this.preloadImages.find((i) => i.src.endsWith(first));
+    if (!img) {
+      img = new Image();
+      img.decoding = 'async';
+      img.loading = 'eager';
+      img.src = first;
+      this.preloadImages.unshift(img);
+    }
+
+    // decode() ensures the image is ready to paint (where supported)
+    try {
+      // If it’s already loaded, decode resolves quickly.
+      // decode() may throw on some browsers; we safely ignore.
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const anyImg = img as any;
+      if (typeof anyImg.decode === 'function') {
+        await anyImg.decode();
+      } else {
+        // Fallback: wait for load event if decode isn't available
+        await new Promise<void>((resolve) => {
+          if (img.complete) return resolve();
+          img.onload = () => resolve();
+          img.onerror = () => resolve();
+        });
+      }
+    } catch {
+      // ignore: best-effort preload/decode
+    }
+  }
+
+  private uniqueSlideUrls(): string[] {
+    // Deduplicate (you currently repeat 'three.jpeg')
+    const set = new Set<string>();
+    for (const s of this.slides) set.add(s.imageUrl);
+    return Array.from(set);
   }
 }

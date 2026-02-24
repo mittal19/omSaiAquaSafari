@@ -11,14 +11,14 @@ import { Meta, Title } from '@angular/platform-browser';
 })
 export class ContactComponent implements OnInit {
   // Replace these with your real details
-  readonly phoneDisplay = '+91 98765 43210';
-  readonly phoneTel = '+919876543210';
+  readonly phoneDisplay = '+91 91682 84787';
+  readonly phoneTel = '+919168284787';
 
-  readonly email = 'info@omsaiaquasafari.com';
+  readonly email = 'bookings.searider@gmail.com';
 
-  readonly addressLines = ['Om Sai Aqua Safari', 'Goa, India'];
+  readonly addressLines = ['Sea Rider Goa - Yacht Service', 'Goa, India'];
 
-  readonly mapQuery = 'Om Sai Aqua Safari Goa';
+  readonly mapQuery = 'Sea Rider Goa';
 
   // Optional socials (leave empty to hide the button automatically)
   readonly instagramUrl = '';
@@ -27,11 +27,11 @@ export class ContactComponent implements OnInit {
   constructor(private readonly title: Title, private readonly meta: Meta) {}
 
   ngOnInit(): void {
-    this.title.setTitle('Contact | Om Sai Aqua Safari');
+    this.title.setTitle('Contact | Sea Rider Goa - Yacht Service');
     this.meta.updateTag({
       name: 'description',
       content:
-        'Contact Om Sai Aqua Safari for yacht and cruise rentals in Goa. Call, email, or get directions for quick assistance.',
+        'Contact Sea Rider Goa for yacht and cruise rentals in Goa. Call, email, or get directions for quick assistance.',
     });
   }
 

@@ -31,15 +31,14 @@ export class HeaderComponent {
   readonly isMobile = signal(false);
 
   // ✅ Use E.164 for best compatibility. Change as needed.
-  readonly phoneNumberDisplay = '+91 90275 04141';
-  readonly phoneNumberDial = '+919027504141';
+  readonly phoneNumberDial = '+919168284787';
 
   // ✅ Dialer link (SEO-safe: it’s a normal href)
   readonly telHref = computed(() => `tel:${this.phoneNumberDial}`);
 
   // ✅ WhatsApp link
   readonly whatsappHref = computed(() => {
-    const msg = encodeURIComponent('Hello! I want to book a yacht/cruise in Goa.');
+    const msg = encodeURIComponent('Hello Sea Rider Goa, help me!');
     // wa.me expects digits (no +). Keep country code.
     const digits = this.phoneNumberDial.replace(/\D/g, '');
     return `https://wa.me/${digits}?text=${msg}`;

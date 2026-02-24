@@ -11,7 +11,7 @@ export class WhatsappComponent {
   phoneNumber = '9027504141'; // Replace with your actual WhatsApp number
   
   openWhatsApp() {
-    const message = encodeURIComponent('Hello from OmSaiWaveRiders!');
+    const message = encodeURIComponent('Hello Sea Rider Goa, help me!');
     window.open(`https://wa.me/${this.phoneNumber}?text=${message}`, '_blank');
   }
 }

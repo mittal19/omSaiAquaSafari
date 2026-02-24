@@ -45,10 +45,4 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./common/contact/contact.component').then(m => m.ContactComponent),
    },
- /* {
-    path: 'gallery',
-    loadComponent: () =>
-      import('./gallery/gallery.component').then(m => m.GalleryComponent),
-    title: 'Gallery | Om Sai Aqua Safari',
-  },*/
 ];
