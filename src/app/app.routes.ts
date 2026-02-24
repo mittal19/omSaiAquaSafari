@@ -45,4 +45,8 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./common/contact/contact.component').then(m => m.ContactComponent),
    },
+   { path: 'events-details',
+    loadComponent: () =>
+      import('./events-details/events-details.component').then(m => m.EventsDetailsComponent),
+   },
 ];

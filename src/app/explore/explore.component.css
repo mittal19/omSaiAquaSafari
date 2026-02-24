@@ -39,7 +39,7 @@
   display: grid;
   gap: clamp(14px, 2vw, 22px);
 
-  grid-template-columns: 2fr 1fr 1fr;
+  /* grid-template-columns: 1fr 1fr; */
   grid-template-areas: "yachts events celebrations";
   align-items: stretch;
 
@@ -64,7 +64,7 @@
 /* Tablet */
 @media (max-width: 900px) {
   .exploreGrid {
-    grid-template-columns: 1fr 1fr;
+    /* grid-template-columns: 1fr 1fr; */
     grid-template-areas:
       "yachts yachts"
       "events celebrations";
@@ -77,10 +77,9 @@
 /* Mobile (stack) */
 @media (max-width: 560px) {
   .exploreGrid {
-    grid-template-columns: 1fr;
+    /* grid-template-columns: 1fr; */
     grid-template-areas:
       "yachts"
-      "events"
       "celebrations";
   }
   .card {

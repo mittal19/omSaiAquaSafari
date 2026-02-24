@@ -43,10 +43,9 @@
             </a>
           </div>
 
-          <a class="footer__cta" href="#enquire" aria-label="Request a quick quote">
+          <a class="footer__cta" routerLink="/quick-quote" aria-label="Request a quick quote">
             Request a quick quote
           </a>
-
           <p class="footer__fineprint">
             We respond with availability, pricing and the best time slots.
           </p>
@@ -54,11 +53,15 @@
       </div>
 
       <!-- Bottom Bar -->
-      <div class="footer__bottom" aria-label="Copyright">
-        <p class="footer__copyright">
-          © {{ currentYear }} Sea Rider Goa - Yacht Service. All rights reserved.
-        </p>
-      </div>
+<div class="footer__bottom" aria-label="Copyright and GST">
+  <p class="footer__copyright">
+    © {{ currentYear }} Sea Rider Goa - Yacht Service. All rights reserved.
+  </p>
+
+  <p class="footer__meta">
+    GST No: <strong>30AQUPB0885G2ZW</strong>
+  </p>
+</div>
     </div>
   </footer>
 </section>

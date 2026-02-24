@@ -126,7 +126,7 @@ Starting from ₹22,999, Coco Yacht promises luxury, comfort, and unforgettable 
   constructor(private title: Title, private meta: Meta,private router: Router) {}
 
   ngOnInit(): void {
-    this.isYachtOptions = this.router.url === '/book-yacht';
+    this.isYachtOptions = this.router.url === '/book-yacht' || this.router.url === '/yachts';
     // SEO
     this.title.setTitle('Luxury Yacht Options in Goa | Sea Rider Goa - Yacht Service');
     this.meta.updateTag({
