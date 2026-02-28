@@ -4,55 +4,68 @@
   [class.explore--route]="isExploreRoute"
   aria-labelledby="explore-title"
 >
-<div class="explore__header">
-  <h2 class="explore__title">
-    Explore
-  </h2>
+  <div class="explore__header">
+    <h2 class="explore__title">Explore</h2>
 
-  <h3 class="explore__tagline">
-    Choose your perfect sea experience in Goa
-  </h3>
+    <h3 class="explore__tagline">Choose your perfect sea experience in Goa</h3>
 
-  <p class="explore__description">
-    Premium yacht rentals and curated cruise experiences—ideal for couples,
-    families, birthdays, and corporate outings.
-  </p>
+    <p class="explore__description">
+      Premium yacht rentals and curated cruise experiences—ideal for couples,
+      families, birthdays, and corporate outings.
+    </p>
 
-  <ul class="explore__features">
-    <li>Trusted crew</li>
-    <li>Scenic routes</li>
-    <li>Flexible timings</li>
-    <li>Instant enquiry</li>
-  </ul>
-</div>
+    <ul class="explore__features">
+      <li>Trusted crew</li>
+      <li>Scenic routes</li>
+      <li>Flexible timings</li>
+      <li>Instant enquiry</li>
+    </ul>
+  </div>
 
   <div class="exploreGrid" role="list">
     <article
       *ngFor="let c of cards"
-  #cardEl
-  class="card"
-  role="listitem"
-  [attr.data-area]="c.area"
+      #cardEl
+      class="card"
+      role="listitem"
+      [attr.data-area]="c.area"
     >
-      <img
-        class="card__img"
-        [src]="c.imageSrc"
-        [alt]="c.imageAlt"
-        loading="lazy"
-        decoding="async"
-      />
+      <!-- Yachts: picture (mobile vs tab+desktop). Celebrations: normal img -->
+      <picture *ngIf="c.tabletImageSrc; else plainImg" class="card__picture">
+        <source
+          [attr.media]="c.tabletMediaQuery || '(min-width: 561px)'"
+          [attr.srcset]="c.tabletImageSrc"
+        />
+        <img
+          class="card__img"
+          [src]="c.imageSrc"
+          [alt]="c.imageAlt"
+          loading="lazy"
+          decoding="async"
+          fetchpriority="low"
+        />
+      </picture>
 
-      <!-- Overlay gradient + subtle wave pattern (pure CSS) -->
+      <ng-template #plainImg>
+        <img
+          class="card__img"
+          [src]="c.imageSrc"
+          [attr.srcset]="c.imageSrcset"
+          [attr.sizes]="c.imageSizes"
+          [alt]="c.imageAlt"
+          loading="lazy"
+          decoding="async"
+          fetchpriority="low"
+        />
+      </ng-template>
+
       <div class="card__overlay" aria-hidden="true"></div>
 
       <div class="card__content">
         <h3 class="card__title">{{ c.title }}</h3>
         <p class="card__text">{{ c.subtitle }}</p>
 
-        <!-- Anchor styled as button = better SEO than click div -->
-        <a class="card__cta" [routerLink]="c.route">
-          {{ c.cta }}
-        </a>
+        <a class="card__cta" [routerLink]="c.route">{{ c.cta }}</a>
       </div>
     </article>
   </div>

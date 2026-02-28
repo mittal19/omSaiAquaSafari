@@ -16,7 +16,18 @@ type ExploreCard = {
   subtitle: string;
   cta: string;
   route: string;
+
+  // default/fallback image (mobile)
   imageSrc: string;
+
+  // optional: image for tablet + desktop
+  tabletImageSrc?: string;
+  tabletMediaQuery?: string;
+
+  // responsive sources (kept for other cards if needed)
+  imageSrcset?: string;
+  imageSizes?: string;
+
   imageAlt: string;
   area: 'yachts' | 'celebrations';
 };
@@ -31,9 +42,11 @@ type ExploreCard = {
 })
 export class ExploreComponent implements AfterViewInit {
   private readonly destroyRef = inject(DestroyRef);
-   isExploreRoute = false;
+  isExploreRoute = false;
 
   @ViewChildren('cardEl') cardEls!: QueryList<ElementRef<HTMLElement>>;
+
+  private readonly defaultSizes = '(max-width: 900px) 100vw, 50vw';
 
   readonly cards: ExploreCard[] = [
     {
@@ -41,7 +54,14 @@ export class ExploreComponent implements AfterViewInit {
       subtitle: 'From Private Charters to Mega Yachts',
       cta: 'View Yachts',
       route: '/yachts',
-      imageSrc: 'assets/explore/yacht.jpeg',
+
+      // Mobile => 1st image
+      imageSrc: 'assets/explore/yachtMobile.jpeg',
+
+      // Tablet + Desktop => 2nd image
+      tabletImageSrc: 'assets/explore/yachtTab.jpeg',
+      tabletMediaQuery: '(min-width: 561px)',
+
       imageAlt: 'Luxury yacht on calm water',
       area: 'yachts',
     },
@@ -50,42 +70,42 @@ export class ExploreComponent implements AfterViewInit {
       subtitle: 'Unforgettable Personal Milestones',
       cta: 'Learn More',
       route: '/events-details',
-      imageSrc: 'assets/explore/celebrations.png',
-      imageAlt: 'Friends celebrating on a yacht, Couple relaxing during a private celebration on water',
+
+      imageSrc: 'assets/explore/celebrationsMobile.png',
+     // Tablet + Desktop => 2nd image
+      tabletImageSrc: 'assets/explore/celebrationsTab.png',
+      tabletMediaQuery: '(min-width: 561px)',
+
+      imageAlt:
+        'Friends celebrating on a yacht, Couple relaxing during a private celebration on water',
       area: 'celebrations',
     },
   ];
 
   constructor(private router: Router) {}
 
-    ngOnInit() {
+  ngOnInit() {
     this.isExploreRoute = this.router.url === '/explore';
   }
-
 
   ngAfterViewInit(): void {
     const io = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {
           const el = entry.target as HTMLElement;
-          const isInView = entry.isIntersecting;
-          el.classList.toggle('is-inview', isInView);
+          el.classList.toggle('is-inview', entry.isIntersecting);
         }
       },
-      {
-        root: null,
-        threshold: 0.35,
-        rootMargin: '0px 0px -12% 0px',
-      }
+      { root: null, threshold: 0.35, rootMargin: '0px 0px -12% 0px' }
     );
 
-    // Observe each card
     this.cardEls.forEach((ref) => io.observe(ref.nativeElement));
 
-    // Handle any future list changes (if cards ever become dynamic)
-    const sub = this.cardEls.changes.subscribe((list: QueryList<ElementRef<HTMLElement>>) => {
-      list.forEach((ref) => io.observe(ref.nativeElement));
-    });
+    const sub = this.cardEls.changes.subscribe(
+      (list: QueryList<ElementRef<HTMLElement>>) => {
+        list.forEach((ref) => io.observe(ref.nativeElement));
+      }
+    );
 
     this.destroyRef.onDestroy(() => {
       sub.unsubscribe();
