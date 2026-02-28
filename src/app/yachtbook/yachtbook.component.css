@@ -25,9 +25,7 @@
   scroll-margin-top: 112px;
 
   background:
-    radial-gradient(900px 320px at 10% 0%, rgba(251, 133, 0, 0.12), transparent 60%),
-    radial-gradient(900px 320px at 90% 0%, rgba(255, 159, 28, 0.10), transparent 60%),
-    var(--surface);
+   transparent
 }
 
 .wrap {
