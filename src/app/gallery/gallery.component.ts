@@ -9,7 +9,6 @@ import {
   signal,
   ViewChild,
   ElementRef,
-  AfterViewInit,
 } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl, Title, Meta } from '@angular/platform-browser';
 import { NavigationEnd, Router } from '@angular/router';
@@ -53,7 +52,7 @@ export class GalleryComponent {
   @ViewChild('infiniteSentinel') infiniteSentinel?: ElementRef<HTMLElement>;
   private io?: IntersectionObserver;
 
-  /** Home/embedded gallery items (KEEP your current view intact) */
+  /** Home/embedded gallery items */
   private readonly homeItems = signal<MediaItem[]>([
     {
       id: 'y1',
@@ -83,8 +82,9 @@ export class GalleryComponent {
     },
   ]);
 
+  /** Used only for styling (adds fixed-header spacing on /gallery route) */
+  isGalleryRoute = false;
 
-  isGalleryRoute= false;
   /** Full-page (/gallery) items loaded from manifest */
   private readonly fullAllItems = signal<MediaItem[]>([]);
   private readonly fullVisibleCount = signal(18);
@@ -122,13 +122,6 @@ export class GalleryComponent {
     return idx >= 0 && idx < list.length ? list[idx] : null;
   });
 
-  readonly counterText = computed(() => {
-    const list = this.items();
-    const idx = this.activeIndex();
-    if (idx < 0 || idx >= list.length) return '';
-    return `${idx + 1} / ${list.length}`;
-  });
-
   readonly safeEmbedUrl = computed<SafeResourceUrl | null>(() => {
     const active = this.activeItem();
     if (!active || active.kind !== 'video' || active.provider !== 'youtube') return null;
@@ -136,13 +129,6 @@ export class GalleryComponent {
   });
 
   constructor() {
-    // SEO basics
-    this.title.setTitle('Gallery | Sea Rider Goa - Yacht Service');
-    this.meta.updateTag({
-      name: 'description',
-      content: 'Photo and video gallery of our yacht and cruise experiences in Goa.',
-    });
-
     // Set initial route mode + subscribe to route changes
     this.applyRouteMode(this.router.url);
 
@@ -154,11 +140,10 @@ export class GalleryComponent {
       this.destroyRef.onDestroy(() => sub.unsubscribe());
     }
 
-    // ✅ Modal side-effects (this writes signals, so allowSignalWrites is required)
+    // Modal side-effects (writes signals, allowSignalWrites required)
     effect(
       () => {
         const open = this.isOpen();
-
         if (!isPlatformBrowser(this.platformId)) return;
 
         if (open) {
@@ -173,7 +158,7 @@ export class GalleryComponent {
       { allowSignalWrites: true }
     );
 
-    // Keyboard controls (no effect needed)
+    // Keyboard controls
     if (isPlatformBrowser(this.platformId)) {
       const controller = new AbortController();
       this.doc.addEventListener(
@@ -202,41 +187,42 @@ export class GalleryComponent {
 
       this.destroyRef.onDestroy(() => controller.abort());
     }
-
-//     effect(() => {
-//   if (!isPlatformBrowser(this.platformId)) return;
-//   if (!this.isFullPage()) return;
-
-//   // wait until Angular renders the sentinel into the DOM
-//   afterNextRender(() => this.setupInfiniteObserver());
-// });
-
   }
 
-   ngOnInit() {
+  ngOnInit() {
+    // For template spacing only
     this.isGalleryRoute = this.router.url === '/gallery';
   }
 
-
   private scheduleObserverRebind(): void {
-  if (!isPlatformBrowser(this.platformId)) return;
+    if (!isPlatformBrowser(this.platformId)) return;
 
-  // Let Angular finish rendering first
-  queueMicrotask(() => {
-    requestAnimationFrame(() => this.setupInfiniteObserver());
-  });
-}
+    queueMicrotask(() => {
+      requestAnimationFrame(() => this.setupInfiniteObserver());
+    });
+  }
 
-
-ngAfterViewInit(): void {
-  this.setupInfiniteObserver(); // initial bind
-}
+  ngAfterViewInit(): void {
+    this.setupInfiniteObserver(); // initial bind
+  }
 
   private applyRouteMode(url: string): void {
     const isGallery = url === '/gallery' || url.startsWith('/gallery?');
     const wasFull = this.isFullPage();
 
+    this.isGalleryRoute = isGallery;
     this.isFullPage.set(isGallery);
+
+    // SEO only for full page
+    if (isGallery) {
+      this.title.setTitle('Gallery | Sea Rider Goa - Yacht Service');
+      this.meta.updateTag({
+        name: 'description',
+        content:
+          'Explore Sea Rider Goa’s yacht photo & video gallery—sunset cruises, celebrations, and luxury yacht moments in Goa.',
+      });
+      this.meta.updateTag({ name: 'robots', content: 'index,follow' });
+    }
 
     // entering /gallery
     if (isGallery && !wasFull && isPlatformBrowser(this.platformId)) {
@@ -246,11 +232,10 @@ ngAfterViewInit(): void {
         void this.loadFromManifest();
       }
 
-      // observer may not exist yet (ViewChild not ready until AfterViewInit)
       queueMicrotask(() => this.setupInfiniteObserver());
     }
 
-    // leaving /gallery (optional cleanup)
+    // leaving /gallery cleanup
     if (!isGallery && wasFull) {
       this.io?.disconnect();
       this.io = undefined;
@@ -258,95 +243,89 @@ ngAfterViewInit(): void {
   }
 
   private setupInfiniteObserver(): void {
-  if (!isPlatformBrowser(this.platformId)) return;
+    if (!isPlatformBrowser(this.platformId)) return;
 
-  // Reset old observer
-  this.io?.disconnect();
-  this.io = undefined;
+    // Reset old observer
+    this.io?.disconnect();
+    this.io = undefined;
 
-  if (!this.isFullPage()) return;
+    if (!this.isFullPage()) return;
 
-  const el = this.infiniteSentinel?.nativeElement;
-  if (!el) return;
+    const el = this.infiniteSentinel?.nativeElement;
+    if (!el) return;
 
-  // If we're already fully loaded, no need to observe
-  if (!this.canLoadMore()) return;
+    if (!this.canLoadMore()) return;
 
-  this.io = new IntersectionObserver(
-    (entries) => {
-      const entry = entries[0];
-      if (entry?.isIntersecting) {
-        this.loadMore();
-      }
-    },
-    { root: null, rootMargin: '900px 0px', threshold: 0.01 }
-  );
+    this.io = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[0];
+        if (entry?.isIntersecting) this.loadMore();
+      },
+      { root: null, rootMargin: '900px 0px', threshold: 0.01 }
+    );
 
-  this.io.observe(el);
-}
+    this.io.observe(el);
+  }
 
   private async loadFromManifest(): Promise<void> {
-  try {
-    const res = await fetch('assets/gallery/manifest.json', { cache: 'no-cache' });
-    if (!res.ok) throw new Error(`manifest fetch failed: ${res.status}`);
-    const raw = (await res.json()) as string[];
+    try {
+      const res = await fetch('assets/gallery/manifest.json', { cache: 'no-cache' });
+      if (!res.ok) throw new Error(`manifest fetch failed: ${res.status}`);
+      const raw = (await res.json()) as string[];
 
-    // ✅ Deduplicate while keeping order
-    const files: string[] = [];
-    const seen = new Set<string>();
-    for (const f of raw) {
-      const key = (f ?? '').trim();
-      if (!key) continue;
-      if (seen.has(key)) continue;
-      seen.add(key);
-      files.push(key);
-    }
+      // Deduplicate while keeping order
+      const files: string[] = [];
+      const seen = new Set<string>();
+      for (const f of raw) {
+        const key = (f ?? '').trim();
+        if (!key) continue;
+        if (seen.has(key)) continue;
+        seen.add(key);
+        files.push(key);
+      }
 
-    const items: MediaItem[] = files
-      .filter((f) => /\.(png|jpe?g|webp|avif|mp4)$/i.test(f)) // ✅ include mp4
-      .map((file, idx) => {
-        const url = `assets/gallery/${file}`;
-        const isVideo = /\.mp4$/i.test(file);
-        
-        if (isVideo) {
-          const fileName = file.split('.')[0];
+      const items: MediaItem[] = files
+        .filter((f) => /\.(png|jpe?g|webp|avif|mp4)$/i.test(f))
+        .map((file, idx) => {
+          const url = `assets/gallery/${file}`;
+          const isVideo = /\.mp4$/i.test(file);
+
+          if (isVideo) {
+            const fileName = file.split('.')[0];
+            return {
+              id: `vid-${idx}-${file}`,
+              kind: 'video' as const,
+              provider: 'mp4' as const,
+              videoUrl: url,
+              thumbUrl: 'assets/gallery/thumbnail/' + fileName + '.png',
+              title: 'Yacht experience video in Goa',
+            };
+          }
+
           return {
-            id: `vid-${idx}-${file}`,
-            kind: 'video' as const,
-            provider: 'mp4' as const,
-            videoUrl: url,
-            // ✅ use a common poster/thumb (add one image in assets/gallery/)
-            thumbUrl: 'assets/gallery/thumbnail/'+fileName+'.png',
-            title: 'Yacht experience video in Goa',
+            id: `img-${idx}-${file}`,
+            kind: 'image' as const,
+            thumbUrl: url,
+            fullUrl: url,
+            alt: 'Sea Rider Goa yacht & cruise gallery photo',
           };
-        }
+        });
 
-        return {
-          id: `img-${idx}-${file}`,
-          kind: 'image' as const,
-          thumbUrl: url,
-          fullUrl: url,
-          alt: 'Yacht & cruise gallery photo in Goa',
-        };
-      });
+      this.fullAllItems.set(items);
+      this.scheduleObserverRebind();
 
-    this.fullAllItems.set(items);
-    this.scheduleObserverRebind();
-
-    // ✅ Ensure infinite scroll observer attaches AFTER sentinel is in DOM
-    queueMicrotask(() => this.setupInfiniteObserver());
-  } catch (e) {
-    // Fallback: don't crash
-    this.fullAllItems.set(this.homeItems());
-    queueMicrotask(() => this.setupInfiniteObserver());
+      queueMicrotask(() => this.setupInfiniteObserver());
+    } catch {
+      // Fallback: don't crash
+      this.fullAllItems.set(this.homeItems());
+      queueMicrotask(() => this.setupInfiniteObserver());
+    }
   }
-}
 
   private loadMore(): void {
     if (!this.canLoadMore()) return;
     this.fullVisibleCount.update((n) => n + this.pageSize);
-    // rebind so sentinel stays watched after DOM grows
-  this.scheduleObserverRebind();
+    this.scheduleObserverRebind();
   }
 
   open(item: MediaItem): void {

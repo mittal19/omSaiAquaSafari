@@ -18,6 +18,19 @@
   --brand-gold: #c8a000;
 }
 
+/* Prevent padding/width combinations from creating horizontal overflow */
+:host,
+:host *,
+:host *::before,
+:host *::after {
+  box-sizing: border-box;
+}
+
+/* Extra safety: avoid right-side empty space caused by accidental overflow */
+.page {
+  overflow-x: clip;
+}
+
 /* ===== Existing yachtbook layout ===== */
 
 .page {
@@ -25,7 +38,7 @@
   scroll-margin-top: 112px;
 
   background:
-   transparent
+   transparent;
 }
 
 .wrap {
@@ -469,7 +482,8 @@
 
 .gallery__header {
   text-align: center;
-  padding: 0 clamp(16px, 4vw, 60px);
+  /* .wrap already applies responsive side padding — avoid double padding overflow */
+  padding: 0;
   margin-bottom: clamp(30px, 5vw, 50px);
 }
 
@@ -786,3 +800,5 @@ iframe {
 .modal-shell {
   width: min(1040px, 100%);
 }
+
+//https://allporncomic.com/porncomic/au-naturel-pegasus-smithh/4-au-naturel/

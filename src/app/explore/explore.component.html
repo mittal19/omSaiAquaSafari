@@ -1,11 +1,11 @@
 <section
   #exploreSection
-  class="explore"
+  class="explore position-relative w-100"
   [class.explore--route]="isExploreRoute"
   aria-labelledby="explore-title"
 >
-  <div class="explore__header">
-    <h2 class="explore__title">Explore</h2>
+  <div class="explore__header text-center">
+    <h2 id="explore-title" class="explore__title">Explore</h2>
 
     <h3 class="explore__tagline">Choose your perfect sea experience in Goa</h3>
 
@@ -14,7 +14,13 @@
       families, birthdays, and corporate outings.
     </p>
 
-    <ul class="explore__features">
+    <p class="explore__sr">
+      SeaRider helps you book <strong>luxury yacht rentals in Goa</strong> and
+      plan <strong>private celebrations on the sea</strong> with trusted crew,
+      transparent pricing, and quick enquiries.
+    </p>
+
+    <ul class="explore__features d-flex justify-content-center flex-wrap">
       <li>Trusted crew</li>
       <li>Scenic routes</li>
       <li>Flexible timings</li>
@@ -22,7 +28,11 @@
     </ul>
   </div>
 
-  <div class="exploreGrid" role="list">
+  <div
+    class="exploreGrid d-flex flex-wrap align-items-stretch"
+    role="list"
+    aria-label="Explore categories"
+  >
     <article
       *ngFor="let c of cards"
       #cardEl
@@ -61,11 +71,16 @@
 
       <div class="card__overlay" aria-hidden="true"></div>
 
-      <div class="card__content">
+      <div class="card__content d-flex flex-column">
         <h3 class="card__title">{{ c.title }}</h3>
         <p class="card__text">{{ c.subtitle }}</p>
 
-        <a class="card__cta" [routerLink]="c.route">{{ c.cta }}</a>
+        <a
+          class="card__cta"
+          [routerLink]="c.route"
+          [attr.aria-label]="c.cta + ' - ' + c.title + ' in Goa'"
+          >{{ c.cta }}</a
+        >
       </div>
     </article>
   </div>

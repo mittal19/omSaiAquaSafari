@@ -1,119 +1,181 @@
 @defer (on viewport) {
-<section id="home" class="home-hero">
-  <div class="hero-frame">
-    <div
-      class="hero-bg"
-      (mouseenter)="pauseAutoplay()"
-      (mouseleave)="resumeAutoplay()"
-      (focusin)="pauseAutoplay()"
-      (focusout)="resumeAutoplay()"
-      (touchstart)="pauseAutoplay()"
-    >
-      <div class="hero-media-stack">
-        <!-- previous image (fades out) -->
-        <img
-          *ngIf="showPrev && prevSlideUrl"
-          class="hero-media"
-          [ngSrc]="prevSlideUrl"
-          fill
-          alt=""
-          decoding="async"
-          [@imageFade]="{ value: slideAnimKey, params: { t: reducedMotion ? 0 : 650 } }"
-        />
+<!-- <a class="skip-link" href="#main-content">Skip to main content</a> -->
 
-        <!-- current image (fades in) -->
-        <img
-          *ngIf="currentSlide"
-          class="hero-media"
-          [ngSrc]="currentSlide"
-          fill
-          [priority]="true"
-          [attr.fetchpriority]="'high'"
-          alt="Luxury yacht & cruise rentals in Goa"
-          decoding="async"
-          [@imageFade]="{ value: slideAnimKey, params: { t: reducedMotion ? 0 : 650 } }"
-        />
+<main id="main-content">
+  <!-- Structured data for SEO -->
+  <script type="application/ld+json" [textContent]="jsonLd"></script>
+
+  <section
+    id="home"
+    class="home-hero position-relative overflow-hidden text-white"
+    aria-label="Sea Rider hero section"
+    (mouseenter)="pauseAutoplay()"
+    (mouseleave)="resumeAutoplay()"
+    (focusin)="pauseAutoplay()"
+    (focusout)="resumeAutoplay()"
+    (touchstart)="pauseAutoplay()"
+  >
+    <!-- Background images (cross-fade handled by @imageFade) -->
+    <div class="hero-media-stack position-absolute top-0 start-0 w-100 h-100" aria-hidden="true">
+      <img
+        *ngIf="showPrev && prevSlideUrl"
+        class="hero-media"
+        [ngSrc]="prevSlideUrl"
+        fill
+        [priority]="false"
+        alt=""
+        decoding="async"
+        [@imageFade]="{ value: slideAnimKey, params: { t: reducedMotion ? 0 : 650 } }"
+      />
+
+      <img
+        class="hero-media"
+        [ngSrc]="currentSlide"
+        fill
+        [priority]="true"
+        [attr.fetchpriority]="'high'"
+        [attr.alt]="currentAlt"
+        decoding="async"
+        [@imageFade]="{ value: slideAnimKey, params: { t: reducedMotion ? 0 : 650 } }"
+      />
+    </div>
+
+    <!-- Overlay -->
+    <div class="hero-overlay position-absolute top-0 start-0 w-100 h-100" aria-hidden="true"></div>
+
+    <!-- Content -->
+    <div class="container position-relative py-5 py-lg-6">
+      <div class="row align-items-center g-4 g-lg-5">
+        <div class="col-12 col-lg-7">
+          <div class="d-inline-flex align-items-center gap-2 mb-3">
+            <span class="badge badge-pill">⭐ Top-rated experiences</span>
+            <span class="badge badge-pill">📍 Goa pickup points</span>
+          </div>
+
+          <h1 class="display-4 fw-semibold lh-1 mb-3">
+            Set Sail in Style with<br><span class="accent">Sea Rider</span>
+          </h1>
+
+          <p class="lead hero-subtitle mb-4" aria-live="polite">
+            {{ currentSubtitle }}
+          </p>
+
+          <div class="d-flex flex-wrap gap-3">
+            <a
+              routerLink="/book-yacht"
+              class="btn btn-primary btn-lg px-4 position-relative overflow-hidden"
+              (pointerdown)="ctaRipple($event)"
+              aria-label="Book a luxury yacht in Goa"
+            >
+              Book Now
+              <span class="btn-ripple" aria-hidden="true"></span>
+            </a>
+
+            <a
+              routerLink="/quick-quote"
+              class="btn btn-outline-light btn-lg px-4 position-relative overflow-hidden"
+              (pointerdown)="ctaRipple($event)"
+              aria-label="Get a quick quote for yacht rental"
+            >
+              Get a Quote
+              <span class="btn-ripple" aria-hidden="true"></span>
+            </a>
+          </div>
+
+          <div class="mt-4 small">
+            No hidden charges • Instant support • Flexible slots
+          </div>
+        </div>
+
+        <div class="col-12 col-lg-5">
+          <div class="card hero-card border-0 shadow-lg">
+            <div class="card-body p-4 p-lg-5">
+              <div class="d-flex align-items-center justify-content-between mb-3">
+                <div class="h5 fw-semibold mb-0">Quick booking</div>
+                <span class="badge badge-pill badge-accent">Instant confirmation</span>
+              </div>
+
+              <ul class="list-unstyled mb-4">
+                <li class="d-flex gap-2 mb-2">
+                  <span class="check">✓</span>
+                  <span>Luxury yachts & party cruises</span>
+                </li>
+                <li class="d-flex gap-2 mb-2">
+                  <span class="check">✓</span>
+                  <span>Add-ons: décor, DJ, drone, photography</span>
+                </li>
+                <li class="d-flex gap-2">
+                  <span class="check">✓</span>
+                  <span>Trusted crew • Safety first</span>
+                </li>
+              </ul>
+
+              <div class="d-grid gap-2">
+                <a
+                  routerLink="/book-yacht"
+                  class="btn btn-primary btn-lg position-relative overflow-hidden"
+                  (pointerdown)="ctaRipple($event)"
+                  aria-label="Book a luxury yacht in Goa"
+                >
+                  Book Now
+                  <span class="btn-ripple" aria-hidden="true"></span>
+                </a>
+
+                <a
+                  routerLink="/explore"
+                  class="btn btn-outline-dark btn-lg position-relative overflow-hidden"
+                  (pointerdown)="ctaRipple($event)"
+                  aria-label="Explore yachts and experiences"
+                >
+                  Explore Options
+                  <span class="btn-ripple" aria-hidden="true"></span>
+                </a>
+              </div>
+
+              <p class="mt-3 mb-0 text-body-secondary small">
+                Pay only after confirming the slot. WhatsApp support available.
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <div class="hero-overlay"></div>
-
-      <div class="hero-shell">
-        <div class="hero-grid">
-          <div class="hero-copy">
-            <h1 class="hero-title">
-              Set Sail in Style with <br /><span class="accent">Sea Riders</span>
-            </h1>
-
-            <p class="hero-subtitle" aria-live="polite">
-              {{ currentSubtitle }}
-            </p>
-
-            <div class="hero-badges" aria-label="Highlights">
-              <div class="badge">⭐ Top-rated experiences</div>
-              <div class="badge">📍 Goa pickup points</div>
-            </div>
-          </div>
-
-          <!-- removed [@copyIn] -->
-          <div class="hero-card" aria-label="Quick booking">
-            <div class="card-actions">
-              <a
-                class="btn primary full"
-                routerLink="/book-yacht"
-                (pointerdown)="ctaRipple($event)"
-                aria-label="Book a luxury yacht in Goa"
-              >
-                Book Now
-                <span class="btn-ripple" aria-hidden="true"></span>
-              </a>
-
-              <a
-                class="btn secondary full"
-                routerLink="/quick-quote"
-                (pointerdown)="ctaRipple($event)"
-                aria-label="Get a quick quote for yacht rental"
-              >
-                Get a Quote
-                <span class="btn-ripple" aria-hidden="true"></span>
-              </a>
-            </div>
-
-            <p class="card-note">No hidden charges • Instant support</p>
-          </div>
-        </div>
-
-        <div class="hero-dots" aria-label="Hero image selectors">
-          <button
-            *ngFor="let s of slides; let i = index"
-            class="dot-btn"
-            [class.active]="i === currentIndex"
-            (click)="goToSlide(i)"
-            type="button"
-            [attr.aria-label]="'Show image ' + (i + 1)"
-          ></button>
-        </div>
+      <!-- Dots -->
+      <div class="hero-dots d-flex justify-content-center gap-2 mt-5" aria-label="Hero image selectors">
+        <button
+          *ngFor="let s of slides; let i = index"
+          type="button"
+          class="dot-btn"
+          [class.active]="i === currentIndex"
+          (click)="goToSlide(i)"
+          [attr.aria-label]="'Show image ' + (i + 1)"
+        ></button>
       </div>
     </div>
-  </div>
-</section>
-}@placeholder {
+  </section>
+</main>
+} @placeholder {
 <div></div>
 }
+
 @defer (on viewport) {
 <app-explore></app-explore>
 } @placeholder {
 <div></div>
 }
+
 @defer (on viewport) {
-<app-yachtOptions></app-yachtOptions>
+<app-yacht-options></app-yacht-options>
 } @placeholder {
 <div></div>
 }
+
 @defer (on viewport) {
 <app-gallery></app-gallery>
 } @placeholder {
 <div></div>
 }
+
 @defer (on viewport) {
 <app-testimonials></app-testimonials>
 } @placeholder {

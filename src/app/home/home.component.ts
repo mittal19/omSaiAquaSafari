@@ -1,6 +1,7 @@
 import { CommonModule, DOCUMENT, NgOptimizedImage, isPlatformBrowser } from '@angular/common';
-import { Component, PLATFORM_ID, inject } from '@angular/core';
+import { Component, OnDestroy, OnInit, PLATFORM_ID, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { Meta, Title } from '@angular/platform-browser';
 import { animate, style, transition, trigger } from '@angular/animations';
 
 import { GalleryComponent } from '../gallery/gallery.component';
@@ -8,7 +9,7 @@ import { TestimonialsComponent } from '../testimonials/testimonials.component';
 import { ExploreComponent } from '../explore/explore.component';
 import { YachtOptionsComponent } from '../yachtOptions/yachtOptions.component';
 
-type Slide = { imageUrl: string; subTitle: string };
+type Slide = { imageUrl: string; subTitle: string; alt?: string };
 
 @Component({
   selector: 'app-home',
@@ -26,27 +27,50 @@ type Slide = { imageUrl: string; subTitle: string };
   styleUrl: './home.component.css',
   animations: [
     trigger('imageFade', [
-      transition(':enter', [
-        style({ opacity: 0 }),
-        animate('{{t}}ms ease', style({ opacity: 1 })),
-      ], { params: { t: 650 } }),
-      transition(':leave', [
-        animate('{{t}}ms ease', style({ opacity: 0 })),
-      ], { params: { t: 650 } }),
+      transition(
+        ':enter',
+        [style({ opacity: 0 }), animate('{{t}}ms ease', style({ opacity: 1 }))],
+        { params: { t: 650 } }
+      ),
+      transition(':leave', [animate('{{t}}ms ease', style({ opacity: 0 }))], {
+        params: { t: 650 },
+      }),
     ]),
   ],
 })
-export class HomeComponent {
+export class HomeComponent implements OnInit, OnDestroy {
   private readonly platformId = inject(PLATFORM_ID);
   private readonly doc = inject(DOCUMENT);
+  private readonly title = inject(Title);
+  private readonly meta = inject(Meta);
 
   // ----- Slider data -----
   slides: Slide[] = [
-    { imageUrl: 'assets/slider/1.jpeg', subTitle: 'Premium yachts and curated experiences.' },
-    { imageUrl: 'assets/slider/5.jpeg', subTitle: 'Transparent pricing and easy booking.' },
-    { imageUrl: 'assets/slider/2.png', subTitle: 'The Finest Yacht Charters for every Occasion.' },
-    { imageUrl: 'assets/slider/3.png', subTitle: 'Redefine your Events, Celebrations and Parties.' },
-    { imageUrl: 'assets/slider/4.jpeg', subTitle: 'Premium yachts and curated experiences.' },
+    {
+      imageUrl: 'assets/slider/1.jpeg',
+      subTitle: 'Premium yachts and curated experiences.',
+      alt: 'Luxury yacht cruise in Goa at sunset',
+    },
+    {
+      imageUrl: 'assets/slider/5.jpeg',
+      subTitle: 'Transparent pricing and easy booking.',
+      alt: 'Premium yacht deck experience in Goa',
+    },
+    {
+      imageUrl: 'assets/slider/2.png',
+      subTitle: 'The finest yacht charters for every occasion.',
+      alt: 'Yacht charter in Goa for families and friends',
+    },
+    {
+      imageUrl: 'assets/slider/3.png',
+      subTitle: 'Redefine your events, celebrations and parties.',
+      alt: 'Party yacht in Goa for celebrations',
+    },
+    {
+      imageUrl: 'assets/slider/4.jpeg',
+      subTitle: 'Private cruises, proposals, birthdays & corporate events.',
+      alt: 'Private yacht rental in Goa with crew',
+    },
   ];
 
   currentIndex = 0;
@@ -60,8 +84,10 @@ export class HomeComponent {
   private intervalId: number | null = null;
   private firstSlideReady = false;
 
-  // Keep references so the browser keeps these in memory during session
   private preloadImages: HTMLImageElement[] = [];
+
+  private readonly headerOffsetVarName = '--header-offset';
+  private removeResizeListener: (() => void) | null = null;
 
   get currentSlide(): string {
     return this.slides[this.currentIndex]?.imageUrl ?? '';
@@ -71,10 +97,29 @@ export class HomeComponent {
     return this.slides[this.currentIndex]?.subTitle ?? '';
   }
 
+  get currentAlt(): string {
+    return this.slides[this.currentIndex]?.alt ?? 'Luxury yacht rentals in Goa';
+  }
+
+  get jsonLd(): string {
+    const origin = isPlatformBrowser(this.platformId) ? window.location.origin : '';
+    const data = {
+      '@context': 'https://schema.org',
+      '@type': 'LocalBusiness',
+      name: 'Sea Rider',
+      url: origin || undefined,
+      areaServed: 'Goa, India',
+      description:
+        'Luxury yacht rentals in Goa for cruises, parties, proposals, birthdays, and corporate events. Transparent pricing and instant support.',
+      serviceType: ['Yacht rental', 'Yacht charter', 'Party yacht', 'Sunset cruise'],
+    };
+    return JSON.stringify(data);
+  }
+
   constructor() {
-    // Start fetching ASAP (even before ngOnInit)
     if (isPlatformBrowser(this.platformId)) {
       this.addPreloadLinksToHead();
+      queueMicrotask(() => this.syncHeaderOffset());
     }
   }
 
@@ -83,11 +128,16 @@ export class HomeComponent {
 
     this.reducedMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches ?? false;
 
-    // Warm cache for ALL slides (helps next/prev transitions too)
-    this.preloadAllSlides();
+    this.setupSeo();
 
-    // Ensure first slide is decoded before autoplay kicks in
+    this.preloadAllSlides();
     await this.ensureFirstSlideDecoded();
+
+    // Prevent hero being hidden under fixed header
+    this.syncHeaderOffset();
+    const onResize = () => this.syncHeaderOffset();
+    window.addEventListener('resize', onResize, { passive: true });
+    this.removeResizeListener = () => window.removeEventListener('resize', onResize);
 
     this.firstSlideReady = true;
     this.startAutoplay();
@@ -95,6 +145,8 @@ export class HomeComponent {
 
   ngOnDestroy(): void {
     this.stopAutoplay();
+    this.removeResizeListener?.();
+    this.removeResizeListener = null;
   }
 
   pauseAutoplay(): void {
@@ -113,7 +165,6 @@ export class HomeComponent {
     this.swapTo(index);
   }
 
-  // ---- UI micro-interaction (your template calls this) ----
   ctaRipple(ev: PointerEvent): void {
     const btn = ev.currentTarget as HTMLElement | null;
     if (!btn) return;
@@ -125,19 +176,16 @@ export class HomeComponent {
     btn.style.setProperty('--ripple-x', `${x}px`);
     btn.style.setProperty('--ripple-y', `${y}px`);
     btn.classList.remove('rippling');
-    // force reflow
-    void btn.offsetWidth;
+    void btn.offsetWidth; // reflow
     btn.classList.add('rippling');
   }
 
-  // ---- Autoplay ----
   private startAutoplay(): void {
-    if (this.reducedMotion) return; // respect reduced motion
+    if (this.reducedMotion) return;
     if (this.intervalId != null) return;
 
-    this.intervalId = window.setInterval(() => {
-      this.nextSlide();
-    }, 2000);
+    // Slower feels more premium/readable
+    this.intervalId = window.setInterval(() => this.nextSlide(), 4500);
   }
 
   private stopAutoplay(): void {
@@ -154,17 +202,12 @@ export class HomeComponent {
   }
 
   private swapTo(nextIndex: number): void {
-    // keep current as "prev" for fade-out
     this.prevSlideUrl = this.currentSlide;
     this.showPrev = true;
 
-    // switch
     this.currentIndex = nextIndex;
-
-    // triggers the fade transition
     this.slideAnimKey++;
 
-    // after fade duration, remove prev from DOM
     const t = this.reducedMotion ? 0 : 650;
     window.setTimeout(() => {
       this.showPrev = false;
@@ -172,13 +215,10 @@ export class HomeComponent {
     }, t);
   }
 
-  // ---- Preload logic (fixes first-load delay) ----
   private addPreloadLinksToHead(): void {
-    // Preload the first 2 slides with highest priority
     const urls = this.uniqueSlideUrls().slice(0, 2);
 
     for (const href of urls) {
-      // Avoid duplicates
       const already = this.doc.head?.querySelector(`link[rel="preload"][as="image"][href="${href}"]`);
       if (already) continue;
 
@@ -186,20 +226,13 @@ export class HomeComponent {
       link.rel = 'preload';
       link.as = 'image';
       link.href = href;
-
-      // Hint priority where supported
       link.setAttribute('fetchpriority', 'high');
-
-      // If you ever serve images from a CDN domain, you can also add:
-      // link.crossOrigin = 'anonymous';
-
       this.doc.head?.appendChild(link);
     }
   }
 
   private preloadAllSlides(): void {
     const urls = this.uniqueSlideUrls();
-
     this.preloadImages = urls.map((u) => {
       const img = new Image();
       img.decoding = 'async';
@@ -213,7 +246,6 @@ export class HomeComponent {
     const first = this.currentSlide;
     if (!first) return;
 
-    // If we already created an Image() for it, use that; otherwise create one.
     let img = this.preloadImages.find((i) => i.src.endsWith(first));
     if (!img) {
       img = new Image();
@@ -223,16 +255,12 @@ export class HomeComponent {
       this.preloadImages.unshift(img);
     }
 
-    // decode() ensures the image is ready to paint (where supported)
     try {
-      // If it’s already loaded, decode resolves quickly.
-      // decode() may throw on some browsers; we safely ignore.
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const anyImg = img as any;
       if (typeof anyImg.decode === 'function') {
         await anyImg.decode();
       } else {
-        // Fallback: wait for load event if decode isn't available
         await new Promise<void>((resolve) => {
           if (img.complete) return resolve();
           img.onload = () => resolve();
@@ -240,14 +268,58 @@ export class HomeComponent {
         });
       }
     } catch {
-      // ignore: best-effort preload/decode
+      // best-effort
     }
   }
 
   private uniqueSlideUrls(): string[] {
-    // Deduplicate (you currently repeat 'three.jpeg')
     const set = new Set<string>();
     for (const s of this.slides) set.add(s.imageUrl);
     return Array.from(set);
+  }
+
+  private syncHeaderOffset(): void {
+    if (!isPlatformBrowser(this.platformId)) return;
+
+    const headerEl =
+      (this.doc.querySelector('app-header') as HTMLElement | null) ||
+      (this.doc.querySelector('[data-fixed-header]') as HTMLElement | null) ||
+      (this.doc.querySelector('header') as HTMLElement | null);
+
+    const fallback = 72;
+    const h = headerEl?.getBoundingClientRect()?.height
+      ? Math.round(headerEl.getBoundingClientRect().height)
+      : fallback;
+
+    this.doc.documentElement.style.setProperty(this.headerOffsetVarName, `${h}px`);
+  }
+
+  private setupSeo(): void {
+    const title = 'Sea Rider Goa | Luxury Yacht Rentals, Parties & Cruises';
+    const description =
+      'Book luxury yacht rentals in Goa with transparent pricing, instant support, and premium crew. Perfect for cruises, parties, proposals, birthdays, and corporate events.';
+
+    this.title.setTitle(title);
+
+    this.meta.updateTag({ name: 'description', content: description });
+    this.meta.updateTag({ name: 'robots', content: 'index,follow,max-image-preview:large' });
+
+    this.meta.updateTag({ property: 'og:title', content: title });
+    this.meta.updateTag({ property: 'og:description', content: description });
+    this.meta.updateTag({ property: 'og:type', content: 'website' });
+
+    this.meta.updateTag({ name: 'twitter:card', content: 'summary_large_image' });
+    this.meta.updateTag({ name: 'twitter:title', content: title });
+    this.meta.updateTag({ name: 'twitter:description', content: description });
+
+    const canonical = this.doc.head?.querySelector('link[rel="canonical"]') as HTMLLinkElement | null;
+    const href = window.location.origin + window.location.pathname;
+    if (canonical) canonical.href = href;
+    else {
+      const link = this.doc.createElement('link');
+      link.rel = 'canonical';
+      link.href = href;
+      this.doc.head?.appendChild(link);
+    }
   }
 }

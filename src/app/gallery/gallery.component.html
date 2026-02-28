@@ -1,58 +1,61 @@
 <section id="gallery" [class.gallery--route]="isGalleryRoute">
   <div class="container">
-    <header class="gallery__header">
-      <h2 class="gallery__title">Gallery</h2>
-      <h3 class="gallery__tagline">Moments from our Yacht Experiences</h3>
-      <p class="gallery__description">Tap any photo or video to view in full.</p>
+    <header class="text-center px-3 px-md-5 mb-4 mb-md-5">
+      <h2 class="gallery__title mb-2">Gallery</h2>
+      <p class="gallery__tagline mb-2">Moments from our Yacht Experiences</p>
+      <p class="gallery__description mb-0">
+        Tap any photo or video to view in full. For best quality, open the full gallery.
+      </p>
     </header>
 
-    <div class="grid" role="list">
-      <button
-        *ngFor="let item of items()"
-        class="tile"
-        type="button"
+    <div class="row g-3 g-md-4" role="list">
+      <div
+        *ngFor="let item of items(); let i = index"
+        class="col-6 col-md-4 col-xl-3"
         role="listitem"
-        (click)="open(item)"
-        [attr.aria-label]="item.kind === 'image' ? item.alt : item.title"
       >
-        <img
-          class="thumb"
-          [src]="item.thumbUrl"
-          [alt]="item.kind === 'image' ? item.alt : item.title"
-          loading="lazy"
-          decoding="async"
-        />
+        <button
+          class="gallery-card w-100"
+          type="button"
+          (click)="open(item)"
+          [attr.aria-label]="item.kind === 'image' ? item.alt : item.title"
+          [style.--d.ms]="(i % 12) * 30"
+        >
+          <img
+            class="gallery-thumb"
+            [src]="item.thumbUrl"
+            [alt]="item.kind === 'image' ? item.alt : item.title"
+            loading="lazy"
+            decoding="async"
+          />
 
-        <span class="chip" *ngIf="item.kind === 'video'">Video</span>
-        <span class="fade"></span>
-      </button>
+          <span class="gallery-badge" *ngIf="item.kind === 'video'" aria-hidden="true">
+            Video
+          </span>
+          <span class="gallery-sheen" aria-hidden="true"></span>
+        </button>
+      </div>
     </div>
 
     <!-- Home/embed only -->
-    <div class="gallery-footer" *ngIf="!isFullPage()">
-      <button class="btn primary large" type="button" (click)="seeMore()">
+    <div class="text-center mt-4" *ngIf="!isFullPage()">
+      <button class="btn btn-primary btn-lg sr-cta" type="button" (click)="seeMore()">
         See More Photos &amp; Videos
       </button>
     </div>
 
     <!-- /gallery only: sentinel for scroll loading -->
     <div
-  *ngIf="isFullPage()"
-  #infiniteSentinel
-  class="infinite-sentinel"
-  aria-hidden="true"
-></div>
+      *ngIf="isFullPage()"
+      #infiniteSentinel
+      class="infinite-sentinel"
+      aria-hidden="true"
+    ></div>
 
-    <!-- ✅ Lightbox modal -->
+    <!-- Lightbox -->
     <div class="modal-backdrop" *ngIf="isOpen()"></div>
 
-    <div
-      class="modal"
-      *ngIf="isOpen()"
-      role="dialog"
-      aria-modal="true"
-      (click)="close()"
-    >
+    <div class="modal" *ngIf="isOpen()" role="dialog" aria-modal="true" (click)="close()">
       <div
         class="modal-shell"
         (click)="stopPropagation($event)"
@@ -60,8 +63,6 @@
         (touchend)="onTouchEnd($event)"
       >
         <div class="modal-topbar">
-          <div class="modal-meta"></div>
-
           <button class="icon-btn close" type="button" (click)="close()" aria-label="Close">
             <span aria-hidden="true">✕</span>
           </button>

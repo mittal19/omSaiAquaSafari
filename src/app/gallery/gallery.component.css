@@ -1,113 +1,180 @@
+/* Sea Rider – Gallery (Angular 17)
+   - Uses Bootstrap grid/spacing in the template
+   - Colors derived from your logo (teal + sun/orange + deep navy)
+   - Lightweight animations (prefers-reduced-motion respected)
+*/
+
+:host {
+  display: block;
+
+  /* Typography – should match header/home/explore (safe fallbacks) */
+  --sr-font-sans: var(
+    --font-sans,
+    "Poppins",
+    "Inter",
+    system-ui,
+    -apple-system,
+    "Segoe UI",
+    Roboto,
+    Arial,
+    sans-serif
+  );
+  --sr-font-display: var(
+    --font-display,
+    "Poppins",
+    "Inter",
+    system-ui,
+    -apple-system,
+    "Segoe UI",
+    Roboto,
+    Arial,
+    sans-serif
+  );
+
+  /* Logo palette */
+  --sr-deep-blue: #0d3b66;
+  --sr-teal: #0fb9b1;
+  --sr-gold: #ffb703;
+  --sr-orange: #fb8500;
+
+  --sr-ink: #0a1f33;
+  --sr-border: rgba(10, 31, 51, 0.14);
+  --sr-shadow: 0 14px 38px rgba(13, 59, 102, 0.14);
+  --sr-shadow-strong: 0 20px 54px rgba(13, 59, 102, 0.18);
+
+  font-family: var(--sr-font-sans);
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
 /* Prevent background scroll when modal is open */
-:host { display: block; }
 :host-context(html.no-scroll),
 html.no-scroll {
   overflow: hidden;
 }
 
+/* Route spacing (works with your fixed header) */
 .gallery--route {
-  padding-top: 92px;
-  scroll-margin-top: 92px;
+  padding-top: 142px;
+  scroll-margin-top: 142px;
 }
 
-.container {
-  /* width: min(1120px, calc(100% - 32px)); */
-  /* margin: 0 auto; */
-  padding-left: clamp(16px, 4vw, 60px);
-  padding-right: clamp(16px, 4vw, 60px);
-}
 
-/* ================= Gallery Header Styling ================= */
-
-.gallery__header {
-  text-align: center;
-  padding: 0 clamp(16px, 4vw, 60px);
-  margin-bottom: clamp(30px, 5vw, 50px);
-}
-
+/* Header */
 .gallery__title {
+  font-family: var(--sr-font-display);
   font-size: clamp(28px, 3.2vw, 40px);
-  font-weight: 800;
-  background: linear-gradient(90deg, #0d3b66, #0fb9b1, #ffb703);
+  font-weight: 900;
+  margin: 0;
+
+  background: linear-gradient(
+    90deg,
+    var(--sr-deep-blue),
+    var(--sr-teal),
+    var(--sr-gold),
+    var(--sr-orange)
+  );
   -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  margin-bottom: 10px;
+  background-clip: text;
+  color: transparent;
   background-size: 200% auto;
-  animation: shimmer 6s linear infinite;
+  animation: sr-shimmer 6s linear infinite;
 }
 
-@keyframes shimmer {
-  0% { background-position: 0% center; }
-  100% { background-position: 200% center; }
+@keyframes sr-shimmer {
+  0% {
+    background-position: 0% center;
+  }
+  100% {
+    background-position: 200% center;
+  }
 }
 
 .gallery__tagline {
-  font-size: clamp(18px, 2vw, 24px);
-  font-weight: 600;
-  color: #0d3b66;
-  margin-bottom: 12px;
+  font-family: var(--sr-font-display);
+  font-size: clamp(16px, 1.6vw, 22px);
+  font-weight: 700;
+  color: var(--sr-deep-blue);
 }
 
 .gallery__description {
-  max-width: 750px;
-  margin: 0 auto 20px;
-  font-size: clamp(14px, 1.2vw, 16px);
-  line-height: 1.6;
-  color: #444;
+  max-width: 780px;
+  margin: 0 auto;
+  font-size: clamp(13px, 1.1vw, 16px);
+  line-height: 1.65;
+  color: rgba(10, 31, 51, 0.78);
 }
 
-/* ================= Grid ================= */
-
-.grid {
-  display: grid;
-  grid-template-columns: repeat(12, minmax(0, 1fr));
-  gap: 12px;
-  margin-top: 18px;
-}
-
-.tile {
+/* ===== Gallery cards (Bootstrap does layout) ===== */
+.gallery-card {
+  --d: 0ms;
   position: relative;
-  border: 0;
-  padding: 0;
-  cursor: pointer;
+  border: 1px solid var(--sr-border);
   border-radius: 18px;
+  padding: 0;
   overflow: hidden;
   background: rgba(255, 255, 255, 0.9);
-  box-shadow: 0 12px 34px rgba(15, 23, 42, 0.10);
-  transition: transform 180ms ease, box-shadow 180ms ease, filter 180ms ease;
-  grid-column: span 4;
+  box-shadow: var(--sr-shadow);
+  cursor: pointer;
+
   aspect-ratio: 4 / 3;
+  display: block;
+
+  transform: translateY(0);
+  transition: transform 180ms ease, box-shadow 180ms ease, filter 180ms ease;
+
+  /* entry animation */
+  opacity: 0;
+  animation: sr-fade-up 420ms ease forwards;
+  animation-delay: var(--d);
 }
 
-.tile:hover {
+@keyframes sr-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.gallery-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 18px 50px rgba(15, 23, 42, 0.14);
+  box-shadow: var(--sr-shadow-strong);
   filter: saturate(1.03);
 }
 
-.tile:focus-visible {
-  outline: 3px solid rgba(2, 132, 199, 0.55);
+.gallery-card:focus-visible {
+  outline: 3px solid rgba(15, 185, 177, 0.45);
   outline-offset: 3px;
 }
 
-.thumb {
+.gallery-thumb {
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
   transform: scale(1.02);
-  transition: transform 250ms ease;
+  transition: transform 260ms ease;
 }
 
-.tile:hover .thumb { transform: scale(1.06); }
+.gallery-card:hover .gallery-thumb {
+  transform: scale(1.07);
+}
 
-.fade {
+.gallery-sheen {
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, rgba(2, 6, 23, 0.05), rgba(2, 6, 23, 0.38));
+  background:
+    linear-gradient(180deg, rgba(2, 6, 23, 0.06), rgba(2, 6, 23, 0.36)),
+    radial-gradient(520px 260px at 15% 5%, rgba(255, 183, 3, 0.22), transparent 55%);
+  pointer-events: none;
 }
 
-.chip {
+.gallery-badge {
   position: absolute;
   top: 12px;
   left: 12px;
@@ -115,88 +182,71 @@ html.no-scroll {
   border-radius: 999px;
   font-weight: 900;
   font-size: 12px;
-  color: #fff;
-  background: linear-gradient(135deg, #0284c7, #0ea5e9);
-  box-shadow: 0 10px 24px rgba(2, 132, 199, 0.28);
+  color: #0b1520;
+  background: linear-gradient(90deg, var(--sr-gold), var(--sr-orange));
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  box-shadow: 0 12px 26px rgba(251, 133, 0, 0.22);
 }
 
-/* Responsive columns */
-@media (max-width: 980px) {
-  .tile { grid-column: span 6; }
-}
-@media (max-width: 560px) {
-  .tile { grid-column: span 12; }
-}
-
-/* ================= Footer button ================= */
-
-.gallery-footer {
-  margin-top: 28px;
-  display: flex;
-  justify-content: center;
+/* Button gradient (works with Bootstrap btn-primary) */
+.sr-cta {
+  border: 0;
+  background: linear-gradient(90deg, var(--sr-teal), var(--sr-gold), var(--sr-orange));
+  box-shadow: 0 12px 26px rgba(13, 59, 102, 0.18);
+  transition: transform 160ms ease, box-shadow 160ms ease, filter 160ms ease;
 }
 
-.btn.large {
-  height: 48px;
-  padding: 0 24px;
-  border-radius: 16px;
-  font-size: 15px;
-  font-weight: 900;
-  box-shadow: 0 14px 35px rgba(2, 132, 199, 0.25);
+.sr-cta:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.03);
+  box-shadow: 0 16px 32px rgba(13, 59, 102, 0.22);
 }
 
-/* ================= Modal / Lightbox ================= */
-
+/* ===== Lightbox ===== */
 .modal-backdrop {
   position: fixed;
   inset: 0;
-  background:
-    radial-gradient(1200px 700px at 50% 10%, rgba(14, 165, 233, 0.22), transparent 55%),
-    rgba(2, 6, 23, 0.62);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
-  z-index: 1500;
+  background: rgba(2, 6, 23, 0.65);
+  backdrop-filter: blur(4px);
+  z-index: 1050;
 }
 
-/* ✅ Fix: consistent padding on both sides for all widths */
 .modal {
   position: fixed;
   inset: 0;
+  z-index: 1055;
   display: grid;
   place-items: center;
-  z-index: 1600;
-
-  /* controls spacing everywhere (prevents edge-to-edge on any device) */
-  padding: clamp(16px, 4vw, 32px);
+  padding: 18px;
 }
 
 .modal-shell {
   position: relative;
-
-  /* ✅ Fix: respect modal padding (no 100vw math, no scrollbar issues) */
-  width: 100%;
-  max-width: 1040px;
-  margin: 0 auto;
-
+  width: min(980px, 100%);
   border-radius: 22px;
   overflow: hidden;
   background: #0b1220;
-  box-shadow: 0 30px 90px rgba(0,0,0,0.55);
-  border: 1px solid rgba(255,255,255,0.10);
-  transform: translateY(8px) scale(0.985);
-  opacity: 0;
-  animation: popIn 160ms ease-out forwards;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 30px 90px rgba(2, 6, 23, 0.55);
+  animation: sr-pop 180ms ease;
 }
 
-@keyframes popIn {
-  to { transform: translateY(0) scale(1); opacity: 1; }
+@keyframes sr-pop {
+  from {
+    transform: translateY(8px) scale(0.99);
+    opacity: 0.7;
+  }
+  to {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
 }
 
 .full {
-  width: 100%;
-  height: min(78dvh, 740px);
-  object-fit: contain;
   display: block;
+  width: 100%;
+  height: min(74dvh, 720px);
+  object-fit: contain;
   background: #0b1220;
 }
 
@@ -205,6 +255,7 @@ html.no-scroll {
   position: absolute;
   inset: 10px 10px auto 10px;
   display: flex;
+  flex-direction: row-reverse;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
@@ -212,41 +263,6 @@ html.no-scroll {
   pointer-events: none; /* buttons opt-in */
 }
 
-.modal-meta {
-  pointer-events: none;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  min-width: 0;
-}
-
-.modal-counter {
-  pointer-events: none;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  height: 34px;
-  padding: 0 12px;
-  border-radius: 999px;
-  font-weight: 900;
-  font-size: 12px;
-  color: rgba(255,255,255,0.92);
-  background: rgba(255,255,255,0.10);
-  border: 1px solid rgba(255,255,255,0.14);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-}
-
-.modal-title {
-  pointer-events: none;
-  max-width: min(62vw, 720px);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  color: rgba(255,255,255,0.86);
-  font-weight: 800;
-  font-size: 13px;
-}
 
 /* Buttons */
 .icon-btn,
@@ -255,8 +271,8 @@ html.no-scroll {
   display: inline-grid;
   place-items: center;
   border-radius: 14px;
-  border: 1px solid rgba(255,255,255,0.18);
-  background: rgba(255,255,255,0.10);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.1);
   color: #fff;
   cursor: pointer;
   transition: transform 140ms ease, background 140ms ease, border-color 140ms ease;
@@ -267,7 +283,9 @@ html.no-scroll {
   height: 44px;
 }
 
-.icon-btn.close { border-radius: 16px; }
+.icon-btn.close {
+  border-radius: 16px;
+}
 
 .nav-btn {
   position: absolute;
@@ -279,22 +297,28 @@ html.no-scroll {
   z-index: 5;
 }
 
-.nav-btn.left { left: 12px; }
-.nav-btn.right { right: 12px; }
+.nav-btn.left {
+  left: 12px;
+}
+.nav-btn.right {
+  right: 12px;
+}
 
 .icon-btn:hover,
 .nav-btn:hover {
-  background: rgba(255,255,255,0.16);
-  border-color: rgba(255,255,255,0.30);
+  background: rgba(255, 255, 255, 0.16);
+  border-color: rgba(255, 255, 255, 0.3);
   transform: translateY(-1px);
 }
 
 .icon-btn:active,
-.nav-btn:active { transform: translateY(0); }
+.nav-btn:active {
+  transform: translateY(0);
+}
 
 .icon-btn:focus-visible,
 .nav-btn:focus-visible {
-  outline: 3px solid rgba(14, 165, 233, 0.55);
+  outline: 3px solid rgba(15, 185, 177, 0.45);
   outline-offset: 3px;
 }
 
@@ -318,44 +342,15 @@ html.no-scroll {
   border-radius: 999px;
   font-size: 12px;
   font-weight: 800;
-  color: rgba(255,255,255,0.86);
-  background: rgba(255,255,255,0.10);
-  border: 1px solid rgba(255,255,255,0.12);
+  color: rgba(255, 255, 255, 0.86);
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
 }
 
-.mobile-only { display: none; }
-
-@media (max-width: 560px) {
-  .full { height: 70dvh; }
-
-  .nav-btn {
-    width: 46px;
-    height: 46px;
-    font-size: 30px;
-  }
-
-  .modal-title { display: none; }
-
-
-  /* tighter but still safe on small screens */
-  .modal {
-    padding: 14px;
-  }
-
-  .modal-shell {
-    border-radius: 18px;
-  }
-
-  .nav-btn.left { left: 6px; }
-  .nav-btn.right { right: 6px; }
-}
-
-/* Reduce motion */
-@media (prefers-reduced-motion: reduce) {
-  .modal-shell { animation: none; opacity: 1; transform: none; }
-  .tile, .thumb { transition: none; }
+.mobile-only {
+  display: none;
 }
 
 .infinite-sentinel {
@@ -365,8 +360,54 @@ html.no-scroll {
 
 /* Hide keyboard navigation hints on mobile & tablet */
 @media (max-width: 1024px) {
- .desktop-only {
+  .desktop-only {
     display: none !important;
   }
-    .mobile-only { display: inline-flex; }
+  .mobile-only {
+    display: inline-flex;
+  }
+}
+
+@media (max-width: 560px) {
+  .full {
+    height: 70dvh;
+  }
+
+  .nav-btn {
+    width: 46px;
+    height: 46px;
+    font-size: 30px;
+  }
+
+
+  .modal {
+    padding: 14px;
+  }
+
+  .modal-shell {
+    border-radius: 18px;
+  }
+
+  .nav-btn.left {
+    left: 6px;
+  }
+  .nav-btn.right {
+    right: 6px;
+  }
+}
+
+/* Reduce motion */
+@media (prefers-reduced-motion: reduce) {
+  .gallery-card {
+    animation: none;
+    opacity: 1;
+  }
+  .gallery-card,
+  .gallery-thumb,
+  .modal-shell {
+    transition: none;
+  }
+  .modal-shell {
+    animation: none;
+  }
 }

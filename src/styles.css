@@ -10,15 +10,18 @@ body {
 } */
 
 html {
-  scroll-behavior: smooth;
+  /* scroll-behavior: smooth; */
   /* scroll-padding-top: calc(var(--header-h) + var(--anchor-gap)); */
 }
 
-.page-offset {
-  /* padding-top: var(--header-h); */
+:root {
+  --sr-font-sans: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, Arial, "Noto Sans", "Helvetica Neue", sans-serif;
+  --sr-font-display: "Playfair Display", "Inter", Georgia, "Times New Roman", serif;
 }
 
-/* Add this back for extra consistency across browsers */
-section[id] {
-  /* scroll-margin-top: calc(var(--header-h) + var(--anchor-gap)); */
+html, body {
+  font-family: var(--sr-font-sans);
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }

@@ -1,5 +1,6 @@
 import {
   AfterViewInit,
+  OnInit,
   ChangeDetectionStrategy,
   Component,
   DestroyRef,
@@ -8,8 +9,11 @@ import {
   ViewChildren,
   inject,
 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
-import { Router, RouterModule } from '@angular/router';
+import { NavigationEnd, Router, RouterModule } from '@angular/router';
+import { Meta, Title } from '@angular/platform-browser';
+import { filter } from 'rxjs';
 
 type ExploreCard = {
   title: string;
@@ -40,13 +44,11 @@ type ExploreCard = {
   styleUrls: ['./explore.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ExploreComponent implements AfterViewInit {
+export class ExploreComponent implements OnInit, AfterViewInit {
   private readonly destroyRef = inject(DestroyRef);
   isExploreRoute = false;
 
   @ViewChildren('cardEl') cardEls!: QueryList<ElementRef<HTMLElement>>;
-
-  private readonly defaultSizes = '(max-width: 900px) 100vw, 50vw';
 
   readonly cards: ExploreCard[] = [
     {
@@ -72,20 +74,50 @@ export class ExploreComponent implements AfterViewInit {
       route: '/events-details',
 
       imageSrc: 'assets/explore/celebrationsMobile.png',
-     // Tablet + Desktop => 2nd image
+
+      // Tablet + Desktop => 2nd image
       tabletImageSrc: 'assets/explore/celebrationsTab.png',
       tabletMediaQuery: '(min-width: 561px)',
 
       imageAlt:
-        'Friends celebrating on a yacht, Couple relaxing during a private celebration on water',
+        'Friends celebrating on a yacht, couple relaxing during a private celebration on water',
       area: 'celebrations',
     },
   ];
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private title: Title, private meta: Meta) {}
 
   ngOnInit() {
+    // Keep route flag updated (component can be reused on multiple pages)
     this.isExploreRoute = this.router.url === '/explore';
+    this.applySeo();
+
+    this.router.events
+      .pipe(
+        filter((e): e is NavigationEnd => e instanceof NavigationEnd),
+        takeUntilDestroyed(this.destroyRef)
+      )
+      .subscribe(() => {
+        this.isExploreRoute = this.router.url === '/explore';
+        this.applySeo();
+      });
+  }
+
+  private applySeo() {
+    // Only set page-level SEO tags when Explore is the main route
+    if (!this.isExploreRoute) return;
+
+    const pageTitle = 'Explore Yacht & Celebration Experiences in Goa | SeaRider';
+    const description =
+      'Explore luxury yacht rentals and private celebration experiences in Goa with SeaRider. Compare options, view photos, and enquire instantly for the best sea experience.';
+
+    this.title.setTitle(pageTitle);
+    this.meta.updateTag({ name: 'description', content: description });
+
+    // Open Graph (helps when shared on WhatsApp/Facebook, etc.)
+    this.meta.updateTag({ property: 'og:title', content: pageTitle });
+    this.meta.updateTag({ property: 'og:description', content: description });
+    this.meta.updateTag({ property: 'og:type', content: 'website' });
   }
 
   ngAfterViewInit(): void {

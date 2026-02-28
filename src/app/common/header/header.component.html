@@ -1,23 +1,114 @@
-<header class="site-header" data-header-root>
-  <div class="header-shell">
-    <a class="brand" [routerLink]="['/']" (click)="goToHome()">
+<!-- Skip link (a11y + UX). Make sure your main wrapper has id="main-content" -->
+<a class="sr-skip-link" href="#main-content">Skip to content</a>
+
+<header
+  class="navbar navbar-expand-lg fixed-top sr-navbar"
+  data-header-root
+  [class.sr-scrolled]="isScrolled()"
+>
+  <div class="container-fluid px-3 px-md-4 px-xl-5">
+    <!-- Brand -->
+    <a
+      class="navbar-brand d-flex align-items-center gap-2 sr-brand"
+      [routerLink]="['/']"
+      (click)="goToHome()"
+      aria-label="SeaRider Goa - Home"
+    >
       <img
-        class="brand-logo"
+        class="sr-logo"
         src="assets/header.png"
-        alt="SeaRider Goa Yacht - Yacht & Cruise Rentals in Goa"
+        alt="SeaRider Goa Yacht - Luxury Yacht & Cruise Rentals"
         width="140"
         height="44"
         fetchpriority="high"
         decoding="async"
       />
-      <span class="sr-only">SeaRider Goa Yacht</span>
+      <span class="visually-hidden">SeaRider Goa</span>
     </a>
 
     <!-- Desktop nav -->
-    <nav class="nav-desktop" aria-label="Primary navigation">
+    <div class="collapse navbar-collapse d-none d-lg-flex" id="srNavbar">
+      <nav class="mx-auto" aria-label="Primary navigation">
+        <ul class="navbar-nav align-items-lg-center gap-lg-1">
+          <li class="nav-item" *ngFor="let item of links; trackBy: trackByPath">
+            <a
+              class="nav-link px-3 py-2 fw-semibold sr-navlink"
+              [routerLink]="[item.path]"
+              routerLinkActive="active"
+              [routerLinkActiveOptions]="{ exact: item.exact ?? false }"
+              (click)="onNavClick()"
+            >
+              {{ item.label }}
+            </a>
+          </li>
+        </ul>
+      </nav>
+
+      <div class="d-flex align-items-center gap-2">
+        <a class="btn btn-sm sr-cta rounded-pill px-3 py-2" [href]="telHref()" aria-label="Call SeaRider Goa">
+          Call Us
+        </a>
+
+        <a
+          class="btn btn-sm sr-ghost rounded-pill px-3 py-2 d-none d-xl-inline-flex"
+          [href]="whatsappHref()"
+          target="_blank"
+          rel="noopener"
+          aria-label="Chat with SeaRider Goa on WhatsApp"
+        >
+          WhatsApp
+        </a>
+      </div>
+    </div>
+
+    <!-- Mobile toggler -->
+    <button
+      class="navbar-toggler sr-toggler shadow-sm"
+      type="button"
+      (click)="toggleMenu()"
+      [attr.aria-expanded]="isMenuOpen()"
+      aria-controls="srOffcanvas"
+      aria-label="Open menu"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+  </div>
+</header>
+
+<!-- Backdrop (JS-free offcanvas driven by signal) -->
+<div class="sr-backdrop" [class.show]="isMenuOpen()" (click)="closeMenu()" aria-hidden="true"></div>
+
+<!-- Offcanvas -->
+<aside
+  id="srOffcanvas"
+  class="offcanvas offcanvas-end sr-offcanvas"
+  tabindex="-1"
+  role="dialog"
+  aria-label="Mobile navigation"
+  [class.show]="isMenuOpen()"
+  [style.visibility]="isMenuOpen() ? 'visible' : 'hidden'"
+>
+  <div class="offcanvas-header pb-1">
+    <div class="d-flex align-items-center gap-2">
+      <img
+        class="sr-logo sm"
+        src="assets/header.png"
+        alt="SeaRider Goa"
+        width="120"
+        height="38"
+        decoding="async"
+      />
+      <span class="visually-hidden">SeaRider Goa</span>
+    </div>
+
+    <button type="button" class="btn-close" aria-label="Close menu" (click)="closeMenu()"></button>
+  </div>
+
+  <div class="offcanvas-body pt-2">
+    <nav class="nav flex-column gap-1" aria-label="Mobile primary navigation">
       <a
         *ngFor="let item of links; trackBy: trackByPath"
-        class="nav-link"
+        class="nav-link rounded-3 px-3 py-2 fw-semibold sr-navlink"
         [routerLink]="[item.path]"
         routerLinkActive="active"
         [routerLinkActiveOptions]="{ exact: item.exact ?? false }"
@@ -27,64 +118,23 @@
       </a>
     </nav>
 
-    <!-- Right side actions -->
-    <div class="actions">
-      <!-- ✅ Call Us opens dialer -->
-      <a class="cta" [href]="telHref()" aria-label="Call us">
+    <div class="mt-3 d-grid gap-2">
+      <a class="btn sr-cta rounded-pill py-2" [href]="telHref()" aria-label="Call SeaRider Goa">
         Call Us
       </a>
-
-      <!-- Optional: WhatsApp quick action -->
-      <!-- <a
-        class="ghost"
+      <a
+        class="btn sr-ghost rounded-pill py-2"
         [href]="whatsappHref()"
         target="_blank"
         rel="noopener"
-        aria-label="Chat on WhatsApp"
+        aria-label="Chat with SeaRider Goa on WhatsApp"
       >
         WhatsApp
-      </a> -->
-
-      <!-- Mobile hamburger -->
-      <button
-        class="hamburger"
-        type="button"
-        (click)="toggleMenu()"
-        [attr.aria-expanded]="isMenuOpen()"
-        aria-controls="mobile-menu"
-        aria-label="Toggle navigation"
-      >
-        <span class="bar" [class.open]="isMenuOpen()"></span>
-        <span class="bar" [class.open]="isMenuOpen()"></span>
-        <span class="bar" [class.open]="isMenuOpen()"></span>
-      </button>
+      </a>
     </div>
+
+    <p class="sr-mini mt-3 mb-0">
+      Fast replies • Transparent pricing • Best slots for sunset cruises & private events.
+    </p>
   </div>
-
-  <!-- Mobile backdrop -->
-  <div class="backdrop" [class.show]="isMenuOpen()" (click)="closeMenu()"></div>
-
-  <!-- Mobile drawer -->
-  <nav
-    id="mobile-menu"
-    class="nav-mobile"
-    aria-label="Mobile primary navigation"
-    [class.open]="isMenuOpen()"
-  >
-    <div class="mobile-top">
-      <span class="mobile-title">Menu</span>
-    </div>
-
-    <a
-      *ngFor="let item of links; trackBy: trackByPath"
-      class="mobile-link"
-      [routerLink]="[item.path]"
-      routerLinkActive="active"
-      [routerLinkActiveOptions]="{ exact: item.exact ?? false }"
-      (click)="onNavClick()"
-    >
-      {{ item.label }}
-    </a>
-
-  </nav>
-</header>
+</aside>

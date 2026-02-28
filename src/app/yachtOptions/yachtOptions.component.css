@@ -1,29 +1,42 @@
 :host {
   display: block;
+
+  /* SeaRider palette (picked from your icon) */
+  --sr-gold: #f9ba31;
+  --sr-orange: #fa8212;
+  --sr-teal: #1aaab8;
+  --sr-ink: #0b1220;
+
+  /* Surfaces */
+  --sr-card: rgba(255, 255, 255, 0.98);
+  --sr-border: rgba(15, 23, 42, 0.10);
+
+  /* Typography (keeps same look as header/home/explore if those set global fonts) */
+  --sr-font: var(--font-sans, "Poppins", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif);
 }
 
-
-.yacht-options--route{
-   padding-top: 92px;
-  scroll-margin-top: 92px; 
+.yacht-options--route {
+  padding-top: 142px;
+  scroll-margin-top: 142px;
 }
+
 /* Page */
 .yacht-page {
-  background: tra;
-
+  font-family: var(--sr-font);
+  padding-bottom: 24px;
 }
 
+/* Header */
 .yacht-header {
-  text-align: center;
-  margin-bottom: clamp(14px, 2vw, 26px);
+  padding: 0 clamp(16px, 4vw, 60px);
 }
 
-.yacht-title {
-  font-size: clamp(24px, 3vw, 44px);
-  line-height: 1.15;
-  letter-spacing: -0.02em;
-  font-weight: 800;
-  color: #0b1220;
+.yacht-subtitle {
+  margin: 10px auto 0;
+  max-width: 70ch;
+  font-size: clamp(14px, 1.4vw, 16px);
+  line-height: 1.55;
+  color: rgba(11, 18, 32, 0.78);
 }
 
 /* Grid */
@@ -32,46 +45,15 @@
   gap: clamp(16px, 2vw, 24px);
   grid-template-columns: repeat(var(--cols, 3), minmax(0, 1fr));
   align-items: stretch;
-padding: 0 clamp(16px, 4vw, 60px);
-  width: 100%;
-}
 
-@media (max-width: 1200px) {
-  /* .yacht-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  } */
+  padding: 0 clamp(16px, 4vw, 60px);
+  width: 100%;
 }
 
 /* Tablet */
 @media (max-width: 900px) {
   .yacht-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-/* @media (max-width: 900px) {
-  .yacht-page .card__cta {
-    opacity: 0;
-    transform: translateY(10px) scale(0.96);
-    pointer-events: none;
-  }
-
-  .yacht-page .card.is-inview .card__cta {
-    pointer-events: auto;
-    opacity: 1;
-    transform: translateY(0) scale(1);
-    animation: popIn 280ms cubic-bezier(0.2, 0.9, 0.25, 1) both;
-  }
-} */
-
-@keyframes popIn {
-  0% {
-    opacity: 0;
-    transform: translateY(12px) scale(0.96);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0) scale(1);
   }
 }
 
@@ -82,26 +64,39 @@ padding: 0 clamp(16px, 4vw, 60px);
   }
 }
 
-/* @media (max-width: 650px) {
-  .yacht-grid {
-    grid-template-columns: 1fr;
-  }
-} */
-
 /* Card */
 .yacht-card {
-  background: #ffffff;
-  border: 1px solid rgba(15, 23, 42, 0.08);
-  border-radius: 14px;
+  background: var(--sr-card);
+  border: 1px solid var(--sr-border);
+  border-radius: 16px;
   overflow: hidden;
+
   box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
-  transition: transform 220ms ease, box-shadow 220ms ease;
+  transform: translateY(14px);
+  opacity: 0;
+
+  transition:
+    transform 520ms cubic-bezier(0.2, 0.9, 0.2, 1),
+    opacity 520ms ease,
+    box-shadow 220ms ease,
+    border-color 220ms ease;
 }
 
+/* Scroll-in animation */
+.yacht-card.is-inview {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+/* Hover polish */
 @media (hover: hover) and (pointer: fine) {
   .yacht-card:hover {
     transform: translateY(-4px);
-    box-shadow: 0 18px 40px rgba(15, 23, 42, 0.10);
+    opacity: 1;
+    border-color: rgba(26, 170, 184, 0.35);
+    box-shadow:
+      0 18px 40px rgba(15, 23, 42, 0.10),
+      0 0 0 1px rgba(249, 186, 49, 0.20) inset;
   }
 }
 
@@ -118,17 +113,26 @@ padding: 0 clamp(16px, 4vw, 60px);
   height: 100%;
   object-fit: cover;
   transform: scale(1);
-  transition: transform 320ms ease;
+  transition: transform 420ms ease;
   display: block;
+  position: relative;
+  z-index: 0;
 }
 
 /* Zoom on hover (desktop) */
 @media (hover: hover) and (pointer: fine) {
   .yacht-card:hover .yacht-img {
-    transform: scale(1.06);
+    transform: scale(1.07);
   }
 }
 
+/* Make the Explore overlay work inside yacht image area */
+.yacht-media__overlay {
+  z-index: 1; /* above image */
+  opacity: 0.65;
+}
+
+/* Stats bar */
 .yacht-overlay {
   position: absolute;
   left: 0;
@@ -142,7 +146,13 @@ padding: 0 clamp(16px, 4vw, 60px);
   padding: 10px 12px;
 
   color: #ffffff;
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.08));
+  z-index: 2;
+
+  background: linear-gradient(
+    to top,
+    rgba(11, 18, 32, 0.78),
+    rgba(26, 170, 184, 0.08)
+  );
 }
 
 .overlay-item {
@@ -160,7 +170,7 @@ padding: 0 clamp(16px, 4vw, 60px);
 }
 
 .overlay-text {
-  font-weight: 600;
+  font-weight: 700;
 }
 
 /* Body */
@@ -168,122 +178,60 @@ padding: 0 clamp(16px, 4vw, 60px);
   padding: 16px 16px 18px;
 }
 
+.yacht-topline {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
 .yacht-name {
-  margin: 6px 0 12px;
+  margin: 6px 0 2px;
   font-size: 22px;
+  line-height: 1.15;
   font-weight: 800;
-  color: #0b1220;
+  color: var(--sr-ink);
+}
+
+.yacht-badge {
+  margin-top: 6px;
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.2px;
+
+  padding: 7px 10px;
+  border-radius: 999px;
+
+  color: rgba(11, 18, 32, 0.92);
+  border: 1px solid rgba(249, 186, 49, 0.38);
+  background: linear-gradient(135deg, rgba(249, 186, 49, 0.16), rgba(26, 170, 184, 0.12));
+}
+
+.yacht-desc {
+  margin: 12px 0 0;
+  color: rgba(11, 18, 32, 0.78);
+  font-size: 14px;
+  line-height: 1.6;
+
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .yacht-divider {
   height: 1px;
   background: rgba(15, 23, 42, 0.10);
-  margin: 10px 0 16px;
+  margin: 14px 0 16px;
 }
 
-/* Book button (same idea for hover + mobile tap) */
-.book-btn {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-
-  padding: 12px 18px;
-  border-radius: 10px;
-  border: 1px solid rgba(15, 23, 42, 0.16);
-
-  color: #0b1220;
-  text-decoration: none;
-  font-weight: 700;
-  letter-spacing: 0.01em;
-
-  overflow: hidden;
-  user-select: none;
-  transform: translateZ(0);
-  transition: border-color 180ms ease, transform 180ms ease;
-}
-
-/* animated highlight layer */
-.book-btn::before {
-  content: "";
-  position: absolute;
-  inset: -2px;
-  transform: translateX(-120%);
-  transition: transform 360ms ease;
-  background: linear-gradient(
-    90deg,
-    rgba(14, 165, 233, 0.00) 0%,
-    rgba(14, 165, 233, 0.18) 35%,
-    rgba(59, 130, 246, 0.22) 65%,
-    rgba(14, 165, 233, 0.00) 100%
-  );
-  pointer-events: none;
-}
-
-.book-btn > * {
-  position: relative;
-  z-index: 1;
-}
-
-.book-btn .arrow {
-  display: inline-block;
-  transform: translateX(0);
-  transition: transform 220ms ease;
-}
-
-/* Desktop hover */
-@media (hover: hover) and (pointer: fine) {
-  .book-btn:hover {
-    border-color: rgba(14, 165, 233, 0.55);
-    transform: translateY(-1px);
-  }
-  .book-btn:hover::before {
-    transform: translateX(0%);
-  }
-  .book-btn:hover .arrow {
-    transform: translateX(4px);
-  }
-}
-
-/* Mobile/Tablet “same animation” on tap + keyboard */
-.book-btn:active {
-  transform: translateY(0);
-}
-.book-btn:active::before {
-  transform: translateX(0%);
-}
-.book-btn:active .arrow {
-  transform: translateX(4px);
-}
-
-.book-btn:focus-visible {
-  outline: 3px solid rgba(14, 165, 233, 0.35);
-  outline-offset: 3px;
-  border-color: rgba(14, 165, 233, 0.55);
-}
-
-/* Reduced motion */
-@media (prefers-reduced-motion: reduce) {
-  .yacht-card,
-  .yacht-img,
-  .book-btn,
-  .book-btn::before,
-  .book-btn .arrow {
-    transition: none !important;
-  }
-}
-
-/* =========================================================
-   YachtOptions CTA overrides (desktop visible, mobile pop-in)
-   Uses same Explore .card__cta class but changes rules only here
-========================================================= */
-/* =========================================================
-   YachtOptions CTA (desktop visible, mobile/tablet pop-in)
-========================================================= */
-
-/* Base (desktop): visible by default */
+/* CTA - keep Explore class but recolor to icon palette */
 .yacht-page .card__cta {
- margin-top: 0;
+  margin-top: 0;
   align-self: flex-start;
 
   display: inline-flex;
@@ -292,63 +240,95 @@ padding: 0 clamp(16px, 4vw, 60px);
   gap: 10px;
 
   padding: 12px 18px;
-  border-radius: 10px;
+  border-radius: 12px;
   text-decoration: none;
-  font-weight: 700;
+  font-weight: 800;
   letter-spacing: 0.2px;
 
-  background: rgba(255, 255, 255, 0.98);
-  color: var(--brand-orange);
-  border: 1px solid rgba(15, 23, 42, 0.12);
+  background: rgba(255, 255, 255, 0.96);
+  color: var(--sr-orange);
+  border: 1px solid rgba(250, 130, 18, 0.25);
 
-  opacity: 1;
-  transform: none;
-  pointer-events: auto;
+  position: relative;
+  overflow: hidden;
+  transform: translateZ(0);
+  transition: transform 200ms ease, background 200ms ease, color 200ms ease, border-color 200ms ease;
+  cursor: pointer;
 }
 
-/* Hover-capable devices: card hover changes CTA colors (white -> orange) */
+/* Subtle wave shimmer */
+.yacht-page .card__cta::before {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  transform: translateX(-120%);
+  transition: transform 520ms ease;
+  background: linear-gradient(
+    90deg,
+    rgba(26, 170, 184, 0) 0%,
+    rgba(26, 170, 184, 0.18) 35%,
+    rgba(249, 186, 49, 0.22) 65%,
+    rgba(26, 170, 184, 0) 100%
+  );
+  pointer-events: none;
+}
+
+.yacht-page .card__cta > * {
+  position: relative;
+  z-index: 1;
+}
+
+.yacht-page .card__cta .arrow {
+  display: inline-block;
+  transform: translateX(0);
+  transition: transform 200ms ease;
+}
+
+/* Hover-capable devices */
 @media (hover: hover) and (pointer: fine) {
   .yacht-card:hover .card__cta,
   .yacht-card:focus-within .card__cta {
-    background: var(--brand-orange);
-    color: #ffffff;
-    border-color: rgba(251, 133, 0, 0.65);
+    background: linear-gradient(135deg, var(--sr-gold), var(--sr-orange));
+    color: #0b1220;
+    border-color: rgba(249, 186, 49, 0.45);
+    transform: translateY(-1px);
+  }
+
+  .yacht-card:hover .card__cta::before,
+  .yacht-card:focus-within .card__cta::before {
+    transform: translateX(0%);
+  }
+
+  .yacht-card:hover .card__cta .arrow,
+  .yacht-card:focus-within .card__cta .arrow {
+    transform: translateX(4px);
   }
 }
 
+/* Tap + keyboard */
+.yacht-page .card__cta:active::before {
+  transform: translateX(0%);
+}
+.yacht-page .card__cta:active .arrow {
+  transform: translateX(4px);
+}
 
-/* Keep focus visible */
 .yacht-page .card__cta:focus-visible {
-  outline: 3px solid rgba(251, 133, 0, 0.35);
+  outline: 3px solid rgba(26, 170, 184, 0.35);
   outline-offset: 3px;
 }
-/* Tablet + Mobile: hidden by default, pop-in only when in view */
-@media (max-width: 900px) {
-  .yacht-page .card__cta {
-    opacity: 1;
-    transform: none;
-    pointer-events: auto;
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .yacht-card,
+  .yacht-img,
+  .yacht-page .card__cta,
+  .yacht-page .card__cta::before,
+  .yacht-page .card__cta .arrow {
+    transition: none !important;
   }
-}
-
-/* Keep focus visible */
-/* .yacht-page .card__cta:focus-visible {
-  outline: 3px solid rgba(251, 133, 0, 0.35);
-  outline-offset: 3px;
-} */
-
-/* Make the Explore overlay work inside yacht image area */
-.yacht-media__overlay {
-  z-index: 1; /* above image */
-}
-
-/* Keep stats bar above the overlay */
-.yacht-overlay {
-  z-index: 2;
-}
-
-/* Ensure image stays behind overlay */
-.yacht-img {
-  position: relative;
-  z-index: 0;
+  .yacht-card {
+    transform: none !important;
+    opacity: 1 !important;
+  }
 }
