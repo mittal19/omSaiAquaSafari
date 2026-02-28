@@ -18,17 +18,17 @@
 /* ========= Wrapper ========= */
 .events {
   width: 100%;
-  padding: 92px 0 60px; /* matches header offset style you used on /explore */
-  scroll-margin-top: 92px;
+  padding: 102px 0 60px; /* matches header offset style you used on /explore */
+  scroll-margin-top: 102px;
 }
 
 /* ========= Breadcrumbs ========= */
-.events__breadcrumbs {
+/* .events__breadcrumbs {
   width: min(1100px, 92%);
   margin: 0 auto 18px;
-}
+} */
 
-.events__breadcrumbs ol {
+/* .events__breadcrumbs ol {
   list-style: none;
   display: flex;
   flex-wrap: wrap;
@@ -37,8 +37,8 @@
   margin: 0;
   color: rgba(10, 31, 51, 0.70);
   font-size: 13px;
-}
-
+} */
+/* 
 .events__breadcrumbs li::after {
   content: "›";
   margin-left: 8px;
@@ -47,16 +47,16 @@
 
 .events__breadcrumbs li:last-child::after {
   content: "";
-}
+} */
 
-.events__breadcrumbs a {
+/* .events__breadcrumbs a {
   color: rgba(13, 59, 102, 0.9);
   text-decoration: none;
-}
+} */
 
-.events__breadcrumbs a:hover {
+/* .events__breadcrumbs a:hover {
   text-decoration: underline;
-}
+} */
 
 /* ========= Header ========= */
 .events__header {
@@ -489,3 +489,17 @@
     transition: none !important;
   }
 }
+
+.crumbs {
+  width: min(1100px, 92%);
+  margin: 0 auto 18px;
+}
+
+.crumbs a {
+  display: inline-flex;
+  text-decoration: none;
+  font-weight: 900;
+  color: rgba(15, 23, 42, 0.78);
+  margin-bottom: 10px;
+}
+.crumbs a:hover { color: var(--brand-orange); }

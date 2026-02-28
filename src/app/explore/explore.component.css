@@ -107,18 +107,18 @@
   background:
     radial-gradient(
       130% 130% at 0% 0%,
-      rgba(10, 31, 51, 0.9) 0%,
-      rgba(13, 59, 102, 0.75) 35%,
-      rgba(15, 185, 177, 0.45) 55%,
+      rgba(10, 31, 51, 0.65) 0%,
+      rgba(13, 59, 102, 0.5) 35%,
+      rgba(15, 185, 177, 0.28) 55%,
       rgba(0, 0, 0, 0) 80%
     ),
     linear-gradient(
       120deg,
-      rgba(13, 59, 102, 0.6),
-      rgba(15, 185, 177, 0.4) 50%,
-      rgba(251, 133, 0, 0.35)
+      rgba(13, 59, 102, 0.35),
+      rgba(15, 185, 177, 0.22) 50%,
+      rgba(251, 133, 0, 0.18)
     );
-  opacity: 1;
+  opacity: 0.85; /* slightly transparent */
 }
 
 .card__overlay::after {
@@ -234,8 +234,7 @@
   outline: 3px solid rgba(255, 255, 255, 0.8);
   outline-offset: 3px;
 }
-
-/* ================= Explore Header Styling ================= */
+/* ================= Explore Header Styling (Match Gallery) ================= */
 
 .explore__header {
   text-align: center;
@@ -246,21 +245,32 @@
 .explore__title {
   font-size: clamp(28px, 3.2vw, 40px);
   font-weight: 800;
+
   background: linear-gradient(
     90deg,
-    var(--brand-deep-blue),
-    var(--brand-teal),
-    var(--brand-gold)
+    #0d3b66,
+    #0fb9b1,
+    #ffb703
   );
+
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+
+  background-size: 200% auto;
+  animation: shimmer 6s linear infinite;
+
   margin-bottom: 10px;
+}
+
+@keyframes shimmer {
+  0% { background-position: 0% center; }
+  100% { background-position: 200% center; }
 }
 
 .explore__tagline {
   font-size: clamp(18px, 2vw, 24px);
   font-weight: 600;
-  color: var(--brand-deep-blue);
+  color: #0d3b66;
   margin-bottom: 12px;
 }
 
@@ -272,7 +282,6 @@
   color: #444;
 }
 
-/* Feature Highlights Row */
 .explore__features {
   display: flex;
   justify-content: center;
@@ -284,16 +293,12 @@
 }
 
 .explore__features li {
-  background: linear-gradient(
-    135deg,
-    var(--brand-teal),
-    var(--brand-deep-blue)
-  );
+  background: linear-gradient(135deg, #0284c7, #0ea5e9);
   color: white;
   padding: 8px 16px;
-  border-radius: 30px;
-  font-size: 13px;
-  font-weight: 600;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 900;
   letter-spacing: 0.4px;
-  box-shadow: 0 6px 18px rgba(13, 59, 102, 0.2);
+  box-shadow: 0 10px 24px rgba(2, 132, 199, 0.28);
 }

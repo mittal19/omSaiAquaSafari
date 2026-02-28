@@ -58,8 +58,8 @@ export class GalleryComponent {
     {
       id: 'y1',
       kind: 'image',
-      thumbUrl: 'assets/gallery/27.jpeg',
-      fullUrl: 'assets/gallery/27.jpeg',
+      thumbUrl: 'assets/gallery/63.jpeg',
+      fullUrl: 'assets/gallery/63.jpeg',
       alt: 'Luxury yacht experience in Goa',
       width: 1600,
       height: 1067,
@@ -67,8 +67,8 @@ export class GalleryComponent {
     {
       id: 'c1',
       kind: 'image',
-      thumbUrl: 'assets/gallery/5.jpeg',
-      fullUrl: 'assets/gallery/5.jpeg',
+      thumbUrl: 'assets/gallery/74.jpeg',
+      fullUrl: 'assets/gallery/74.jpeg',
       alt: 'Sunset cruise in Goa',
       width: 1600,
       height: 1067,

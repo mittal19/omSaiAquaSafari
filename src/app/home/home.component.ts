@@ -42,10 +42,11 @@ export class HomeComponent {
 
   // ----- Slider data -----
   slides: Slide[] = [
-    { imageUrl: 'assets/slider/two.jpeg', subTitle: 'Premium yachts and curated experiences.' },
-    { imageUrl: 'assets/slider/three.jpeg', subTitle: 'The Finest Yacht Charters for every Occasion.' },
-    { imageUrl: 'assets/slider/four.png', subTitle: 'Redefine your Events, Celebrations and Parties.' },
-    { imageUrl: 'assets/slider/three.jpeg', subTitle: 'Transparent pricing and easy booking.' },
+    { imageUrl: 'assets/slider/1.jpeg', subTitle: 'Premium yachts and curated experiences.' },
+    { imageUrl: 'assets/slider/5.jpeg', subTitle: 'Transparent pricing and easy booking.' },
+    { imageUrl: 'assets/slider/2.png', subTitle: 'The Finest Yacht Charters for every Occasion.' },
+    { imageUrl: 'assets/slider/3.png', subTitle: 'Redefine your Events, Celebrations and Parties.' },
+    { imageUrl: 'assets/slider/4.jpeg', subTitle: 'Premium yachts and curated experiences.' },
   ];
 
   currentIndex = 0;
