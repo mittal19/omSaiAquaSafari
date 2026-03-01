@@ -50,7 +50,7 @@
   background-clip: text;
   color: transparent;
   background-size: 200% auto;
-  animation: sr-shimmer 6s linear infinite;
+  animation: sr-shimmer var(--sr-dur-shimmer) linear infinite;
 }
 
 @keyframes sr-shimmer {
@@ -78,11 +78,11 @@
   box-shadow: var(--sr-shadow);
 
   transform: translateY(0);
-  transition: transform 180ms ease, box-shadow 180ms ease, filter 180ms ease;
+  transition: transform var(--sr-dur) var(--sr-ease), box-shadow var(--sr-dur) var(--sr-ease), filter var(--sr-dur) var(--sr-ease);
 
   /* entry animation */
   opacity: 0;
-  animation: sr-fade-up 420ms ease forwards;
+  animation: sr-fade-up var(--sr-dur-entry) var(--sr-ease-emphasis) forwards;
   animation-delay: var(--d);
 }
 
@@ -98,7 +98,7 @@
 }
 
 .sr-review:hover {
-  transform: translateY(-2px);
+  transform: translateY(var(--sr-lift-2));
   box-shadow: var(--sr-shadow-strong);
   filter: saturate(1.03);
 }
@@ -154,11 +154,11 @@
   background-size: 200% auto;
   box-shadow: 0 12px 26px rgba(13, 59, 102, 0.18);
   font-weight: 900;
-  transition: transform 160ms ease, box-shadow 160ms ease, background-position 240ms ease;
+  transition: transform var(--sr-dur-fast) var(--sr-ease), box-shadow var(--sr-dur-fast) var(--sr-ease), background-position var(--sr-dur-240) var(--sr-ease);
 }
 
 .sr-cta:hover {
-  transform: translateY(-1px);
+  transform: translateY(var(--sr-lift-1));
   box-shadow: 0 16px 34px rgba(13, 59, 102, 0.22);
   background-position: 100% center;
 }
@@ -172,12 +172,12 @@
   border-color: rgba(13, 59, 102, 0.28) !important;
   font-weight: 900;
   background: rgba(255, 255, 255, 0.75);
-  transition: transform 160ms ease, background-color 160ms ease;
+  transition: transform var(--sr-dur-fast) var(--sr-ease), background-color var(--sr-dur-fast) var(--sr-ease);
 }
 
 .sr-ghost:hover {
   background: rgba(15, 185, 177, 0.08);
-  transform: translateY(-1px);
+  transform: translateY(var(--sr-lift-1));
 }
 
 /* Accessibility */

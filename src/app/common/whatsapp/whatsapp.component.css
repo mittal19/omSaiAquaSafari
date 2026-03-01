@@ -12,7 +12,7 @@
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
     cursor: pointer;
     z-index: 1000;
-    transition: all 0.3s ease;
+    transition: transform var(--sr-dur-med) var(--sr-ease), box-shadow var(--sr-dur-med) var(--sr-ease);
   }
   
   .whatsapp-button:hover {
@@ -47,7 +47,7 @@
   }
   
   .whatsapp-button {
-    animation: pulse 2s infinite;
+    animation: pulse var(--sr-dur-pulse) var(--sr-ease) infinite;
   }
   
   .whatsapp-button:hover {

@@ -29,11 +29,11 @@ type Slide = { imageUrl: string; subTitle: string; alt?: string };
     trigger('imageFade', [
       transition(
         ':enter',
-        [style({ opacity: 0 }), animate('{{t}}ms ease', style({ opacity: 1 }))],
-        { params: { t: 650 } }
+        [style({ opacity: 0 }), animate('{{t}}ms cubic-bezier(0.2, 0.8, 0.2, 1)', style({ opacity: 1 }))],
+        { params: { t: 520 } }
       ),
-      transition(':leave', [animate('{{t}}ms ease', style({ opacity: 0 }))], {
-        params: { t: 650 },
+      transition(':leave', [animate('{{t}}ms cubic-bezier(0.2, 0.8, 0.2, 1)', style({ opacity: 0 }))], {
+        params: { t: 520 },
       }),
     ]),
   ],
@@ -208,7 +208,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.currentIndex = nextIndex;
     this.slideAnimKey++;
 
-    const t = this.reducedMotion ? 0 : 650;
+    const t = this.reducedMotion ? 0 : 520;
     window.setTimeout(() => {
       this.showPrev = false;
       this.prevSlideUrl = null;

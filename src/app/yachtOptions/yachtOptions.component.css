@@ -69,10 +69,10 @@
   opacity: 0;
 
   transition:
-    transform 520ms cubic-bezier(0.2, 0.9, 0.2, 1),
-    opacity 520ms ease,
-    box-shadow 220ms ease,
-    border-color 220ms ease;
+    transform var(--sr-dur-entry-slow) var(--sr-ease-emphasis),
+    opacity var(--sr-dur-entry-slow) var(--sr-ease-emphasis),
+    box-shadow var(--sr-dur-med) var(--sr-ease),
+    border-color var(--sr-dur-med) var(--sr-ease);
 }
 
 /* Scroll-in animation */
@@ -84,7 +84,7 @@
 /* Hover polish */
 @media (hover: hover) and (pointer: fine) {
   .yacht-card:hover {
-    transform: translateY(-4px);
+    transform: translateY(var(--sr-lift-4));
     opacity: 1;
     border-color: rgba(26, 170, 184, 0.35);
     box-shadow:
@@ -106,7 +106,7 @@
   height: 100%;
   object-fit: cover;
   transform: scale(1);
-  transition: transform 420ms ease;
+  transition: transform var(--sr-dur-entry) var(--sr-ease);
   display: block;
   position: relative;
   z-index: 0;
@@ -245,7 +245,7 @@
   position: relative;
   overflow: hidden;
   transform: translateZ(0);
-  transition: transform 200ms ease, background 200ms ease, color 200ms ease, border-color 200ms ease;
+  transition: transform var(--sr-dur-mid) var(--sr-ease), background var(--sr-dur-mid) var(--sr-ease), color var(--sr-dur-mid) var(--sr-ease), border-color var(--sr-dur-mid) var(--sr-ease);
   cursor: pointer;
 }
 
@@ -255,7 +255,7 @@
   position: absolute;
   inset: -2px;
   transform: translateX(-120%);
-  transition: transform 520ms ease;
+  transition: transform var(--sr-dur-entry-slow) var(--sr-ease);
   background: linear-gradient(
     90deg,
     rgba(26, 170, 184, 0) 0%,
@@ -274,7 +274,7 @@
 .yacht-page .card__cta .arrow {
   display: inline-block;
   transform: translateX(0);
-  transition: transform 200ms ease;
+  transition: transform var(--sr-dur-mid) var(--sr-ease);
 }
 
 /* Hover-capable devices */
@@ -284,7 +284,7 @@
     background: linear-gradient(135deg, var(--sr-gold), var(--sr-orange));
     color: #0b1220;
     border-color: rgba(249, 186, 49, 0.45);
-    transform: translateY(-1px);
+    transform: translateY(var(--sr-lift-1));
   }
 
   .yacht-card:hover .card__cta::before,

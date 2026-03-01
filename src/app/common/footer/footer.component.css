@@ -23,7 +23,7 @@
   backdrop-filter: blur(14px);
 
   /* subtle entrance */
-  animation: footerFadeUp 520ms ease both;
+  animation: footerFadeUp var(--sr-dur-entry-slow) var(--sr-ease-emphasis) both;
 }
 
 .footer-card:nth-child(1) { animation-delay: 60ms; }
@@ -81,7 +81,7 @@
   background: rgba(255, 255, 255, 0.85);
   color: var(--sr-text);
   font-weight: 800;
-  transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+  transition: transform var(--sr-dur) var(--sr-ease), box-shadow var(--sr-dur) var(--sr-ease), border-color var(--sr-dur) var(--sr-ease);
 }
 
 .footer-pill--muted {
@@ -89,7 +89,7 @@
 }
 
 .footer-pill:hover {
-  transform: translateY(-2px);
+  transform: translateY(var(--sr-lift-2));
   border-color: rgba(15, 185, 177, 0.35);
   box-shadow:
     0 10px 22px rgba(13, 59, 102, 0.12),
@@ -114,12 +114,12 @@
   box-shadow:
     0 12px 24px rgba(13, 59, 102, 0.22),
     0 4px 14px rgba(255, 183, 3, 0.18);
-  transition: transform 220ms ease, box-shadow 220ms ease, background-position 220ms ease;
+  transition: transform var(--sr-dur-med) var(--sr-ease), box-shadow var(--sr-dur-med) var(--sr-ease), background-position var(--sr-dur-med) var(--sr-ease);
 }
 
 .footer-cta:hover {
   background-position: 100% center;
-  transform: translateY(-2px);
+  transform: translateY(var(--sr-lift-2));
   box-shadow:
     0 16px 36px rgba(13, 59, 102, 0.30),
     0 6px 20px rgba(255, 183, 3, 0.24);

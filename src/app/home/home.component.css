@@ -30,7 +30,7 @@
   color: #fff;
   text-decoration: none;
   transform: translateY(-140%);
-  transition: transform 180ms ease;
+  transition: transform var(--sr-dur) var(--sr-ease);
 }
 
 .skip-link:focus {
@@ -150,11 +150,11 @@
   backdrop-filter: blur(10px);
   border-radius: 1.25rem;
   transform: translateY(0);
-  transition: transform 220ms ease;
+  transition: transform var(--sr-dur-med) var(--sr-ease);
 }
 
 .hero-card:hover {
-  transform: translateY(-2px);
+  transform: translateY(var(--sr-lift-2));
 }
 
 .check {
@@ -175,11 +175,11 @@
   border: 0;
   background: linear-gradient(90deg, var(--ocean-400), var(--sun-600));
   box-shadow: 0 10px 26px rgba(6, 58, 83, 0.25);
-  transition: transform 160ms ease, box-shadow 160ms ease, filter 160ms ease;
+  transition: transform var(--sr-dur-fast) var(--sr-ease), box-shadow var(--sr-dur-fast) var(--sr-ease), filter var(--sr-dur-fast) var(--sr-ease);
 }
 
 .home-hero .btn-primary:hover {
-  transform: translateY(-1px);
+  transform: translateY(var(--sr-lift-1));
   filter: brightness(1.03);
   box-shadow: 0 14px 30px rgba(6, 58, 83, 0.32);
 }
@@ -199,7 +199,7 @@
   border-radius: 999px;
   border: 0;
   background: rgba(255, 255, 255, 0.45);
-  transition: transform 180ms ease, background-color 180ms ease;
+  transition: transform var(--sr-dur) var(--sr-ease), background-color var(--sr-dur) var(--sr-ease);
 }
 
 .dot-btn:hover {
@@ -228,7 +228,7 @@
 
 a.rippling .btn-ripple,
 button.rippling .btn-ripple {
-  animation: ripple 600ms ease-out;
+  animation: ripple var(--sr-dur-long) var(--sr-ease-out);
 }
 
 @keyframes ripple {
@@ -248,7 +248,7 @@ button.rippling .btn-ripple {
     transform: translateY(0);
   }
   50% {
-    transform: translateY(-6px);
+    transform: translateY(var(--sr-lift-4));
   }
 }
 

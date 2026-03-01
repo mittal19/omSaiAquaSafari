@@ -64,7 +64,7 @@
   -webkit-text-fill-color: transparent;
 
   background-size: 200% auto;
-  animation: shimmer 6s linear infinite;
+  animation: shimmer var(--sr-dur-shimmer) linear infinite;
 
   margin: 0 0 10px;
 }
@@ -219,7 +219,7 @@
   height: 100%;
   object-fit: cover;
   display: block;
-  transition: transform 600ms ease;
+  transition: transform var(--sr-dur-long) var(--sr-ease);
 }
 
 /* Gradient overlay + subtle "wave" pattern */
@@ -324,12 +324,12 @@
 .card.is-inview .card__cta,
 .card:focus-within .card__cta {
   pointer-events: auto;
-  animation: popIn 260ms cubic-bezier(0.2, 0.9, 0.25, 1) forwards;
+  animation: popIn var(--sr-dur-slow) var(--sr-ease-emphasis) forwards;
 }
 
 /* Card entrance animation */
 .card.is-inview {
-  animation: cardIn 520ms cubic-bezier(0.2, 0.9, 0.25, 1) both;
+  animation: cardIn var(--sr-dur-entry-slow) var(--sr-ease-emphasis) both;
 }
 
 @keyframes cardIn {
@@ -357,11 +357,11 @@
 /* Hover lift + image zoom (desktop) */
 @media (hover: hover) and (pointer: fine) {
   .card {
-    transition: transform 280ms cubic-bezier(0.2, 0.9, 0.25, 1),
-      box-shadow 280ms ease;
+    transition: transform var(--sr-dur-280) var(--sr-ease-emphasis),
+      box-shadow var(--sr-dur-280) var(--sr-ease);
   }
   .card:hover {
-    transform: translateY(-6px);
+    transform: translateY(var(--sr-lift-4));
     box-shadow: 0 18px 42px rgba(0, 0, 0, 0.18);
   }
   .card:hover .card__img {

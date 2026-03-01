@@ -35,6 +35,31 @@
 
   /* A11y */
   --sr-focus: 0 0 0 3px rgba(15, 185, 177, 0.35);
+
+  /* Motion (consistent micro-interactions across the site) */
+  --sr-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --sr-ease-emphasis: cubic-bezier(0.2, 0.9, 0.25, 1);
+  --sr-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+
+  --sr-dur-quick: 140ms;
+  --sr-dur-fast: 160ms;
+  --sr-dur: 180ms;
+  --sr-dur-mid: 200ms;
+  --sr-dur-med: 220ms;
+  --sr-dur-240: 240ms;
+  --sr-dur-slow: 260ms;
+  --sr-dur-280: 280ms;
+  --sr-dur-entry: 420ms;
+  --sr-dur-entry-slow: 520ms;
+  --sr-dur-long: 600ms;
+  --sr-dur-shimmer: 6s;
+  --sr-dur-pulse: 2s;
+
+  --sr-lift-1: -1px;
+  --sr-lift-2: -2px;
+  --sr-lift-4: -4px;
+  --sr-lift-6: -6px;
+
 }
 
 html {
