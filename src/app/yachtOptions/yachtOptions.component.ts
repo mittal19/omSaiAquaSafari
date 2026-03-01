@@ -72,13 +72,16 @@ export class YachtOptionsComponent implements OnInit, AfterViewInit, OnDestroy {
       imageUrl: 'assets/yacht/type/peagus.jpeg',
       imageAlt: 'Peagus luxury yacht in Goa',
       images: [
-        'assets/yacht/type/peagus.jpeg',
-        'assets/yacht/type/coco.jpeg',
-        'assets/yacht/type/aquila.jpeg',
-        'assets/yacht/type/peagus.jpeg',
-        'assets/yacht/type/coco.jpeg',
-        'assets/yacht/type/aquila.jpeg',
-        'assets/yacht/type/peagus.jpeg',
+        'assets/yacht/peagus/1.jpeg',    
+        'assets/yacht/peagus/59.jpeg',
+        'assets/yacht/peagus/60.jpeg',
+         'assets/yacht/peagus/2.jpeg',
+        'assets/yacht/peagus/62.jpeg',
+        'assets/yacht/peagus/63.jpeg',
+         'assets/yacht/peagus/64.jpeg',
+          'assets/yacht/peagus/3.jpeg',
+          'assets/yacht/peagus/65.jpeg',
+            'assets/yacht/peagus/67.jpeg',
       ],
       description:
         'Spacious luxury yacht for premium private parties and day charters in Goa. Great for groups who want comfort, lounge space, and a complete onboard setup.',
@@ -105,7 +108,21 @@ export class YachtOptionsComponent implements OnInit, AfterViewInit, OnDestroy {
       startingFrom: '22,999 Rs',
       imageUrl: 'assets/yacht/type/coco.jpeg',
       imageAlt: 'Coco luxury yacht in Goa',
-      images: ['assets/yacht/type/coco.jpeg', 'assets/yacht/type/aquila.jpeg', 'assets/yacht/type/peagus.jpeg'],
+      images: [   
+        'assets/yacht/coco/coco1.jpeg', 
+        'assets/yacht/coco/coco26.jpeg',
+          'assets/yacht/coco/coco17.jpeg',
+        'assets/yacht/coco/coco2.jpeg',
+                  'assets/yacht/coco/coco12.jpeg',
+                     'assets/yacht/coco/coco15.jpeg',
+                      'assets/yacht/coco/coco16.jpeg',
+                      'assets/yacht/coco/coco5.jpeg',
+                        'assets/yacht/coco/coco18.jpeg',
+                         'assets/yacht/coco/coco19.jpeg',
+                          'assets/yacht/coco/coco20.jpeg',
+                              'assets/yacht/coco/coco24.jpeg',
+                               
+        ],
       additions: 'Drone, PhotoGarphy, Videography, Decorations',
     },
     {
@@ -129,7 +146,21 @@ export class YachtOptionsComponent implements OnInit, AfterViewInit, OnDestroy {
         'A fast, compact luxury yacht for smaller groups. Great for couples, proposals, and intimate celebrations with a premium vibe.',
       inclusions:
         'Soft drinks & Mineral water, Ice cubes & Ice Box, Bluetooth music, 1 Bedroom, Lounge area, Sundeck area, Washroom, Glasses & Plates, Fuel & Jetty Charges, All Life saving equipments onboard',
-      images: ['assets/yacht/type/aquila.jpeg', 'assets/yacht/type/peagus.jpeg', 'assets/yacht/type/coco.jpeg'],
+      images: [
+         'assets/yacht/aquila/41.jpeg',
+         'assets/yacht/aquila/4.jpeg', 
+          'assets/yacht/aquila/71.jpeg',
+                        'assets/yacht/aquila/72.jpeg',
+        'assets/yacht/aquila/23.jpeg',
+         'assets/yacht/aquila/26.jpeg',
+          
+             'assets/yacht/aquila/68.jpeg',
+               'assets/yacht/aquila/69.jpeg',
+                  'assets/yacht/aquila/70.jpeg',
+                    
+                           'assets/yacht/aquila/73.jpeg',
+                              'assets/yacht/aquila/74.jpeg'
+        ],
       additions: 'Drone, PhotoGarphy, Videography, Decorations',
     },
   ];

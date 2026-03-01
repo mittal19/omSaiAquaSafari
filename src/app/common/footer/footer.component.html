@@ -1,4 +1,4 @@
-<footer class="footer-section pt-5 pb-4" aria-label="Site footer">
+<footer class="footer-section pb-4" aria-label="Site footer">
   <div class="container">
     <div class="row g-4 align-items-stretch">
       <!-- Brand / About -->
@@ -33,7 +33,7 @@
       </div>
 
       <!-- Quick Links -->
-      <div class="col-12 col-md-6 col-lg-3">
+      <div class="col-12 col-md-6 col-lg-4">
         <nav class="footer-card h-100" aria-label="Quick links">
           <p class="footer-title mb-3">Quick links</p>
 
@@ -55,21 +55,9 @@
       </div>
 
       <!-- Policies / CTA -->
-      <div class="col-12 col-md-6 col-lg-4">
+      <div class="col-12 col-md-6 col-lg-3">
         <div class="footer-card h-100">
-          <p class="footer-title mb-3">Policies</p>
-
-          <div class="d-flex flex-wrap gap-2 mb-3" aria-label="Policy links">
-            <a
-              *ngFor="let link of policyLinks"
-              class="btn btn-sm footer-pill footer-pill--muted"
-              [routerLink]="link.routerLink"
-              [attr.aria-label]="link.ariaLabel || link.label"
-            >
-              {{ link.label }}
-            </a>
-          </div>
-
+    
           <a
             class="btn footer-cta w-100 w-sm-auto"
             routerLink="/quick-quote"

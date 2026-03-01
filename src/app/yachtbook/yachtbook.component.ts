@@ -1,16 +1,8 @@
-import { CommonModule } from '@angular/common';
-import {
-  Component,
-  ElementRef,
-  OnDestroy,
-  OnInit,
-  ViewChild,
-  computed,
-  signal,
-} from '@angular/core';
+import { CommonModule, DOCUMENT, isPlatformBrowser } from '@angular/common';
+import { Component, DestroyRef, Inject, OnDestroy, OnInit, PLATFORM_ID, computed, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Meta, Title } from '@angular/platform-browser';
-import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { Router } from '@angular/router';
 import { NgOptimizedImage } from '@angular/common';
 
 type YachtDetail = {
@@ -36,13 +28,6 @@ type YachtDetail = {
   additions: string;
 };
 
-type PackageOption = {
-  title: string;
-  duration: string;
-  price: string;
-  points: string[];
-};
-
 type TripDetailItem = {
   icon: string;
   label: string;
@@ -53,22 +38,22 @@ type PriceCard = {
   title: string;
   price: string;
   sub?: string;
-  points?: string[];
 };
 
 @Component({
   selector: 'app-yachtbook',
   standalone: true,
-  imports: [CommonModule, RouterModule, ReactiveFormsModule, NgOptimizedImage],
+  imports: [CommonModule, ReactiveFormsModule, NgOptimizedImage],
   templateUrl: './yachtbook.component.html',
   styleUrls: ['./yachtbook.component.css'],
 })
 export class YachtBookComponent implements OnInit, OnDestroy {
-  @ViewChild('nativeForm') nativeForm?: ElementRef<HTMLFormElement>;
-
+   private readonly platformId = inject(PLATFORM_ID);
+  private readonly destroyRef = inject(DestroyRef);
+   private keyController?: AbortController;
   readonly yacht = signal<YachtDetail | null>(null);
 
-  /** UI helpers: show only fields that actually exist (no fake 0 / — noise) */
+  /** Header badges: only the most decision-driving info */
   readonly headerBadges = computed(() => {
     const y = this.yacht();
     if (!y) return [] as Array<{ k: string; v: string }>;
@@ -81,14 +66,12 @@ export class YachtBookComponent implements OnInit, OnDestroy {
       out.push({ k, v: s });
     };
 
-    // Keep only the most decision-driving info in the header
     add('Guests', y.capacity);
     add('Length', y.length);
     add('Speed', y.speed);
     add('Total time', y.totalTime);
     add('Starting from', y.startingFrom);
 
-    // Keep it tidy on the top row
     return out.slice(0, 5);
   });
 
@@ -97,11 +80,10 @@ export class YachtBookComponent implements OnInit, OnDestroy {
     if (!y) return [] as Array<{ k: string; v: string }>;
 
     const out: Array<{ k: string; v: string }> = [];
-    const add = (k: string, v?: string | number | null, formatter?: (x: any) => string) => {
+    const add = (k: string, v?: string | number | null) => {
       if (v === undefined || v === null) return;
-      const s = formatter ? formatter(v) : String(v);
-      const val = String(s).trim();
-      if (!val || val === '0') return; // don't show meaningless zeros
+      const val = String(v).trim();
+      if (!val || val === '0') return;
       out.push({ k, v: val });
     };
 
@@ -122,8 +104,6 @@ export class YachtBookComponent implements OnInit, OnDestroy {
   readonly inclusionsList = computed(() => {
     const raw = (this.yacht()?.inclusions ?? '').trim();
     if (!raw) return [] as string[];
-
-    // Supports comma-separated or newline-separated inclusions
     return raw
       .split(/\r?\n|,/g)
       .map(s => s.trim())
@@ -133,23 +113,21 @@ export class YachtBookComponent implements OnInit, OnDestroy {
   readonly additionsList = computed(() => {
     const raw = (this.yacht()?.additions ?? '').trim();
     if (!raw) return [] as string[];
-
     return raw
       .split(/\r?\n|,/g)
       .map(s => s.trim())
       .filter(Boolean);
   });
 
-  /** Pricing cards (better UX than hiding prices inside text) */
   readonly pricingCards = computed(() => {
     const y = this.yacht();
     if (!y) return [] as PriceCard[];
 
     const cards: PriceCard[] = [];
-    const addCard = (title: string, price?: string, sub?: string, points?: string[]) => {
+    const addCard = (title: string, price?: string, sub?: string) => {
       const p = (price ?? '').trim();
       if (!p) return;
-      cards.push({ title, price: p, sub, points });
+      cards.push({ title, price: p, sub });
     };
 
     const total = (y.totalTime ?? '').trim();
@@ -167,7 +145,6 @@ export class YachtBookComponent implements OnInit, OnDestroy {
     addCard('Morning charter', y.morningRate, durationLine);
     addCard('Evening charter', y.eveningRate, durationLine);
 
-    // Show “starting from” only when it adds new info
     const start = (y.startingFrom ?? '').trim();
     const morning = (y.morningRate ?? '').trim();
     const evening = (y.eveningRate ?? '').trim();
@@ -178,7 +155,24 @@ export class YachtBookComponent implements OnInit, OnDestroy {
     return cards;
   });
 
-  /** JSON-LD for better SEO (safe textContent binding) */
+  /** Gallery */
+  readonly galleryImages = computed(() => {
+    const y = this.yacht();
+    if (!y) return [];
+    const baseAlt = y.imageAlt || `${y.name} yacht in Goa`;
+    return (y.images && y.images.length ? y.images : []).map((url, i) => ({
+      url,
+      alt: `${baseAlt} - image ${i + 1}`,
+    }));
+  });
+
+  readonly activeImgIndex = signal(0);
+  readonly isLightboxOpen = signal(false);
+  readonly isHoveringGallery = signal(false);
+
+  activeImg = computed(() => this.galleryImages()[this.activeImgIndex()] ?? null);
+
+  /** JSON-LD for richer SEO */
   readonly seoJsonLd = computed(() => {
     const y = this.yacht();
     if (!y) return '';
@@ -187,14 +181,17 @@ export class YachtBookComponent implements OnInit, OnDestroy {
       .map(v => String(v ?? '').trim())
       .filter(Boolean);
 
+    const url = this.getAbsoluteUrl();
+
     const jsonLd: any = {
       '@context': 'https://schema.org',
       '@type': 'TouristTrip',
       name: `${y.name} Yacht Booking`,
       description: (y.description ?? '').trim() || `Book ${y.name} yacht in Goa.`,
       touristType: ['Luxury travel', 'Private charter'],
-      provider: { '@type': 'LocalBusiness', name: 'Yacht Charter Goa' },
+      provider: { '@type': 'LocalBusiness', name: 'Sea Rider Goa' },
       location: { '@type': 'Place', name: 'Goa, India' },
+      url,
     };
 
     if (offerPrices.length) {
@@ -203,65 +200,34 @@ export class YachtBookComponent implements OnInit, OnDestroy {
         price: p.replace(/[^0-9.]/g, ''),
         priceCurrency: 'INR',
         availability: 'https://schema.org/InStock',
-        url: this.router.url,
+        url,
       }));
     }
 
     return JSON.stringify(jsonLd);
   });
 
-  /**
-   * Trip details (section like the provided screenshot)
-   * - keeps the content stable, but uses yacht data where it helps (guests, duration)
-   */
   readonly tripDetails = computed(() => {
     const y = this.yacht();
     if (!y) return [] as TripDetailItem[];
-
-    const totalTime = (y.totalTime ?? '').trim();
-    const minHoursText = totalTime
-      ? `Minimum ${totalTime} are necessary to book this yacht, additional hours can be taken.`
-      : 'Minimum 2 hours are necessary to book this yacht, additional hours can be taken.';
-
+   
     const maxGuests = y.capacity ? `${y.capacity} Pax` : '—';
 
-    const items: TripDetailItem[] = [
+    return [
       { icon: '⚓', label: 'Activity Location', value: 'Panjim, North Goa' },
       { icon: '🛥️', label: 'Departure Point', value: 'Will be shared after booking.' },
       { icon: '📍', label: 'Reporting Time', value: '30 mins prior to the departure time' },
       {
         icon: '⏱️',
         label: 'Timings & Duration',
-        value: `Custom timing as per the requirement between 9:00 AM to 11:00 PM, available 7 days a week in season. ${minHoursText}`,
+        value: `Custom timing as per the requirement between 9:00 AM to 11:00 PM, available 7 days a week in season.`,
       },
       { icon: '🛟', label: 'End point', value: 'This activity ends back at the departure point.' },
       { icon: '👥', label: 'Max Guests Allowed', value: maxGuests },
     ];
-
-    return items;
   });
 
-  // Gallery state
-  readonly galleryImages = computed(() => {
-    const y = this.yacht();
-    if (!y) return [];
-    const baseAlt = y.imageAlt || `${y.name} yacht in Goa`;
-    const imgs = (y.images && y.images.length ? y.images : []).map((url, i) => ({
-      url,
-      alt: `${baseAlt} - image ${i + 1}`,
-    }));
-    return imgs;
-  });
-
-  readonly activeImgIndex = signal(0);
-  readonly isLightboxOpen = signal(false);
-  readonly isHoveringGallery = signal(false);
-
-  // Packages (kept safe even if you don’t render packages)
-  readonly packages = signal<PackageOption[]>([]);
-  readonly selectedPackageIndex = signal<number>(0);
-
-  // Toast + submit
+  /** Form */
   toast = { visible: false, type: 'success' as 'success' | 'error', title: '', message: '' };
   isSubmitting = false;
   submitted = false;
@@ -277,75 +243,108 @@ export class YachtBookComponent implements OnInit, OnDestroy {
     return this.contactForm.controls;
   }
 
+  // Replace this with your real receiver email (FormSubmit)
   formSubmitAction = 'https://formsubmit.co/ajax/YOUR_EMAIL_HERE';
 
-  private autoSlideTimer?: any;
+  private autoSlideTimer?: number;
+  private toastTimer?: number;
 
   constructor(
-    private readonly fb: FormBuilder,
-    private readonly route: ActivatedRoute,
+     private readonly fb: FormBuilder,
     private readonly router: Router,
     private readonly title: Title,
-    private readonly meta: Meta
+    private readonly meta: Meta,
+    @Inject(DOCUMENT) private readonly doc: Document
   ) {}
 
   ngOnInit(): void {
     const state = history.state as any;
 
-    // Prefer router state payload when coming from YachtOptions
     const incoming = state && (state.id || state.name) ? (state as YachtDetail) : null;
-
     if (incoming) {
       this.yacht.set({
         ...incoming,
-        // YachtOptions uses "slider" — normalize to images if needed
         images: incoming.images,
         imageAlt: incoming.imageAlt ?? state.imageAlt ?? `${incoming.name} yacht in Goa`,
       });
     }
 
-    // Ensure gallery starts at 0
     this.activeImgIndex.set(0);
 
-    // SEO (best practice: unique title + meta description)
-    const y = this.yacht();
-    if (y?.name) {
-      this.title.setTitle(`${y.name} Yacht Booking in Goa | Quick Quote`);
-      this.meta.updateTag({
-        name: 'description',
-        content: `Book ${y.name} yacht in Goa. View photos, inclusions, quick specs and submit your booking request in seconds.`,
-      });
-      this.meta.updateTag({ property: 'og:title', content: `${y.name} Yacht Booking in Goa` });
-      this.meta.updateTag({
-        property: 'og:description',
-        content: `Gallery, inclusions, quick specs, and booking request for ${y.name}.`,
-      });
-    } else {
-      this.title.setTitle('Yacht Booking in Goa | Quick Quote');
-      this.meta.updateTag({
-        name: 'description',
-        content: 'Book a premium yacht experience in Goa. Browse photos, specs and request a quick quote.',
-      });
-    }
+    this.applySeoTags();
 
-    // Prefill message (optional)
+    const y = this.yacht();
     if (y?.name) {
       const base = `Hi, I want to book ${y.name}. Please share availability and best price.`;
       this.contactForm.patchValue({ message: base });
     }
 
-    // Auto-slide gallery on hover
     this.startAutoSlideOnHover();
+      if (isPlatformBrowser(this.platformId)) {
+      this.keyController = new AbortController();
+      this.doc.addEventListener(
+        'keydown',
+        (e: KeyboardEvent) => {
+          if (!this.isLightboxOpen()) return;
+
+          if (e.key === 'Escape') {
+            e.preventDefault();
+            this.closeLightbox();
+            return;
+          }
+          if (e.key === 'ArrowLeft') {
+            e.preventDefault();
+            this.prevMain();
+            return;
+          }
+          if (e.key === 'ArrowRight') {
+            e.preventDefault();
+            this.nextMain();
+            return;
+          }
+        },
+        { signal: this.keyController.signal }
+      );
+
+      this.destroyRef.onDestroy(() => this.keyController?.abort());
+    }
   }
 
   ngOnDestroy(): void {
     this.stopAutoSlide();
+    if (this.toastTimer) window.clearTimeout(this.toastTimer);
+       this.keyController?.abort();
+  }
+
+  private applySeoTags() {
+    const y = this.yacht();
+    const name = y?.name?.trim();
+
+    const title = name ? `${name} Yacht Booking in Goa | Quick Quote` : 'Yacht Booking in Goa | Quick Quote';
+    const desc = name
+      ? `Book ${name} yacht in Goa. View photos, inclusions, quick specs and submit your booking request in seconds.`
+      : 'Book a premium yacht experience in Goa. Browse photos, specs and request a quick quote.';
+
+    this.title.setTitle(title);
+    this.meta.updateTag({ name: 'description', content: desc });
+    this.meta.updateTag({ property: 'og:title', content: title });
+    this.meta.updateTag({ property: 'og:description', content: desc });
+    this.meta.updateTag({ property: 'og:type', content: 'website' });
+
+    const absUrl = this.getAbsoluteUrl();
+    if (absUrl) this.meta.updateTag({ property: 'og:url', content: absUrl });
+
+    const firstImg = this.galleryImages()[0]?.url || y?.imageUrl;
+    if (firstImg) this.meta.updateTag({ property: 'og:image', content: firstImg });
+  }
+
+  private getAbsoluteUrl(): string {
+    const origin = this.doc?.location?.origin ?? '';
+    const path = this.router.url || '';
+    return origin ? `${origin}${path}` : path;
   }
 
   // -------- Gallery / Lightbox --------
-
-  activeImg = computed(() => this.galleryImages()[this.activeImgIndex()] ?? null);
-
   setActiveImg(i: number) {
     const total = this.galleryImages().length;
     if (!total) return;
@@ -356,26 +355,26 @@ export class YachtBookComponent implements OnInit, OnDestroy {
   prevMain() {
     const total = this.galleryImages().length;
     if (!total) return;
-    const next = (this.activeImgIndex() - 1 + total) % total;
-    this.activeImgIndex.set(next);
+    this.activeImgIndex.set((this.activeImgIndex() - 1 + total) % total);
   }
 
   nextMain() {
     const total = this.galleryImages().length;
     if (!total) return;
-    const next = (this.activeImgIndex() + 1) % total;
-    this.activeImgIndex.set(next);
+    this.activeImgIndex.set((this.activeImgIndex() + 1) % total);
   }
 
-  openLightbox(index: number) {
+ openLightbox(index: number) {
     this.setActiveImg(index);
     this.isLightboxOpen.set(true);
-    document.body.style.overflow = 'hidden';
+
+    // Prevent background scroll (match Gallery behavior)
+    this.doc.documentElement.classList.add('no-scroll');
   }
 
   closeLightbox() {
     this.isLightboxOpen.set(false);
-    document.body.style.overflow = '';
+    this.doc.documentElement.classList.remove('no-scroll');
   }
 
   stopPropagation(e: Event) {
@@ -391,7 +390,7 @@ export class YachtBookComponent implements OnInit, OnDestroy {
   }
 
   private startAutoSlideOnHover() {
-    this.autoSlideTimer = setInterval(() => {
+    this.autoSlideTimer = window.setInterval(() => {
       if (!this.isHoveringGallery()) return;
       if (this.isLightboxOpen()) return;
       if (this.galleryImages().length <= 1) return;
@@ -400,11 +399,10 @@ export class YachtBookComponent implements OnInit, OnDestroy {
   }
 
   private stopAutoSlide() {
-    if (this.autoSlideTimer) clearInterval(this.autoSlideTimer);
+    if (this.autoSlideTimer) window.clearInterval(this.autoSlideTimer);
   }
 
-  // -------- Form submit (same behavior) --------
-
+  // -------- Form submit --------
   async onSubmit() {
     this.submitted = true;
 
@@ -442,7 +440,8 @@ export class YachtBookComponent implements OnInit, OnDestroy {
 
   showToast(type: 'success' | 'error', title: string, message: string) {
     this.toast = { visible: true, type, title, message };
-    setTimeout(() => this.hideToast(), 4000);
+    if (this.toastTimer) window.clearTimeout(this.toastTimer);
+    this.toastTimer = window.setTimeout(() => this.hideToast(), 4000);
   }
 
   hideToast() {

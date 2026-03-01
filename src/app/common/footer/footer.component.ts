@@ -23,9 +23,4 @@ export class FooterComponent {
     { label: 'Quick Quote', routerLink: 'quick-quote', ariaLabel: 'Go to Quick Quote section' },
     { label: 'Contact', routerLink: 'contact', ariaLabel: 'Go to Contact section' },
   ];
-
-  readonly policyLinks: FooterLink[] = [
-    { label: 'Privacy Policy', routerLink: '/privacy', ariaLabel: 'Open Privacy Policy page' },
-    { label: 'Terms of Service', routerLink: '/terms', ariaLabel: 'Open Terms of Service page' },
-  ];
 }
