@@ -51,28 +51,32 @@
         <!-- Gallery -->
         <section class="card yb-card mb-4" aria-label="Yacht gallery">
           <div class="card-body">
-            <div
-              class="yb-gallery-main"
-              *ngIf="activeImg() as img"
-              (mouseenter)="onGalleryMouseEnter()"
-              (mouseleave)="onGalleryMouseLeave()"
-              (focusin)="onGalleryMouseEnter()"
-              (focusout)="onGalleryMouseLeave()"
-            >
-              <button
-                type="button"
-                (click)="openLightbox(activeImgIndex())"
-                [attr.aria-label]="'Open image ' + (activeImgIndex() + 1) + ' in full view'"
-              >
-                <img
-                  [ngSrc]="img.url"
-                  width="1200"
-                  height="720"
-                  [alt]="img.alt"
-                  priority="false"
-                />
-              </button>
-            </div>
+           <div
+  class="yb-gallery-main"
+  *ngIf="activeImg() as img"
+  (mouseenter)="onGalleryMouseEnter()"
+  (mouseleave)="onGalleryMouseLeave()"
+  (focusin)="onGalleryMouseEnter()"
+  (focusout)="onGalleryMouseLeave()"
+  (touchstart)="onTouchStart($event)"
+  (touchend)="onTouchEnd($event)"
+>
+  <button
+    type="button"
+    (click)="openLightbox(activeImgIndex())"
+    [attr.aria-label]="'Open image ' + (activeImgIndex() + 1) + ' in full view'"
+  >
+    <img
+      [ngSrc]="img.url"
+      width="1200"
+      height="720"
+      [alt]="img.alt"
+      priority="false"
+    />
+  </button>
+
+
+</div>
 
             <div class="yb-thumbs" role="list" aria-label="Gallery thumbnails" *ngIf="galleryImages().length">
               <button

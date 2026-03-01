@@ -279,7 +279,7 @@ export class YachtBookComponent implements OnInit, OnDestroy {
       this.contactForm.patchValue({ message: base });
     }
 
-    this.startAutoSlideOnHover();
+    this.startAutoSlide();
       if (isPlatformBrowser(this.platformId)) {
       this.keyController = new AbortController();
       this.doc.addEventListener(
@@ -309,6 +309,35 @@ export class YachtBookComponent implements OnInit, OnDestroy {
       this.destroyRef.onDestroy(() => this.keyController?.abort());
     }
   }
+  private startAutoSlide() {
+  this.autoSlideTimer = window.setInterval(() => {
+    // Pause while user is interacting so arrows/thumbs feel responsive
+    if (this.isHoveringGallery()) return;
+    if (this.isLightboxOpen()) return;
+    if (this.galleryImages().length <= 1) return;
+    this.nextMain();
+  }, 3200);
+}
+
+// Touch swipe handlers
+private touchStartX = 0;
+
+onTouchStart(e: TouchEvent) {
+  this.touchStartX = e.changedTouches[0]?.clientX ?? 0;
+  this.isHoveringGallery.set(true);
+}
+
+onTouchEnd(e: TouchEvent) {
+  const endX = e.changedTouches[0]?.clientX ?? 0;
+  const dx = endX - this.touchStartX;
+
+  if (Math.abs(dx) >= 40) {
+    dx > 0 ? this.prevMain() : this.nextMain();
+  }
+
+  // Resume autoplay shortly after touch interaction
+  window.setTimeout(() => this.isHoveringGallery.set(false), 800);
+}
 
   ngOnDestroy(): void {
     this.stopAutoSlide();
@@ -389,15 +418,6 @@ export class YachtBookComponent implements OnInit, OnDestroy {
     this.isHoveringGallery.set(false);
   }
 
-  private startAutoSlideOnHover() {
-    this.autoSlideTimer = window.setInterval(() => {
-      if (!this.isHoveringGallery()) return;
-      if (this.isLightboxOpen()) return;
-      if (this.galleryImages().length <= 1) return;
-      this.nextMain();
-    }, 2200);
-  }
-
   private stopAutoSlide() {
     if (this.autoSlideTimer) window.clearInterval(this.autoSlideTimer);
   }
@@ -448,15 +468,4 @@ export class YachtBookComponent implements OnInit, OnDestroy {
     this.toast.visible = false;
   }
 
-  // Touch swipe handlers
-  private touchStartX = 0;
-  onTouchStart(e: TouchEvent) {
-    this.touchStartX = e.changedTouches[0]?.clientX ?? 0;
-  }
-  onTouchEnd(e: TouchEvent) {
-    const endX = e.changedTouches[0]?.clientX ?? 0;
-    const dx = endX - this.touchStartX;
-    if (Math.abs(dx) < 40) return;
-    dx > 0 ? this.prevMain() : this.nextMain();
-  }
 }
