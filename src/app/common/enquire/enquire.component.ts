@@ -1,11 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import {
-  FormBuilder,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Meta, Title } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 
@@ -32,6 +27,7 @@ export class EnquireComponent implements OnInit, OnDestroy {
   contactForm!: FormGroup;
   submitted = false;
   isSubmitting = false;
+  isEnquireRoute = false;
 
   toast: ToastState = {
     visible: false,
@@ -43,16 +39,13 @@ export class EnquireComponent implements OnInit, OnDestroy {
   private toastTimer: ReturnType<typeof setTimeout> | null = null;
 
   /** Keep this in ONE place (easy to change later) */
-  readonly formSubmitAction =
-    'https://formsubmit.co/mittalpriyanshu19@gmail.com';
-
-    isEnquireRoute = false;
+  readonly formSubmitAction = 'https://formsubmit.co/mittalpriyanshu19@gmail.com';
 
   constructor(
     private readonly fb: FormBuilder,
     private readonly title: Title,
     private readonly meta: Meta,
-    private router: Router
+    private readonly router: Router
   ) {}
 
   ngOnInit(): void {
@@ -67,13 +60,19 @@ export class EnquireComponent implements OnInit, OnDestroy {
       message: ['', [Validators.required, Validators.minLength(10)]],
     });
 
-    // SEO (works best when this is a routed page/section)
-    this.title.setTitle('Quick Quote | Sea Rider Goa - Yacht Service');
-    this.meta.updateTag({
-      name: 'description',
-      content:
-        'Request a quick quote for yacht and cruise rentals in Goa. Share your details and we will get back with the best options for your trip.',
-    });
+    // SEO (best when this is a routed page)
+    const title = 'Quick Quote | Sea Rider Goa - Yacht Service';
+    const desc =
+      'Request a quick quote for yacht and cruise rentals in Goa. Share your details and we will get back with the best options for your trip.';
+
+    this.title.setTitle(title);
+
+    this.meta.updateTag({ name: 'description', content: desc });
+    this.meta.updateTag({ property: 'og:title', content: title });
+    this.meta.updateTag({ property: 'og:description', content: desc });
+    this.meta.updateTag({ name: 'twitter:card', content: 'summary_large_image' });
+    this.meta.updateTag({ name: 'twitter:title', content: title });
+    this.meta.updateTag({ name: 'twitter:description', content: desc });
   }
 
   ngOnDestroy(): void {
@@ -111,10 +110,19 @@ export class EnquireComponent implements OnInit, OnDestroy {
     }
   }
 
+  private focusFirstInvalid(): void {
+    const formEl = this.nativeForm?.nativeElement;
+    if (!formEl) return;
+
+    const firstInvalid = formEl.querySelector<HTMLElement>('.is-invalid, [aria-invalid="true"]');
+    firstInvalid?.focus?.();
+  }
+
   async onSubmit(): Promise<void> {
     this.submitted = true;
 
     if (this.contactForm.invalid || this.isSubmitting) {
+      this.focusFirstInvalid();
       return;
     }
 
@@ -145,26 +153,14 @@ export class EnquireComponent implements OnInit, OnDestroy {
       });
 
       if (res.ok) {
-        this.showToast(
-          'success',
-          'Query submitted',
-          'Thanks! We’ll contact you shortly with the best options.'
-        );
+        this.showToast('success', 'Query submitted', 'Thanks! We’ll contact you shortly with the best options.');
         this.contactForm.reset();
         this.submitted = false;
       } else {
-        this.showToast(
-          'error',
-          'Could not submit',
-          'Please try again in a moment.'
-        );
+        this.showToast('error', 'Could not submit', 'Please try again in a moment.');
       }
     } catch {
-      this.showToast(
-        'error',
-        'Network issue',
-        'Please check your connection and try again.'
-      );
+      this.showToast('error', 'Network issue', 'Please check your connection and try again.');
     } finally {
       this.isSubmitting = false;
     }

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, computed, signal, ElementRef, ViewChild } from '@angular/core';
+import { Component, computed, signal, ElementRef, ViewChild, OnInit } from '@angular/core';
 import { Meta, Title } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 
@@ -18,7 +18,7 @@ type Testimonial = {
   templateUrl: './testimonials.component.html',
   styleUrls: ['./testimonials.component.css'],
 })
-export class TestimonialsComponent {
+export class TestimonialsComponent implements OnInit {
 
   @ViewChild('testimonialSection') testimonialSection!: ElementRef;
 
@@ -68,6 +68,7 @@ export class TestimonialsComponent {
   ]);
 
   isTestimonialRoute = false;
+
   // Pagination
   readonly pageSize = 3;
   readonly visibleCount = signal(this.pageSize);
@@ -89,19 +90,26 @@ export class TestimonialsComponent {
     return Math.round((sum / list.length) * 10) / 10;
   });
 
-  constructor(private title: Title, private meta: Meta,private router: Router) {
+  constructor(private title: Title, private meta: Meta, private router: Router) {
     this.title.setTitle('Customer Reviews | Yacht Experiences in Goa');
     this.meta.updateTag({
       name: 'description',
       content:
         'Read authentic customer reviews for Peagus, Aquila, and Coco yachts in Goa.',
     });
+
+    // Helpful social previews
+    this.meta.updateTag({ property: 'og:title', content: 'Customer Reviews | Yacht Experiences in Goa' });
+    this.meta.updateTag({
+      property: 'og:description',
+      content: 'See real guest reviews and ratings for our Goa yacht experiences.',
+    });
+    this.meta.updateTag({ name: 'twitter:card', content: 'summary_large_image' });
   }
 
-   ngOnInit() {
+  ngOnInit() {
     this.isTestimonialRoute = this.router.url === '/reviews';
   }
-
 
   showMore() {
     const total = this.testimonials().length;
@@ -123,9 +131,9 @@ export class TestimonialsComponent {
     return Array.from({ length: n }, (_, i) => i);
   }
 
-  jsonLd() {
+  jsonLdString(): string {
     const list = this.testimonials();
-    return {
+    const payload = {
       '@context': 'https://schema.org',
       '@type': 'LocalBusiness',
       name: 'Yacht Experiences Goa',
@@ -150,5 +158,7 @@ export class TestimonialsComponent {
         reviewBody: t.text,
       })),
     };
+
+    return JSON.stringify(payload);
   }
 }

@@ -1,57 +1,67 @@
-<section #testimonialSection class="testimonials-section" [class.testimonials--route]="isTestimonialRoute">
+<section
+  #testimonialSection
+  class="testimonials-section mb-5"
+  [class.testimonials--route]="isTestimonialRoute"
+  aria-labelledby="testimonials-title"
+>
   <div class="container">
-    <header class="gallery__header testimonials__header">
-  <h2 class="gallery__title">Hear from our Customers</h2>
-  <h3 class="gallery__tagline">Loved by guests in Goa</h3>
-</header>
+    <header class="gallery__header testimonials__header text-center">
+      <h2 id="testimonials-title" class="gallery__title">Hear from our Customers</h2>
+      <p class="gallery__tagline mb-0">Loved by guests in Goa</p>
+    </header>
 
-    <!-- Multi-review grid -->
-    <div class="grid" role="list">
-      <article class="card" role="listitem" *ngFor="let t of visibleTestimonials()">
-        <div class="top">
-          <div class="stars" aria-label="Rating">
-            <span *ngFor="let s of starsFor(t.rating)" class="star">★</span>
-            <span *ngFor="let s of starsFor(5 - t.rating)" class="star off">★</span>
+    <!-- Multi-review grid (Bootstrap layout) -->
+    <div class="row g-3" role="list">
+      <div
+        class="col-12 col-md-6 col-lg-4"
+        role="listitem"
+        *ngFor="let t of visibleTestimonials(); let i = index"
+      >
+        <article class="card sr-review h-100" [style.--d]="(i * 70) + 'ms'">
+          <div class="card-body">
+            <div class="d-flex align-items-center justify-content-between gap-2 mb-2">
+              <div class="sr-stars" [attr.aria-label]="'Rating ' + t.rating + ' out of 5'">
+                <span *ngFor="let s of starsFor(t.rating)" class="sr-star">★</span>
+                <span *ngFor="let s of starsFor(5 - t.rating)" class="sr-star sr-star--off">★</span>
+              </div>
+
+              <time class="sr-date" [attr.datetime]="t.date">{{ t.date }}</time>
+            </div>
+
+            <p class="sr-text mb-3">“{{ t.text }}”</p>
+
+            <div class="d-flex align-items-center justify-content-between gap-2 flex-wrap">
+              <span class="fw-bold sr-author">{{ t.author }}</span>
+              <span class="badge rounded-pill sr-badge">{{ t.yacht }} Yacht</span>
+            </div>
           </div>
-          <time class="date">{{ t.date }}</time>
-        </div>
-
-        <p class="text">“{{ t.text }}”</p>
-
-        <div class="author">
-          
-        
-          <div class="review-meta">
-  <span class="author">{{ t.author }}</span>
-  <span class="yacht-badge">{{ t.yacht }} Yacht</span>
-</div>
-        </div>
-      </article>
+        </article>
+      </div>
     </div>
 
-   <div class="footer">
-  <button
-    *ngIf="hasMore()"
-    class="btn"
-    type="button"
-    (click)="showMore()"
-    aria-label="Show more reviews"
-  >
-    See more reviews
-  </button>
+    <div class="d-flex justify-content-center gap-2 flex-wrap mt-4">
+      <button
+        *ngIf="hasMore()"
+        class="btn btn-primary sr-cta"
+        type="button"
+        (click)="showMore()"
+        aria-label="Show more reviews"
+      >
+        See more reviews
+      </button>
 
-  <button
-    *ngIf="canShowLess()"
-    class="btn"
-    type="button"
-    (click)="showLess()"
-    aria-label="Show fewer reviews"
-  >
-    Show less
-  </button>
-</div>
+      <button
+        *ngIf="canShowLess()"
+        class="btn btn-outline-primary sr-ghost"
+        type="button"
+        (click)="showLess()"
+        aria-label="Show fewer reviews"
+      >
+        Show less
+      </button>
+    </div>
 
     <!-- SEO Structured Data -->
-    <script type="application/ld+json" [textContent]="jsonLd()"></script>
+    <script type="application/ld+json" [textContent]="jsonLdString()"></script>
   </div>
 </section>

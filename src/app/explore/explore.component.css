@@ -37,7 +37,7 @@
 .explore {
   position: relative;
   width: 100%;
-  padding: 24px 0 24px;
+  padding: 0;
 
   /* Brand-tinted background that matches the logo palette */
   background:
@@ -55,7 +55,7 @@
 }
 
 .explore--route {
-  padding-top: 142px;
+  padding-top: 142px !important;
   scroll-margin-top: 142px;
 }
 
