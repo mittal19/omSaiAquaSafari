@@ -8,10 +8,10 @@ import { Component } from '@angular/core';
   styleUrl: './whatsapp.component.css'
 })
 export class WhatsappComponent {
-  phoneNumber = '9027504141'; // Replace with your actual WhatsApp number
+  phoneNumber = '9168284787'; // Replace with your actual WhatsApp number
   
   openWhatsApp() {
-    const message = encodeURIComponent('Hello Sea Rider Goa, help me!');
+    const message = encodeURIComponent('Hello SeaRider Goa, I want to book a yacht. Please share slots & pricing.');
     window.open(`https://wa.me/${this.phoneNumber}?text=${message}`, '_blank');
   }
 }

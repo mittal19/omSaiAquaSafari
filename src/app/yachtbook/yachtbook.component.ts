@@ -244,7 +244,7 @@ export class YachtBookComponent implements OnInit, OnDestroy {
   }
 
   // Replace this with your real receiver email (FormSubmit)
-  formSubmitAction = 'https://formsubmit.co/ajax/YOUR_EMAIL_HERE';
+  formSubmitAction = 'https://formsubmit.co/bookings.searider@gmail.com';
 
   private autoSlideTimer?: number;
   private toastTimer?: number;

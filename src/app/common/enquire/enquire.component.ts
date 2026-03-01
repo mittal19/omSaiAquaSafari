@@ -39,7 +39,7 @@ export class EnquireComponent implements OnInit, OnDestroy {
   private toastTimer: ReturnType<typeof setTimeout> | null = null;
 
   /** Keep this in ONE place (easy to change later) */
-  readonly formSubmitAction = 'https://formsubmit.co/mittalpriyanshu19@gmail.com';
+  readonly formSubmitAction = 'https://formsubmit.co/bookings.searider@gmail.com';
 
   constructor(
     private readonly fb: FormBuilder,
