@@ -1,36 +1,16 @@
 /* ========= Brand tokens (match your existing palette) ========= */
 :host {
-  --brand-deep-blue: #0d3b66;
-  --brand-teal: #0fb9b1;
-  --brand-gold: #ffb703;
-  --brand-orange: #fb8500;
-  --brand-dark: #0a1f33;
+  /* Map local tokens to global design system */
+  --brand-deep-blue: var(--sr-deep-blue);
+  --brand-teal: var(--sr-teal);
+  --brand-gold: var(--sr-gold);
+  --brand-orange: var(--sr-orange);
+  --brand-dark: var(--sr-ink);
   --card-radius: 16px;
 
-  /* Uses your global fonts if you already set them */
-  --brand-sans: var(
-    --font-sans,
-    "Poppins",
-    "Inter",
-    system-ui,
-    -apple-system,
-    Segoe UI,
-    Roboto,
-    Arial,
-    sans-serif
-  );
-  --brand-display: var(
-    --font-display,
-    "Poppins",
-    "Inter",
-    system-ui,
-    -apple-system,
-    Segoe UI,
-    Roboto,
-    Arial,
-    sans-serif
-  );
-  font-family: var(--brand-sans);
+  --brand-sans: var(--sr-font-sans);
+  --brand-display: var(--sr-font-display);
+  font-family: var(--sr-font-sans);
 }
 
 /* ========= Section wrapper ========= */
@@ -55,8 +35,9 @@
 }
 
 .explore--route {
-  padding-top: 142px !important;
-  scroll-margin-top: 142px;
+  /* padding-top: 142px !important;
+  scroll-margin-top: 142px; */
+  padding-top: 62px !important;
 }
 
 /* ================= Explore Header Styling (Match Gallery/Header vibe) ================= */

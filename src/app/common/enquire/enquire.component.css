@@ -7,55 +7,22 @@
 :host {
   display: block;
 
-  /* Typography (match your other components; safe fallbacks) */
-  --sr-font-sans: var(
-    --font-sans,
-    "Poppins",
-    "Inter",
-    system-ui,
-    -apple-system,
-    "Segoe UI",
-    Roboto,
-    Arial,
-    sans-serif
-  );
-  --sr-font-display: var(
-    --font-display,
-    "Poppins",
-    "Inter",
-    system-ui,
-    -apple-system,
-    "Segoe UI",
-    Roboto,
-    Arial,
-    sans-serif
-  );
+  /* Use global design-system tokens */
   font-family: var(--sr-font-sans);
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 
-  /* Brand palette (logo-aligned) */
-  --sr-deep-blue: #0d3b66;
-  --sr-teal: #0fb9b1;
-  --sr-gold: #ffb703;
-  --sr-orange: #fb8500;
+  /* Inherit palette from :root; override only if needed */
 
-  --sr-ink: #0a1f33;
-  --sr-muted: #475569;
-
-  --sr-border: rgba(10, 31, 51, 0.14);
-  --sr-shadow: 0 14px 38px rgba(13, 59, 102, 0.14);
   --sr-shadow-strong: 0 20px 54px rgba(13, 59, 102, 0.18);
 
-  --sr-radius-lg: 18px;
-  --sr-radius-md: 14px;
+  --sr-radius-lg: var(--sr-radius-lg);
+  --sr-radius-md: var(--sr-radius-md);
 }
 
 /* Route spacing (works with your fixed header) */
 .enquire--route {
-  padding-top: 142px;
-  scroll-margin-top: 142px;
+  /* padding-top: 142px;
+  scroll-margin-top: 142px; */
+  padding-top: 62px !important;
 }
 
 .enquire {

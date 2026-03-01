@@ -1,21 +1,11 @@
 :host {
   display: block;
-    /* ===== Typography (SEO/UX friendly) ===== */
-  font-family: var(--sr-font-sans, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif);
+  font-family: var(--sr-font-sans);
   letter-spacing: 0.2px;
 
-  /* ===== Brand palette extracted from your logo ===== */
-  --sr-navy: #021a29;   /* deep navy */
-  --sr-teal: #316d6b;   /* teal */
-  --sr-gold: #ffcb3a;   /* gold */
-  --sr-orange: #fb8714; /* orange */
-  --sr-cream: #fff79e;  /* highlight/cream */
-
+  /* Local helpers (derived from global tokens) */
   --sr-surface: rgba(255, 255, 255, 0.88);
-  --sr-border: rgba(2, 26, 41, 0.14);
-
-  --sr-shadow: 0 12px 30px rgba(2, 26, 41, 0.14);
-  --sr-shadow-strong: 0 18px 46px rgba(2, 26, 41, 0.18);
+  --sr-shadow-strong: 0 18px 46px rgba(2, 6, 23, 0.18);
 
   --sr-radius: 1.1rem;
 }
@@ -28,7 +18,7 @@
   padding: 10px 12px;
   border-radius: 12px;
   background: #ffffff;
-  color: var(--sr-navy);
+  color: var(--sr-deep-blue);
   box-shadow: var(--sr-shadow);
   transform: translateY(-140%);
   transition: transform 160ms ease;
@@ -43,9 +33,9 @@
 /* ===== Navbar ===== */
 .sr-navbar {
   background:
-    radial-gradient(900px 320px at 10% 0%, rgba(49, 109, 107, 0.18), transparent 62%),
-    radial-gradient(900px 320px at 90% 0%, rgba(255, 203, 58, 0.22), transparent 60%),
-    radial-gradient(700px 280px at 55% 0%, rgba(251, 135, 20, 0.14), transparent 58%),
+    radial-gradient(900px 320px at 10% 0%, rgba(15, 185, 177, 0.18), transparent 62%),
+    radial-gradient(900px 320px at 90% 0%, rgba(255, 183, 3, 0.22), transparent 60%),
+    radial-gradient(700px 280px at 55% 0%, rgba(251, 133, 0, 0.14), transparent 58%),
     var(--sr-surface);
   border-bottom: 1px solid var(--sr-border);
   backdrop-filter: saturate(140%) blur(12px);
@@ -63,8 +53,8 @@
 /* Scroll state: slightly more solid & compact feel */
 .sr-navbar.sr-scrolled {
   background:
-    radial-gradient(900px 320px at 12% 0%, rgba(49, 109, 107, 0.14), transparent 62%),
-    radial-gradient(900px 320px at 90% 0%, rgba(255, 203, 58, 0.18), transparent 60%),
+    radial-gradient(900px 320px at 12% 0%, rgba(15, 185, 177, 0.14), transparent 62%),
+    radial-gradient(900px 320px at 90% 0%, rgba(255, 183, 3, 0.18), transparent 60%),
     rgba(255, 255, 255, 0.94);
   box-shadow: 0 14px 34px rgba(2, 26, 41, 0.14);
 }
@@ -76,7 +66,7 @@
   transition: transform 180ms ease, background-color 180ms ease;
 }
 .sr-brand:hover {
-  background: rgba(255, 203, 58, 0.10);
+  background: rgba(255, 183, 3, 0.10);
   transform: translateY(-1px);
 }
 
@@ -118,7 +108,7 @@
 }
 
 .sr-navlink:hover {
-  background: rgba(49, 109, 107, 0.10);
+  background: rgba(15, 185, 177, 0.10);
   transform: translateY(-1px);
 }
 .sr-navlink:hover::after {
@@ -129,9 +119,9 @@
   color: rgba(2, 26, 41, 0.96);
   background: linear-gradient(
     135deg,
-    rgba(49, 109, 107, 0.14),
-    rgba(255, 203, 58, 0.16),
-    rgba(251, 135, 20, 0.12)
+    rgba(15, 185, 177, 0.14),
+    rgba(255, 183, 3, 0.16),
+    rgba(251, 133, 0, 0.12)
   );
   border: 1px solid rgba(2, 26, 41, 0.12);
 }
@@ -144,7 +134,7 @@
   background: rgba(255, 255, 255, 0.78);
 }
 .sr-toggler:focus {
-  box-shadow: 0 0 0 0.25rem rgba(49, 109, 107, 0.22);
+  box-shadow: 0 0 0 0.25rem rgba(15, 185, 177, 0.22);
 }
 
 /* ===== CTA buttons ===== */
@@ -166,14 +156,14 @@
 .sr-cta:active { transform: translateY(0); }
 
 .sr-ghost {
-  color: var(--sr-navy);
+  color: var(--sr-deep-blue);
   border: 1px solid rgba(2, 26, 41, 0.14);
   background: rgba(255, 255, 255, 0.72);
   font-weight: 800;
   transition: transform 180ms ease, background-color 180ms ease;
 }
 .sr-ghost:hover {
-  background: rgba(255, 203, 58, 0.12);
+  background: rgba(255, 183, 3, 0.12);
   transform: translateY(-1px);
 }
 
@@ -197,8 +187,8 @@
   width: min(92vw, 390px);
   border-left: 1px solid var(--sr-border);
   background:
-    radial-gradient(700px 260px at 10% 0%, rgba(49, 109, 107, 0.18), transparent 62%),
-    radial-gradient(700px 260px at 90% 0%, rgba(255, 203, 58, 0.22), transparent 60%),
+    radial-gradient(700px 260px at 10% 0%, rgba(15, 185, 177, 0.18), transparent 62%),
+    radial-gradient(700px 260px at 90% 0%, rgba(255, 183, 3, 0.22), transparent 60%),
     rgba(255, 255, 255, 0.94);
   box-shadow: -18px 0 44px rgba(2, 26, 41, 0.18);
   transform: translateX(100%);

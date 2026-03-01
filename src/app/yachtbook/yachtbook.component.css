@@ -3,39 +3,29 @@
 :host {
   display: block;
 
-  /* Use the same font variables used across your app */
-  font-family: var(--sr-font-sans, var(--brand-sans, "Inter", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif));
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-
-  /* Brand palette (matches favicon/logo + header tokens) */
-  --sr-navy: #021a29;
-  --sr-teal: #316d6b;
-  --sr-gold: #ffcb3a;
-  --sr-orange: #fb8714;
-  --sr-cream: #fff79e;
-
-  --sr-border: rgba(2, 26, 41, 0.14);
-  --sr-shadow: 0 12px 30px rgba(2, 26, 41, 0.12);
-
+  /* Use global tokens */
+  font-family: var(--sr-font-sans);
   --sr-radius: 1.1rem;
-
-  /* Fixed header offset (match your header) */
-  --header-offset: 142px;
 }
 
 /* Page wrapper (keeps the same “all pages same background” approach) */
 .page {
-  padding-top: var(--header-offset);
-  scroll-margin-top: var(--header-offset);
+  /* Header spacing is handled globally by .page-offset in app layout */
+  padding-top: 0;
+  scroll-margin-top: var(--sr-header-h);
   overflow-x: clip;
 
   background:
-    radial-gradient(900px 420px at 10% -10%, rgba(49, 109, 107, 0.16), rgba(0, 0, 0, 0) 60%),
-    radial-gradient(900px 420px at 90% 0%, rgba(255, 203, 58, 0.14), rgba(0, 0, 0, 0) 62%),
-    radial-gradient(900px 420px at 50% 0%, rgba(251, 135, 20, 0.12), rgba(0, 0, 0, 0) 60%),
+    radial-gradient(900px 420px at 10% -10%, rgba(15, 185, 177, 0.16), rgba(0, 0, 0, 0) 60%),
+    radial-gradient(900px 420px at 90% 0%, rgba(255, 183, 3, 0.14), rgba(0, 0, 0, 0) 62%),
+    radial-gradient(900px 420px at 50% 0%, rgba(251, 133, 0, 0.12), rgba(0, 0, 0, 0) 60%),
     transparent;
+}
+
+.yacht-options--route {
+  /* padding-top: 142px;
+  scroll-margin-top: 142px; */
+  padding-top: 42px !important;
 }
 
 /* Reuse “gallery header” look used elsewhere (title gradient) */
@@ -51,7 +41,7 @@
   font-weight: 950;
   letter-spacing: -0.02em;
 
-  background: linear-gradient(90deg, var(--sr-navy), var(--sr-teal), var(--sr-gold), var(--sr-orange));
+  background: linear-gradient(90deg, var(--sr-deep-blue), var(--sr-teal), var(--sr-gold), var(--sr-orange));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 
@@ -68,13 +58,13 @@
   margin: 0;
   font-size: clamp(16px, 2vw, 20px);
   font-weight: 800;
-  color: rgba(2, 26, 41, 0.86);
+  color: rgba(15, 23, 42, 0.86);
 }
 
 .gallery__description {
   margin: 10px auto 0;
   max-width: 70ch;
-  color: rgba(2, 26, 41, 0.74);
+  color: rgba(15, 23, 42, 0.74);
   line-height: 1.65;
 }
 
@@ -154,8 +144,8 @@ textarea.form-control {
 }
 
 .form-control:focus {
-  border-color: rgba(49, 109, 107, 0.55);
-  box-shadow: 0 0 0 .25rem rgba(49, 109, 107, 0.18);
+  border-color: rgba(15, 185, 177, 0.55);
+  box-shadow: 0 0 0 .25rem rgba(15, 185, 177, 0.18);
 }
 
 .form-text {
@@ -215,7 +205,6 @@ textarea.form-control {
 }
 
 @media (max-width: 992px) {
-  :host { --header-offset: 122px; }
   .yb-thumbs { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 }
 @media (max-width: 576px) {

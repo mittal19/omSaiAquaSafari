@@ -248,6 +248,7 @@ export class YachtBookComponent implements OnInit, OnDestroy {
 
   private autoSlideTimer?: number;
   private toastTimer?: number;
+isYachtOptions = false;
 
   constructor(
      private readonly fb: FormBuilder,
@@ -258,6 +259,8 @@ export class YachtBookComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+     this.isYachtOptions = this.router.url.includes('/book-yacht/');
+
     const state = history.state as any;
 
     const incoming = state && (state.id || state.name) ? (state as YachtDetail) : null;

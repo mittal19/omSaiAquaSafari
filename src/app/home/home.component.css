@@ -3,25 +3,16 @@
 :host {
   display: block;
 
-  /* Typography (shared with global styles; safe fallbacks for this component) */
-  --sr-font-sans: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, Arial, "Noto Sans",
-    "Helvetica Neue", sans-serif;
-  --sr-font-display: "Playfair Display", "Inter", Georgia, "Times New Roman", serif;
-  font-family: var(--sr-font-sans);
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  /* Hero palette derived from global brand tokens */
+  --ocean-900: var(--sr-deep-blue);
+  --ocean-700: var(--sr-teal);
+  --ocean-400: rgba(15, 185, 177, 0.9);
 
-  /* Logo palette */
-  --ocean-900: #063a53;
-  --ocean-700: #06819c;
-  --ocean-400: #29c9cd;
+  --sun-600: var(--sr-orange);
+  --sun-400: var(--sr-gold);
+  --sun-200: var(--sr-cream);
 
-  --sun-600: #f98b14;
-  --sun-400: #facb36;
-  --sun-200: #faeb7f;
-
-  --cream: #f8fad2;
+  --cream: var(--sr-cream);
 
   /* Fixed header offset (updated from TS) */
   --header-offset: 122px;

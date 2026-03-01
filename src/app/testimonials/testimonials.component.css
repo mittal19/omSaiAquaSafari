@@ -7,51 +7,18 @@
 :host {
   display: block;
 
-  /* Typography – matches your other sections (safe fallbacks) */
-  --sr-font-sans: var(
-    --font-sans,
-    "Poppins",
-    "Inter",
-    system-ui,
-    -apple-system,
-    "Segoe UI",
-    Roboto,
-    Arial,
-    sans-serif
-  );
-  --sr-font-display: var(
-    --font-display,
-    "Poppins",
-    "Inter",
-    system-ui,
-    -apple-system,
-    "Segoe UI",
-    Roboto,
-    Arial,
-    sans-serif
-  );
-
-  /* Logo palette */
-  --sr-deep-blue: #0d3b66;
-  --sr-teal: #0fb9b1;
-  --sr-gold: #ffb703;
-  --sr-orange: #fb8500;
-
-  --sr-ink: #0a1f33;
-  --sr-border: rgba(10, 31, 51, 0.14);
-  --sr-shadow: 0 14px 38px rgba(13, 59, 102, 0.14);
-  --sr-shadow-strong: 0 20px 54px rgba(13, 59, 102, 0.18);
-
+  /* Use global design-system tokens */
   font-family: var(--sr-font-sans);
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+
+  /* Extra shadow used for hover/hero cards in this component */
+  --sr-shadow-strong: 0 20px 54px rgba(13, 59, 102, 0.18);
 }
 
 /* Route spacing (works with your fixed header) */
 .testimonials--route {
-  padding-top: 142px;
-  scroll-margin-top: 142px;
+  /* padding-top: 142px;
+  scroll-margin-top: 142px; */
+  padding-top: 62px !important;
 }
 
 /* Optional section background consistent with explore/gallery */
