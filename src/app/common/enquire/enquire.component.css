@@ -34,6 +34,10 @@
   max-width: 1120px;
 }
 
+.border-radius{
+  border-radius: 1rem !important;
+}
+
 /* Cards */
 .sr-card {
   border-radius: var(--sr-radius-lg);
