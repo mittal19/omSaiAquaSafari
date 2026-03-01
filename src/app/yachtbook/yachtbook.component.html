@@ -75,22 +75,22 @@
     />
   </button>
 
-
+  <div class="yb-gallery-hint" aria-hidden="true">Click on image to view</div>
 </div>
 
-            <div class="yb-thumbs" role="list" aria-label="Gallery thumbnails" *ngIf="galleryImages().length">
-              <button
-                class="yb-thumb"
-                type="button"
-                role="listitem"
-                *ngFor="let t of galleryImages(); let i = index"
-                [class.active]="i === activeImgIndex()"
-                (click)="setActiveImg(i)"
-                [attr.aria-label]="'View image ' + (i + 1) + ' of ' + galleryImages().length"
-              >
-                <img [ngSrc]="t.url" width="156" height="112" [alt]="t.alt" />
-              </button>
-            </div>
+<div class="yb-thumbs" role="list" aria-label="Gallery thumbnails" *ngIf="galleryImages().length">
+  <button
+    class="yb-thumb"
+    type="button"
+    role="listitem"
+    *ngFor="let t of galleryImages(); let i = index"
+    [class.active]="i === activeImgIndex()"
+    (click)="openLightbox(i)"
+    [attr.aria-label]="'View image ' + (i + 1) + ' of ' + galleryImages().length"
+  >
+    <img [ngSrc]="t.url" width="156" height="112" [alt]="t.alt" />
+  </button>
+</div>
           </div>
         </section>
 
