@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { Router, NavigationEnd, RouterOutlet } from '@angular/router';
 import { filter } from 'rxjs/operators';
+import { SeoService } from './shared/seo.service';
 import { ContactComponent } from './common/contact/contact.component';
 import { EnquireComponent } from './common/enquire/enquire.component';
 import { FooterComponent } from './common/footer/footer.component';
@@ -20,11 +21,12 @@ export class AppComponent {
   showEnquire = true;
   showContact = true;
 
-  constructor(private router: Router) {
+  constructor(private router: Router, private seo: SeoService) {
     this.router.events
       .pipe(filter(event => event instanceof NavigationEnd))
       .subscribe(() => {
         const currentUrl = this.router.url;
+        this.seo.updateFromUrl(currentUrl);
 
         // Hide enquire on quick-quote and book-yacht/:id
         this.showEnquire =

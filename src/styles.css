@@ -126,3 +126,44 @@ h1, h2, h3 {
     scroll-behavior: auto !important;
   }
 }
+
+
+/* Accessibility helpers */
+.skip-link{
+  position:absolute;
+  left:-999px;
+  top:auto;
+  width:1px;
+  height:1px;
+  overflow:hidden;
+  z-index:10000;
+}
+.skip-link:focus{
+  left:16px;
+  top:16px;
+  width:auto;
+  height:auto;
+  padding:10px 12px;
+  background:#ffffff;
+  color:#000;
+  border-radius:10px;
+  box-shadow:0 6px 18px rgba(0,0,0,.15);
+  outline:2px solid currentColor;
+}
+
+/* Strong focus ring for keyboard users */
+:where(a,button,input,select,textarea,[tabindex]):focus-visible{
+  outline: 3px solid rgba(11,58,87,.45);
+  outline-offset: 3px;
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce){
+  *{
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
